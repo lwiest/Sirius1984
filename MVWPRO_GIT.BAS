@@ -53,12 +53,12 @@
 1520 '   *** Mitgliederverwaltungsmenü (MVW-Menü) *****************************
 1530 '
 1540 GOSUB 12300:GOSUB 13550
-1541 OPEN "I",#2,"B:FELD.DAT"
-1542 INPUT #2,FELDMAX
+1541 OPEN "I",#1,"B:FELD.DAT"
+1542 INPUT #1,FELDMAX
 1543 FOR K=1 TO FELDMAX
-1544   INPUT #2,FELD$(K)
+1544   INPUT #1,FELD$(K)
 1545 NEXT
-1546 CLOSE #2
+1546 CLOSE #1
 1560 B$="MITGLIEDERVERWALTUNG":P$="G-01000":GOSUB 12980:KOM$="":GOSUB 13030
 1570 VNFLAG=0
 1580 PRINT TAB(26);"1 - Stammsatzpflege"                              'Menütext
@@ -75,8 +75,8 @@
 1670 ' *** Stammsatzpflege vorbereiten ****************************************
 1680 '
 1690 DEL$=CHR$(8)+"."+CHR$(8)                            'Zeichen links löschen
-1700 OPEN "I",#2,"B:MTGLZAHL.DAT":INPUT #2,MTGL$
-1710 MTGLMAX=VAL(MTGL$):CLOSE #2
+1700 OPEN "I",#1,"B:MTGLZAHL.DAT":INPUT #1,MTGL$
+1710 MTGLMAX=VAL(MTGL$):CLOSE #1
 1720 IF DRUCKFLAG THEN RETURN                                 '       (???????)
 1730 '
 1740 '   *** Stammsatzpflegemenü (STS-Menü) ***********************************
@@ -333,7 +333,7 @@
 4210 '
 4220 ' Verwendungsnachweis vorbereiten ****************************************
 4230 '
-4240 OPEN "I",#2,"B:MTGLZAHL.DAT":INPUT #2,MTGL$:MTGLMAX=VAL(MTGL$):CLOSE #2
+4240 OPEN "I",#1,"B:MTGLZAHL.DAT":INPUT #1,MTGL$:MTGLMAX=VAL(MTGL$):CLOSE #1
 4250 DEL$=CHR$(8)+" "+CHR$(8):VNFLAG=-1
 4260 '
 4270 ' Verwendungsnachweis Menü ***********************************************
@@ -356,7 +356,7 @@
 4440 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
 4450 ' *** Einlesen des Mitgliedsnamens ***************************************
 4460 PRINT FNCUR$(21,1);DELLINE$;
-4470 GET #1,MITGLIED                                        'EINLESEN DATEN STS
+4470 GET #2,MITGLIED                                        'EINLESEN DATEN STS
 4480 NNAM$=LEFT$(DD1$,25)                                 'NACHNAME RAUSFISCHEN
 4490 VNAM$=MID$(DD1$,26,25)                               'VORNAME  RAUSFISCHEN
 4500 ' ** LEERZEICHEN HINTER NACHNAME ABSCHNEIDEN *****************************
@@ -497,8 +497,8 @@
 10170 ' *** Cursor hoch/runter Repeat Blockierung *****************************
 10180 A$=INKEY$:IF A$>CHR$(199) THEN 10180 ELSE RETURN
 10190 ' *** Disk I/O Variablen Initalisierung *********************************
-10200 OPEN "I",#2,"B:MTGLZAHL.DAT"
-10210 INPUT #2,MTGL$:MTGLZAHL=VAL(MTGL$):CLOSE #2
+10200 OPEN "I",#1,"B:MTGLZAHL.DAT"
+10210 INPUT #1,MTGL$:MTGLZAHL=VAL(MTGL$):CLOSE #1
 10220 FOR K=1 TO FELDMAX:DAT$(K)="":SUCH$(K)="":NEXT
 10230 RETURN
 10240 ' *** Feldnamen Maske ***************************************************
@@ -707,11 +707,11 @@
 12270 GOSUB 13200:B$="MITGLIEDSLISTE AUSDRUCKEN":RETURN
 12280 '
 12290 ' *** Fielden der Stammsatz Random X.S.-Datei ***************************
-12300 OPEN "R",#1,"B:MV.DAT",462
-12310 FIELD #1,236 AS DD1$,225 AS DD2$
+12300 OPEN "R",#2,"B:MV.DAT",462
+12310 FIELD #2,236 AS DD1$,225 AS DD2$
 12320 RETURN
 12330 ' *** Einlesen der Felddaten von Disk ***********************************
-12340 GET #1,MTGLZAHL
+12340 GET #2,MTGLZAHL
 12350 FOR LL=1 TO FELDMAX:DAT$(LL)="":NEXT
 12360 HLANG=1
 12370 FOR K=1 TO 14:LANG=FNLNG(FELD$(K)):DAT$(K)=MID$(DD1$,HLANG,LANG):HLANG=LANG+HLANG:NEXT
@@ -725,7 +725,7 @@
 12450 FOR K=1 TO 14:HH$=HH$+DAT$(K):NEXT:LSET DD1$=HH$
 12460 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
 12470 PRINT FNCUR$(21,1);
-12480 PUT #1,MTGLZAHL
+12480 PUT #2,MTGLZAHL
 12490 A$=" Die Daten sind auf Diskette abgespeichert.":GOSUB 12950
 12500 RETURN
 12510 ' *** Ja/Nein - Frage ***************************************************
@@ -762,7 +762,7 @@
 12820 IF INSTR(SPACE$(25),DAT$(K))<>0 THEN K=K+1:IF K<28 THEN 12820 ELSE MTGLZAHL=MTGLZAHL-1:MTGL$=STR$(MTGLZAHL):GOTO 12850
 12830 A$=" Wollen Sie diese Daten abspeichern ?":GOSUB 12520
 12840 IF JA=1 THEN GOSUB 12420:A$=" Daten werden abgespeichert.":GOSUB 12950 ELSE A$=" Nicht abgespeichert.":GOSUB 12950:M=MTGLZAHL-1:MTGL$=STR$(M)
-12850 OPEN "O",#2,"B:MTGLZAHL.DAT":PRINT #2,MTGL$:CLOSE #2
+12850 OPEN "O",#1,"B:MTGLZAHL.DAT":PRINT #1,MTGL$:CLOSE #1
 12860 MTGLMAX=MTGLZAHL:MTGL$=STR$(MTGLZAHL)
 12870 RETURN
 12880 ' *** Voreinstellungen im ERFASSEN  (Defaults) **************************
@@ -832,36 +832,36 @@
 13520 ' **** VN - Subroutines, permitting one page handling *******************
 13530 ' ****         by 04********** 21*******              *******************
 13540 ' **** OPEN & FIELDING VERWENDUNGSNACHWEIS ******************************
-13550 OPEN "R",#5,"B:VN.POI",8                                              '#5
-13560 FIELD #5,4 AS POINT1$, 4 AS POINT2$
-13570 OPEN "R",#3,"B:VN.NDX",4                                              '#3
-13580 FIELD #3,4 AS POINT0$
-13590 OPEN "R",#4,"B:VN.DAT",560                                            '#4
-13600 FIELD #4,240 AS DDD1$, 240 AS DDD2$, 80 AS DDD3$
+13550 OPEN "R",#3,"B:VN.NDX",4
+13560 FIELD #3,4 AS POINT0$
+13570 OPEN "R",#4,"B:VN.POI",8
+13580 FIELD #4,4 AS POINT1$, 4 AS POINT2$
+13590 OPEN "R",#5,"B:VN.DAT",560
+13600 FIELD #5,240 AS DDD1$, 240 AS DDD2$, 80 AS DDD3$
 13610 RETURN
 13620 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
 13630 GET #3,1: TMPOINT=VAL(POINT0$)+1    'letzte Seitennummer einlesen dann +1
-13640 LSET DDD1$="":LSET DDD2$="":LSET DDD3$="":PUT #4,TMPOINT 'leeren Record speichern
+13640 LSET DDD1$="":LSET DDD2$="":LSET DDD3$="":PUT #5,TMPOINT 'leeren Record speichern
 13650 LSET POINT0$=STR$(TMPOINT):PUT #3,1    'letzte Seitennummer neu speichern
 13660 PUT #3,MTGLZAHL+1
-13670 LSET POINT1$="0000":LSET POINT2$="0000":PUT #5,TMPOINT
+13670 LSET POINT1$="0000":LSET POINT2$="0000":PUT #4,TMPOINT
 13680 RETURN
 13690 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
 13700 GET #3,MTGLZAHL+1:CPOINT=VAL(POINT0$)                        'INDEX-DATEI
-13710 GET #4,CPOINT   :GOSUB 14390:BLATT=1                            'EINLESEN
-13720 GET #5,CPOINT                                              'Pointer lesen
+13710 GET #5,CPOINT   :GOSUB 14390:BLATT=1                            'EINLESEN
+13720 GET #4,CPOINT                                              'Pointer lesen
 13730 RETURN
 13740 ' **** SEITE RÜCKWÄRTS **************************************************
 13750 TMPOINT=VAL(POINT1$)
 13760 IF TMPOINT=0 THEN A$=" Erste Seite ":GOSUB 12950:FOR KK=1 TO 9999:NEXT:RETURN
 13770 CPOINT=TMPOINT:BLATT=BLATT-1
-13780 GET #4,CPOINT:GOSUB 14390   
-13790 GET #5,CPOINT                                         'Neue Pointer lesen
+13780 GET #5,CPOINT:GOSUB 14390   
+13790 GET #4,CPOINT                                         'Neue Pointer lesen
 13800 GOSUB 14500:VP=1:HP=1:GOSUB 13880:FOR KK=1 TO 100:NEXT
 13810 RETURN
 13820 ' **** SEITE VORWÄRTS  **************************************************
 13830 TMPOINT=VAL(POINT2$)
-13840 IF TMPOINT<>0 THEN CPOINT=TMPOINT:BLATT=BLATT+1:GET #4,CPOINT:GOSUB 14390:GET #5,CPOINT:GOSUB 14500:VP=1:HP=1:RETURN
+13840 IF TMPOINT<>0 THEN CPOINT=TMPOINT:BLATT=BLATT+1:GET #5,CPOINT:GOSUB 14390:GET #4,CPOINT:GOSUB 14500:VP=1:HP=1:RETURN
 13850 A$=" Letzte Seite "
 13860 IF INSTR(SPACE$(20),DAT$(26))<>0 THEN GOSUB 12950:FOR KK=1 TO 20000:NEXT:RETURN ELSE A$=" Letzte Seite - Neue Seite anlegen ?":GOSUB 12520:A$="":GOSUB 12950
 13870 IF JA THEN GOSUB 14060:BLATT=BLATT+1:GOSUB 14500:HP=1:VP=1
@@ -874,13 +874,13 @@
 13940 PUT #3,1
 13950 LSET POINT1$="0000"                                        'PAGE POINTERS
 13960 LSET POINT2$="0000"
-13970 PUT #5,VAL(POINT0$)
+13970 PUT #4,VAL(POINT0$)
 13980 LSET POINT0$=POINT0$                                          'FIRST PAGE
 13990 PUT #3,MTGLZAHL+1
 14000 LSET DDD1$=""                                                 'DATENBLATT
 14010 LSET DDD2$=""
 14020 LSET DDD3$=""
-14030 PUT #4,VAL(POINT0$)
+14030 PUT #5,VAL(POINT0$)
 14040 RETURN
 14050 ' **** ALLGEMEIN EINE NEUE SEITE ANLEGEN ********************************
 14060 GET #3,1                                                           'NDX+1
@@ -888,15 +888,15 @@
 14080 PUT #3,1:TMPOINT$=POINT0$
 14090                            'VEKTOREN DER BISHER LETZTEN SEITE "VERBIEGEN"
 14100 LSET POINT2$=POINT0$                                   'VERBIEGE VEKTOREN
-14110 PUT #5,CPOINT                                         '.. DER ALTEN SEITE
+14110 PUT #4,CPOINT                                         '.. DER ALTEN SEITE
 14120 LSET POINT1$=STR$(CPOINT)                              '..DER NEUEN SEITE
 14130 LSET POINT2$="0000"                                                '.. ""
 14140 CPOINT=VAL(TMPOINT$)                                      'NR NEUE SEITE-
-14150 PUT #5,CPOINT
+14150 PUT #4,CPOINT
 14160 LSET DDD1$=""                                           'WRITE EMPTY PAGE
 14170 LSET DDD2$=""
 14180 LSET DDD3$="" 
-14190 PUT #4,CPOINT
+14190 PUT #5,CPOINT
 14200 DATEN$=SPACE$(20):FOR II=1 TO 26:DAT$(II)=DATEN$:NEXT
 14210 RETURN
 14220 ' **** SEITE ABSPEICHERN ************************************************
@@ -913,7 +913,7 @@
 14330   DATEN$=DATEN$+DAT$(II)
 14340 NEXT 
 14350 LSET DDD3$=DATEN$:DATEN$=""
-14360 PUT #4,CPOINT
+14360 PUT #5,CPOINT
 14370 RETURN
 14380 ' **** HACK ! (ZERSTÜCKELN DER DATEN-STRINGS) ***************************
 14390 FOR II=1 TO 12
