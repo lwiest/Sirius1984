@@ -829,9 +829,13 @@
 13490 A$=" Wollen Sie die Daten abspeichern ?":GOSUB 12520
 13500 IF JA THEN GOSUB 12430
 13510 RETURN
+13511 '
 13520 ' **** VN - Subroutines, permitting one page handling *******************
 13530 ' ****         by 04********** 21*******              *******************
+13531 '
+13532 '
 13540 ' **** OPEN & FIELDING VERWENDUNGSNACHWEIS ******************************
+13541 '
 13550 OPEN "R",#3,"B:VN.NDX",4
 13560 FIELD #3,4 AS POINT0$
 13570 OPEN "R",#4,"B:VN.POI",8
@@ -839,67 +843,116 @@
 13590 OPEN "R",#5,"B:VN.DAT",560
 13600 FIELD #5,240 AS DDD1$, 240 AS DDD2$, 80 AS DDD3$
 13610 RETURN
+13611 '
 13620 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
-13630 GET #3,1: TMPOINT=VAL(POINT0$)+1    'letzte Seitennummer einlesen dann +1
-13640 LSET DDD1$="":LSET DDD2$="":LSET DDD3$="":PUT #5,TMPOINT 'leeren Record speichern
-13650 LSET POINT0$=STR$(TMPOINT):PUT #3,1    'letzte Seitennummer neu speichern
+13621 '
+13630 GET #3,1                            'letzte Seitennummer einlesen dann +1
+13631 TMPOINT=VAL(POINT0$)+1
+13640 LSET DDD1$=""                                    'leeren Record speichern
+13641 LSET DDD2$=""
+13642 LSET DDD3$=""
+13643 PUT #5,TMPOINT
+13650 LSET POINT0$=STR$(TMPOINT)             'letzte Seitennummer neu speichern
+13651 PUT #3,1
 13660 PUT #3,MTGLZAHL+1
-13670 LSET POINT1$="0000":LSET POINT2$="0000":PUT #4,TMPOINT
+13670 LSET POINT1$="0000"
+13671 LSET POINT2$="0000"
+13672 PUT #4,TMPOINT
 13680 RETURN
+13681 '
 13690 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
-13700 GET #3,MTGLZAHL+1:CPOINT=VAL(POINT0$)                        'INDEX-DATEI
-13710 GET #5,CPOINT   :GOSUB 14390:BLATT=1                            'EINLESEN
+13691 '
+13691 ' IN: MTGLZAHL
+13700 GET #3,MTGLZAHL+1                                            'Index_Datei
+13701 CPOINT=VAL(POINT0$)
+13710 GET #5,CPOINT:GOSUB 14390                                       'Einlesen
+13711 BLATT=1
 13720 GET #4,CPOINT                                              'Pointer lesen
 13730 RETURN
+13731 '
 13740 ' **** SEITE RÜCKWÄRTS **************************************************
+13741 '
 13750 TMPOINT=VAL(POINT1$)
-13760 IF TMPOINT=0 THEN A$=" Erste Seite ":GOSUB 12950:FOR KK=1 TO 9999:NEXT:RETURN
-13770 CPOINT=TMPOINT:BLATT=BLATT-1
+13760 IF TMPOINT<>0 THEN 13770
+13761 A$=" Erste Seite ":GOSUB 12950
+13762 FOR KK=1 TO 9999:NEXT                                              'Delay
+13763 RETURN
+13770 CPOINT=TMPOINT
+13771 BLATT=BLATT-1
 13780 GET #5,CPOINT:GOSUB 14390   
-13790 GET #4,CPOINT                                         'Neue Pointer lesen
-13800 GOSUB 14500:VP=1:HP=1:GOSUB 13880:FOR KK=1 TO 100:NEXT
+13790 GET #4,CPOINT:GOSUB 14500                             'Neue Pointer lesen
+13800 HP=1:VP=1
+13800 GOSUB 13880
+13800 FOR KK=1 TO 100:NEXT                                               'Delay
 13810 RETURN
+13811 '
 13820 ' **** SEITE VORWÄRTS  **************************************************
+13821 '
 13830 TMPOINT=VAL(POINT2$)
-13840 IF TMPOINT<>0 THEN CPOINT=TMPOINT:BLATT=BLATT+1:GET #5,CPOINT:GOSUB 14390:GET #4,CPOINT:GOSUB 14500:VP=1:HP=1:RETURN
+13840 IF TMPOINT=0 THEN 13850
+13841 CPOINT=TMPOINT
+13842 BLATT=BLATT+1
+13843 GET #5,CPOINT:GOSUB 14390
+13844 GET #4,CPOINT:GOSUB 14500
+13846 HP=1:VP=1
+13847 RETURN
 13850 A$=" Letzte Seite "
-13860 IF INSTR(SPACE$(20),DAT$(26))<>0 THEN GOSUB 12950:FOR KK=1 TO 20000:NEXT:RETURN ELSE A$=" Letzte Seite - Neue Seite anlegen ?":GOSUB 12520:A$="":GOSUB 12950
-13870 IF JA THEN GOSUB 14060:BLATT=BLATT+1:GOSUB 14500:HP=1:VP=1
-13880 GOSUB 13030:PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=vorwärts";
-13890 PRINT TAB(54);"<F9>=Blatt drucken";FNCUR$(3,1);" "
+13860 IF INSTR(SPACE$(20),DAT$(26))=0 THEN 13868 
+13862 GOSUB 12950
+13864 FOR KK=1 TO 20000:NEXT                                             'Delay
+13866 RETURN
+13868 A$=" Letzte Seite - Neue Seite anlegen? ":GOSUB 12520
+13869 A$="":GOSUB 12950
+13870 IF JA=0 THEN 13880
+13872 GOSUB 14060
+13873 BLATT=BLATT+1
+13874 GOSUB 14500
+13875 HP=1:VP=1
+13880 GOSUB 13030
+13882 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=vorwärts";
+13890 PRINT TAB(54);"<F9>=Blatt drucken";
+13891 PRINT FNCUR$(3,1);" "
 13900 RETURN
+13901 '
 13910 ' **** ERSTE SEITE EINES MITGLIEDS ANLEGEN ******************************
+13911 '
 13920 GET #3,1
 13930 LSET POINT0$=STR$(VAL(POINT0$)+1)                                  'NDX+1
 13940 PUT #3,1
-13950 LSET POINT1$="0000"                                        'PAGE POINTERS
+13950 LSET POINT1$="0000"                                        'Page pointers
 13960 LSET POINT2$="0000"
 13970 PUT #4,VAL(POINT0$)
-13980 LSET POINT0$=POINT0$                                          'FIRST PAGE
+13980 LSET POINT0$=POINT0$                                          'First page
 13990 PUT #3,MTGLZAHL+1
-14000 LSET DDD1$=""                                                 'DATENBLATT
+14000 LSET DDD1$=""                                                 'Datenblatt
 14010 LSET DDD2$=""
 14020 LSET DDD3$=""
 14030 PUT #5,VAL(POINT0$)
 14040 RETURN
+14041 '
 14050 ' **** ALLGEMEIN EINE NEUE SEITE ANLEGEN ********************************
+14051 '
 14060 GET #3,1                                                           'NDX+1
 14070 LSET POINT0$=STR$(VAL(POINT0$)+1)
-14080 PUT #3,1:TMPOINT$=POINT0$
-14090                            'VEKTOREN DER BISHER LETZTEN SEITE "VERBIEGEN"
-14100 LSET POINT2$=POINT0$                                   'VERBIEGE VEKTOREN
-14110 PUT #4,CPOINT                                         '.. DER ALTEN SEITE
-14120 LSET POINT1$=STR$(CPOINT)                              '..DER NEUEN SEITE
+14080 PUT #3,1:TMPOINT$=POINT0$    'Vektoren der bisher letzten Seite verbiegen
+14100 LSET POINT2$=POINT0$                                'Verbiege Vektoren...
+14110 PUT #4,CPOINT                                         '...der alten Seite
+14120 LSET POINT1$=STR$(CPOINT)                             '...der neuen Seite
 14130 LSET POINT2$="0000"                                                '.. ""
-14140 CPOINT=VAL(TMPOINT$)                                      'NR NEUE SEITE-
+14140 CPOINT=VAL(TMPOINT$)                                       'Nr neue Seite
 14150 PUT #4,CPOINT
-14160 LSET DDD1$=""                                           'WRITE EMPTY PAGE
+14160 LSET DDD1$=""                                           'Write empty page
 14170 LSET DDD2$=""
 14180 LSET DDD3$="" 
 14190 PUT #5,CPOINT
-14200 DATEN$=SPACE$(20):FOR II=1 TO 26:DAT$(II)=DATEN$:NEXT
+14200 DATEN$=SPACE$(20)
+14200 FOR II=1 TO 26
+14200   DAT$(II)=DATEN$
+14200 NEXT
 14210 RETURN
+14211 '
 14220 ' **** SEITE ABSPEICHERN ************************************************
+14221 '
 14230 DATEN$=""
 14240 FOR II=1 TO 12
 14250   DATEN$=DATEN$+DAT$(II)
@@ -915,7 +968,9 @@
 14350 LSET DDD3$=DATEN$:DATEN$=""
 14360 PUT #5,CPOINT
 14370 RETURN
+14371 '
 14380 ' **** HACK ! (ZERSTÜCKELN DER DATEN-STRINGS) ***************************
+14381 '
 14390 FOR II=1 TO 12
 14400   DAT$(II)=MID$(DDD1$,(II-1)*20+1,20)
 14410 NEXT
@@ -926,13 +981,17 @@
 14460   DAT$(II)=MID$(DDD3$,(II-25)*20+1,20)
 14470 NEXT 
 14480 RETURN
+14481 '
 14490 ' **** UPRO DATENAUSGABE VN  ********************************************
-14500 PRINT DELHIGH$
-14510 PRINT HIGHON$
+14491 '
+14492 ' IN: MTGLZAHL
+14493 ' IN: NAMM$
+14494 ' IN: BLATT
+14500 PRINT DELHIGH$;HIGHON$
 14520 PRINT FNCUR$(5,16);MTGLZAHL
-14530 PRINT FNCUR$ (5,29);NAMM$
-14540 PRINT FNCUR$ (3,8);BLATT
-14550 FOR K= 1 TO 26
+14530 PRINT FNCUR$(5,29);NAMM$
+14540 PRINT FNCUR$(3,8);BLATT
+14550 FOR K=1 TO 26
 14560   HOR=6-39*(K>13)
 14570   VER=6+K+13*(K>13)
 14580   FOR J=1 TO 3
@@ -945,9 +1004,14 @@
 14650 NEXT
 14660 PRINT HIGHOFF$
 14670 RETURN
-14680 'vn drucken
+14671 '
+14680 ' *** vn drucken ********************************************************
+14681 '
+14682 ' IN: BLATT
+14683 ' IN: MITGLZAHL
+14684 ' IN: NAMM$
 14690 A$=" Ist der Drucker an ?":GOSUB 12520
-14700 IF JA=0 THEN RETURN
+14700 IF JA=0 THEN 14890
 14710 LPRINT STRICH$
 14720 LPRINT
 14730 LPRINT TAB(2);"Blatt:";BLATT
@@ -963,37 +1027,53 @@
 14830 LPRINT
 14840 LPRINT STRICH$
 14850 RETURN
+14851 '
 14860 LODAT1$=LEFT$(DAT$(LOZ),2)+"."+MID$(DAT$(LOZ),3,2)+"."+MID$(DAT$(LOZ),5,2)
 14870 LODAT2$=MID$(DAT$(LOZ),7,2)+"."+MID$(DAT$(LOZ),9,2)+"."+MID$(DAT$(LOZ),11,2)
 14880 LODAT3$=RIGHT$(DAT$(LOZ),8)
 14890 RETURN
+14891 '
 14900 ' *** upros MITGLIEDSLISTE DRUCKEN **************************************
-14910 ' *** MITGLIED DRUCKEN
+14905 '
+14910 ' *** MITGLIED DRUCKEN **************************************************
+14915 '
+14916 ' IN: MTGLZAHL
 14920 LPRINT
 14930 LPRINT TAB(5);MTGLZAHL;
-14940 LPRINT TAB(10);DAT$( 1);                                       'NACHNAMEN
-14950 LPRINT TAB(36);DAT$( 2);                                        'VORNAMEN
-14960 LPRINT TAB(65);"(";LEFT$(DAT$( 5),1);")";                         'STATUS
+14940 LPRINT TAB(10);DAT$(1);                                        'Nachnamen
+14950 LPRINT TAB(36);DAT$( 2);                                        'Vornamen
+14960 LPRINT TAB(65);"(";LEFT$(DAT$( 5),1);")";                         'Status
 14970 AMT$=""
 14980 IN=INSTR(DAT$(6),"22**"):IF IN<>0 THEN AMT$=MID$(DAT$(6),IN,6):GOTO 15010
 14990 IN=INSTR(DAT$(6),"23**"):IF IN<>0 THEN AMT$=MID$(DAT$(6),IN,5):GOTO 15010
-15000 IN=INSTR(DAT$(6),"24**") :IF IN<>0 THEN AMT$=MID$(DAT$(6),IN,3)
+15000 IN=INSTR(DAT$(6),"24**"):IF IN<>0 THEN AMT$=MID$(DAT$(6),IN,3)
 15010 LPRINT TAB(71);AMT$
-15020 LPRINT TAB(36);DAT$(10)                                           'STRAßE
-15030 LPRINT TAB(36);DAT$(11);                                             'PLZ
-15040 LPRINT TAB(41);DAT$(12)                                              'ORT
-15050 LPRINT TAB(36);"Tel.:";DAT$(13)                                  'TELEFON
+15020 LPRINT TAB(36);DAT$(10)                                           'Straße
+15030 LPRINT TAB(36);DAT$(11);                                    'Postleitzahl
+15040 LPRINT TAB(41);DAT$(12)                                              'Ort
+15050 LPRINT TAB(36);"Tel.:";DAT$(13)                                  'Telefon
 15060 LPRINT
-15070 IF INKEY$<>"" THEN A$=" Drucken abbrechen ?":GOSUB 12520:IF JA=1 THEN BRKFLAG=-1 ELSE BRKFLAG=0
+15070 IF INKEY$="" THEN 15080
+15072 A$=" Drucken abbrechen ? ":GOSUB 12520
+15074 IF JA=1 THEN BRKFLAG=-1 ELSE BRKFLAG=0
 15080 RETURN
-15090 ' *** KOPF DER MITGLIEDSLISTE
+15081 '
+15090 ' *** KOPF DER MITGLIEDSLISTE *******************************************
+15091 '
+15091 ' IN: DATUM$
 15100 LPRINT TAB(16);"MITGLIEDSLISTE 25*******************************"
 15110 LPRINT 
 15120 LPRINT TAB(32);"Stand:";DATUM$
 15130 LPRINT
-15140 LPRINT TAB(3);"Mitgl.";             TAB(10);"Name";TAB(36);"Vorname, Anschrift";TAB(63);"Status";TAB(71);"Amt" 
+15140 LPRINT TAB(3);"Mitgl."; 
+15141 LPRINT TAB(10);"Name";
+15142 LPRINT TAB(36);"Vorname, Anschrift";
+15143 LPRINT TAB(63);"Status";
+15144 LPRINT TAB(71);"Amt"
 15150 RETURN
-15160 ' **** UPRO ADRESSAUFKLEBER DRUCKEN 
+15151 '
+15160 ' *** UPRO ADRESSAUFKLEBER DRUCKEN **************************************
+15161 '
 15170 A$=" Ist der Drucker bereit und positioniert (J/N) ":GOSUB 12950
 15180 GOSUB 12530
 15190 IF JA=0 THEN RETURN
@@ -1004,16 +1084,22 @@
 15240 LPRINT "   ";DAT$(10)
 15250 LPRINT
 15260 LPRINT "   ";DAT$(11);" "DAT$(12)
-15270 LPRINT:LPRINT:LPRINT
-15280 LPRINT:LPRINT:LPRINT
+15270 LPRINT
+15271 LPRINT
+15272 LPRINT
+15280 LPRINT
+15281 LPRINT
+15282 LPRINT
 15290 RETURN
-15300 ' Stammsatz ausdrucken
+15291 '
+15300 ' *** Stammsatz ausdrucken **********************************************
+15301 '
 15310 RESTORE 15420
 15320 LPRINT STRICH$
 15330 LPRINT
-15340 LPRINT TAB(30)"Mitgliedsnummer  ";MTGLZAHL
+15340 LPRINT TAB(30);"Mitgliedsnummer  ";MTGLZAHL
 15350 LPRINT
-15360 LPRINT TAB( 2)LEFT$(FELD$(1),14);DAT$(1);TAB(41)"Beruf:"
+15360 LPRINT TAB(2);LEFT$(FELD$(1),14);DAT$(1);TAB(41);"Beruf:"
 15370 FOR I=1 TO 6:READ A,B
 15380   LPRINT TAB(2);LEFT$(FELD$(A),14);DAT$(A);
 15390   IF B=0 THEN LPRINT:GOTO 15410
@@ -1021,25 +1107,45 @@
 15410 NEXT
 15420 DATA 2,15,3,16,4,0,5,17,6,18,0,19
 15430 FOR I=7 TO 14
-15440   LPRINT TAB(2) ;LEFT$(FELD$(I),14);DAT$(I);TAB(41);LEFT$(FELD$(I+13),14);DAT$(I+13);
+15440   LPRINT TAB(2);LEFT$(FELD$(I),14);DAT$(I);
+15441   LPRINT TAB(41);LEFT$(FELD$(I+13),14);DAT$(I+13);
 15450 NEXT
-15460 LPRINT:LPRINT:LPRINT:LPRINT STRICH$
+15460 LPRINT
+15461 LPRINT
+15462 LPRINT
+15463 LPRINT STRICH$
 15470 RETURN
-15480 ' Mitgliedsvermerke
+15471 '
+15480 ' *** Mitgliedsvermerke *************************************************
+15481 '
+15482 ' IN: NAMM$ =
+15484 SPC$=STRING$(9," "):LIN$=" ___ / ___ / ___" 
 15490 LPRINT TAB(10);"Mitgliedsnr.:";TAB(28);"Name:";NAMM$
-15500 LPRINT TAB(65);"Datum:":LPRINT
-15510 SPC$=STRING$(9," "):LIN$=" ___ / ___ / ___"
-15520 LPRINT SPC$;"26***************************";LIN$:LPRINT
-15530 LPRINT SPC$;"27***************************";LIN$:LPRINT
-15540 LPRINT SPC$;"28***************************";LIN$:LPRINT 
-15550 LPRINT SPC$;"29***************************";LIN$:LPRINT
-15560 LPRINT SPC$;"30***************************";LEFT$(LIN$,10):LPRINT
-15570 LPRINT SPC$;"31***************************";LIN$:LPRINT
-15580 LPRINT SPC$;"32***************************";LIN$:LPRINT
-15590 LPRINT SPC$;"33***************************";LEFT$(LIN$,4):LPRINT
-15600 LPRINT SPC$;"34***************************";LIN$:LPRINT
-15610 LPRINT SPC$;"35***************************";LIN$:LPRINT
-15620 LPRINT SPC$;"36***************************";LIN$:LPRINT
-15630 LPRINT SPC$;"37***************************";LIN$:LPRINT
+15500 LPRINT TAB(65);"Datum:"
+15505 LPRINT
+15520 LPRINT SPC$;"26***************************";LIN$
+15525 LRPINT
+15530 LPRINT SPC$;"27***************************";LIN$
+15535 LRPINT
+15540 LPRINT SPC$;"28***************************";LIN$
+15545 LRPINT
+15550 LPRINT SPC$;"29***************************";LIN$
+15555 LRPINT
+15560 LPRINT SPC$;"30***************************";LEFT$(LIN$,10)
+15565 LRPINT
+15570 LPRINT SPC$;"31***************************";LIN$
+15575 LRPINT
+15580 LPRINT SPC$;"32***************************";LIN$
+15585 LRPINT
+15590 LPRINT SPC$;"33***************************";LEFT$(LIN$,4)
+15595 LRPINT
+15600 LPRINT SPC$;"34***************************";LIN$
+15605 LRPINT
+15610 LPRINT SPC$;"35***************************";LIN$
+15615 LRPINT
+15620 LPRINT SPC$;"36***************************";LIN$
+15625 LRPINT
+15630 LPRINT SPC$;"37***************************";LIN$
+15635 LRPINT
 15640 LPRINT SPC$;"38***************************";LIN$
-15650 RETURN
+15645 RETURN
