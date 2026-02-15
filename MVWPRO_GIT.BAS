@@ -24,7 +24,7 @@
 1253 DEF FNCOL(F$)=VAL(MID$(F$,15,2))                    'Spalte des Feldnamens
 1254 DEF FNLNG(F$)=VAL(MID$(F$,19,2))                         'Länge des Feldes
 1255 DEF FNTYP(F$)=VAL(RIGHT$(F$,1))                     'Gültigkeits-Test Flag
-1255 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
+1256 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
 1260 ' 
 1270 ON ERROR GOTO 13240
 1280 '
@@ -801,32 +801,37 @@
 13200 A$=" Zurück ? (J=Ja) ":GOSUB 12950:GOSUB 12530:IF JA=1 THEN RETURN ELSE 13200
 13210 ' *** Leerlesen von DAT$() (Ersetzt ERASE-Befehl) ***********************
 13220 FOR II=1 TO 27:DAT$(II)="":NEXT:RETURN
+13229 '
 13230 ' *** Disk I/O Error Trap Nachricht *************************************
-13240 'LW PRINT CLS$:PRINT FNCUR$(13,1);STRICH$
-13250 'LW PRINT
-13260 'LW PRINT
-13270 'LW GOSUB 41330:IF ERR<50 THEN PRINT FNCUR$(5,1);"Programmfehler."
-13280 'LW PRINT "   14*********************"
-13290 'LW PRINT
-13300 'LW PRINT "   15************************************************************"
-13310 'LW PRINT "   16*************************************************"
-13320 'LW PRINT "   
-13330 'LW PRINT "   17**********************"
-13340 'LW PRINT
-13350 'LW PRINT "         18********************************************"
-13360 'LW PRINT
-13370 'LW PRINT "         19**************************"
-13380 'LW PRINT
-13390 'LW PRINT "                                      20***************"
-13400 'LW PRINT
-13410 'LW PRINT STRICH$;CURSON$
-13420 PRINT "ERL (Error Line) :";ERL
-13430 PRINT "ERR (Error Code) :";ERR
-13440 'LW RESET
-13450 'LW GOTO 41690
-13460 'LW END
-13470 STOP
+13231 '
+13240 PRINT CLS$
+13241 PRINT FNCUR$(13,1);STRICH$
+13250 PRINT
+13260 PRINT
+13270 GOSUB 12980
+13271 IF ERR<50 THEN PRINT FNCUR$(5,1);"Programmfehler."
+13280 PRINT "   14*********************"
+13290 PRINT
+13300 PRINT "   15************************************************************"
+13310 PRINT "   16*************************************************"
+13320 PRINT "   
+13330 PRINT "   17**********************"
+13340 PRINT
+13350 PRINT "         18********************************************"
+13360 PRINT
+13370 PRINT "         19**************************"
+13380 PRINT
+13390 PRINT "                                      20***************"
+13400 PRINT
+13410 PRINT STRICH$;CURSON$
+13420 PRINT "ERL (Error Line) :";ERL                                'LW - Added
+13430 PRINT "ERR (Error Code) :";ERR                                'LW - Added
+13440 RESET
+13450 'LW GOTO 13450                                       'LW - Endlosschleife
+13460 END
+13471 '
 13480 ' *** UPRO FÜR ÄNDERN-EXIT **********************************************
+13481 '
 13490 A$=" Wollen Sie die Daten abspeichern ?":GOSUB 12520
 13500 IF JA THEN GOSUB 12430
 13510 RETURN
@@ -863,7 +868,7 @@
 13681 '
 13690 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
 13691 '
-13691 ' IN: MTGLZAHL
+13692 ' IN: MTGLZAHL
 13700 GET #3,MTGLZAHL+1                                            'Index_Datei
 13701 CPOINT=VAL(POINT0$)
 13710 GET #5,CPOINT:GOSUB 14390                                       'Einlesen
@@ -883,8 +888,8 @@
 13780 GET #5,CPOINT:GOSUB 14390   
 13790 GET #4,CPOINT:GOSUB 14500                             'Neue Pointer lesen
 13800 HP=1:VP=1
-13800 GOSUB 13880
-13800 FOR KK=1 TO 100:NEXT                                               'Delay
+13801 GOSUB 13880
+13802 FOR KK=1 TO 100:NEXT                                               'Delay
 13810 RETURN
 13811 '
 13820 ' **** SEITE VORWÄRTS  **************************************************
@@ -947,9 +952,9 @@
 14180 LSET DDD3$="" 
 14190 PUT #5,CPOINT
 14200 DATEN$=SPACE$(20)
-14200 FOR II=1 TO 26
-14200   DAT$(II)=DATEN$
-14200 NEXT
+14201 FOR II=1 TO 26
+14202   DAT$(II)=DATEN$
+14203 NEXT
 14210 RETURN
 14211 '
 14220 ' **** SEITE ABSPEICHERN ************************************************
@@ -1061,7 +1066,7 @@
 15081 '
 15090 ' *** KOPF DER MITGLIEDSLISTE *******************************************
 15091 '
-15091 ' IN: DATUM$
+15092 ' IN: DATUM$
 15100 LPRINT TAB(16);"MITGLIEDSLISTE 25*******************************"
 15110 LPRINT 
 15120 LPRINT TAB(32);"Stand:";DATUM$
