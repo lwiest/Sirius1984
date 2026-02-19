@@ -4,7 +4,7 @@
 1030 ' LW 02-FEB-2026: Remove Intra-Line breaks and white space
 1040 ' LW 02-FEB-2026: TODO Renumber
 1050 '
-1060 '    *** Initialisierung, Dimensionierung ********************************
+1060 ' *** Initialisierung, Dimensionierung ***********************************
 1070 '
 1080 DEFINT A-Z                                              'Integerdefinition
 1090 DIM FELD$(27),SUCH$(27),DAT$(27)                    'Arrays dimensionieren
@@ -45,13 +45,13 @@
 1430 PRINT ESC$;"41";CHR$(98);CHR$(202);                          'Cursor links
 1440 PRINT ESC$;"41";CHR$(99);CHR$(203);                         'Cursor rechts
 1450 '
-1460 '   *** Beginn des Mitgliederverwaltungsprogramms ************************
+1460 ' *** Beginn des Mitgliederverwaltungsprogramms **************************
 1470 '
 1480 B$="MITGLIEDERVERWALTUNG":P$="G-01000":GOSUB 12980
 1490 A$=" Befindet sich die Daten-Diskette im Laufwerk B ? ":GOSUB 12520:IF JA=1 THEN 1540       'B-Disk eingelegt ?
 1500 A$=" Bitte legen Sie sie ein. Fertig ? ":GOSUB 12520:IF JA=0 THEN RUN "DISKMENU.EXE"
 1510 '
-1520 '   *** Mitgliederverwaltungsmenü (MVW-Menü) *****************************
+1520 ' *** Mitgliederverwaltungsmenü (MVW-Menü) *******************************
 1530 '
 1540 GOSUB 12300:GOSUB 13550
 1541 OPEN "I",#1,"B:FELD.DAT"
@@ -73,6 +73,7 @@
 1640 ON F GOTO 1650,1660,1560,1660
 1650 GOSUB 10520:GOTO 1560                                           'Help TEXT
 1660 GOSUB 13160:GOTO 1560                                  'Zurück & Hauptmenü
+1669 '
 1670 ' *** Stammsatzpflege vorbereiten ****************************************
 1680 '
 1690 DEL$=CHR$(8)+"."+CHR$(8)                            'Zeichen links löschen
@@ -80,7 +81,7 @@
 1710 MTGLMAX=VAL(MTGL$):CLOSE #1
 1720 IF DRUCKFLAG THEN RETURN                                 '       (???????)
 1730 '
-1740 '   *** Stammsatzpflegemenü (STS-Menü) ***********************************
+1740 ' *** Stammsatzpflegemenü (STS-Menü) *************************************
 1750 '
 1760 B$="STAMMSATZPFLEGE":P$="G-01100":GOSUB 12980:KOM$="":GOSUB 13030
 1770 PRINT TAB(29);"1 - Stammsatz anlegen"                            'Menütext
@@ -197,7 +198,9 @@
 2840 GOSUB 12430                                             'Daten abspeichern
 2850 A$=" Soll noch jemand gelöscht werden ?":GOSUB 12520            'Nochmal ?
 2860 IF JA=1 THEN 2630 ELSE GOTO 1760
+2869 '
 2870 ' *** Stammsatz suchen von 05*************** *****************************
+2871 '
 2880 P$="G-01105"
 2890 NUMSUCH1=0:NUMSUCH2=0:MTGL$=""
 2900 PRINT HIGHOFF$
@@ -355,12 +358,16 @@
 4420 IF LEN(ANT$)=0 THEN A$=" Muß-Feld : Sie müssen etwas eingeben.":GOSUB 12950:GOTO 4340 ELSE MITGLIED=VAL(ANT$):IF MITGLIED=0 THEN 4360
 4430 IF MITGLIED>MTGLMAX THEN A$=" Diese Mitgliedsnummer existiert nicht ":GOSUB 12950:PRINT HOME$;HIGHOFF$:GOTO 4340
 4440 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
+4449 '
 4450 ' *** Einlesen des Mitgliedsnamens ***************************************
+4451 '
 4460 PRINT FNCUR$(21,1);DELLINE$;
 4470 GET #2,MITGLIED                                        'EINLESEN DATEN STS
 4480 NNAM$=LEFT$(DD1$,25)                                 'NACHNAME RAUSFISCHEN
 4490 VNAM$=MID$(DD1$,26,25)                               'VORNAME  RAUSFISCHEN
+4499 '
 4500 ' ** LEERZEICHEN HINTER NACHNAME ABSCHNEIDEN *****************************
+4501 '
 4510 FOR I=LEN(NNAM$) TO 1 STEP -1
 4520   IF MID$(NNAM$,I,1)<>" " THEN NNAM$=LEFT$(NNAM$,I):I=1
 4530 NEXT
@@ -444,7 +451,9 @@
 5310 NEXT
 5320 PRINT HIGHOFF$;CURSOFF$
 5330 A$=" Bitte den Drucker bereit machen. Fertig ?":GOSUB 12520:IF JA=0 THEN A$="":GOSUB 12950:GOTO 5140
-5340 'Ausdrucken Anfang ***
+5339 '
+5340 ' *** Ausdrucken Anfang **************************************************
+5341 '
 5350 IF NOT DRUCKFLAG THEN PRINT FNCUR$(7,1);DELLINE$CURSOFF$:A$=" Ok. Mitgliedsliste wird gedruckt. Abbrechen mit Taste.":GOSUB 12950
 5360 IF DRUCKFLAG THEN 2890
 5370 PRINT FNCUR$(23,1);DELLINE$;:GOSUB 15100
@@ -453,7 +462,9 @@
 5400   GOSUB 14920:IF BRKFLAG THEN BRKFLAG=0:A$=" Drucken abgebrochen.":GOSUB 12950:PRINT CURSOFF$:GOTO 5420 ELSE GOSUB 12950:PRINT CURSOFF$
 5410 NEXT
 5420 GOSUB 13220:DRUCKFLAG=0:GOTO 5010
-5430 ' Datenblatt drucken
+5429 '
+5430 ' *** Datenblatt drucken *************************************************
+5431 '
 5440 B$="DATENBLATT DRUCKEN":P$="G-01303":GOSUB 12980:KOM$="":GOSUB 13030
 5450 PRINT FNCUR$(4,23)"Bitte geben Sie die Mitgliedsnummer"
 5460 PRINT FNCUR$(5,24)"des zu druckenden Datenblattes ein."
@@ -479,9 +490,12 @@
 5660 GOSUB 15490                                             'Mitgliedsvermerke
 5670 GOTO 5440
 10000 '
-10001 ' *** Unterprogramme von 06*****, 07****, 08**** und 09**** *************
-10001 '
-10009 '
+10001 ' ***********************************************************************
+10002 ' *                                                                     *
+10003 ' *        Unterprogramme von 06*****, 07****, 08**** und 09****        *
+10004 ' *                                                                     *
+10005 ' ***********************************************************************
+10006 '
 10010 ' *** Eingaberoutine (INPUT) ********************************************
 10011 '
 10020 MUSS$=MID$(FELD$(F),13,1)
