@@ -559,7 +559,8 @@
 10491 '
 10500 ' *** Help-Text "Mitgliederverwaltung" ********************************** 
 10510 '
-10520 B$="HILFE":GOSUB 12980:PRINT HOME$
+10520 B$="HILFE":GOSUB 12980
+10525 PRINT HOME$
 10530 PRINT "       Die MITGLIEDERVERWALTUNG bietet folgende Funktionen an :"
 10540 PRINT 
 10550 PRINT "        1 - STAMMSATZPFLEGE"
@@ -575,11 +576,13 @@
 10650 PRINT
 10660 PRINT "            Gesichtspunkten."
 10670 PRINT "    Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
-10680 GOSUB 13200:RETURN
+10680 GOSUB 13200
+10685 RETURN
 10690 '
 10700 ' *** Help-Text "Stammsatzpflege" *************************************** 
 10710 '
-10720 B$="HILFE":GOSUB 12980:PRINT HOME$
+10720 B$="HILFE":GOSUB 12980
+10725 PRINT HOME$
 10730 PRINT "     Die STAMMSATZPFLEGE bietet folgende Funktionen an:"
 10740 PRINT
 10750 PRINT "      1 - STAMMSATZ ANLEGEN"
@@ -596,11 +599,13 @@
 10860 PRINT
 10870 PRINT "      5 - STAMMSATZ SUCHEN"
 10880 PRINT "          Suchen vom Stammsätzen nach bestimmten Gesichtspunkten."
-10890 GOSUB 13200:RETURN
+10890 GOSUB 13200
+10895 RETURN
 10900 '
 10910 ' *** Help-Text "Stammsatz anlegen" *************************************
 10920 '
-10930 B$="HILFE":GOSUB 12980:PRINT HOME$
+10930 B$="HILFE":GOSUB 12980
+10935 PRINT HOME$
 10940 PRINT "   Sie können jetzt Daten eines neuen Mitglieds eingeben,"
 10950 PRINT "   jedoch nicht die eines bestehenden Mitglieds ändern."
 10960 PRINT
@@ -615,21 +620,27 @@
 11050 PRINT
 11060 PRINT "   Weitere Funktionstasten :"
 11070 PRINT "   <F7>  Diesen Stammsatz abspeichern."
-11080 GOSUB 13200:B$="STAMMSATZ ANLEGEN":DATENAUSG=1:RETURN
+11080 GOSUB 13200
+11081 B$="STAMMSATZ ANLEGEN"
+11082 DATENAUSG=1
+11083 RETURN
 11090 '
 11100 ' *** Help-Text "Stammsatz ändern (I)" **********************************
 11110 '
-11120 B$="HILFE":GOSUB 12980:PRINT HOME$;
+11120 B$="HILFE":GOSUB 12980
+11121 PRINT HOME$
 11130 PRINT "      Sie können jetzt einen bestehenden Stammsatz ändern."
 11140 PRINT
 11150 PRINT "      Geben Sie die Mitgliedsnummer des betreffenen Stammsatzes"
 11160 PRINT "      ein. Bei Tippfehlern können Sie mit DELETE-Taste korri-"
 11170 PRINT "      gieren."
-11180 GOSUB 13200:RETURN   
+11180 GOSUB 13200   
+11181 RETURN
 11190 '
 11200 ' *** Help-Text "Stammsatz ändern (II)" *********************************
 11210 '
-11220 B$="HILFE":GOSUB 12980:PRINT HOME$;
+11220 B$="HILFE":GOSUB 12980
+11221 PRINT HOME$
 11230 PRINT "    Sie können jetzt einen bestehenden Stammsatz ändern."
 11240 PRINT
 11250 PRINT "    Während der Dateneingabe können Sie mit der DELETE-Taste"
@@ -643,11 +654,15 @@
 11330 PRINT "    Weitere Funktionstasten :"
 11340 PRINT
 11350 PRINT "    <F7>  Diesen Stammsatz speichern.
-11360 GOSUB 13200:B$="STAMMDATEN ÄNDERN":GOSUB 12980:GOSUB 13030:RETURN
+11360 GOSUB 13200
+11361 B$="STAMMDATEN ÄNDERN":GOSUB 12980
+11362 GOSUB 13030
+11363 RETURN
 11370 '
 11380 ' *** Help-Text "Stammsatz löschen" *************************************
 11390 '
-11400 B$="HILFE":GOSUB 12980:PRINT HOME$
+11400 B$="HILFE":GOSUB 12980
+11401 PRINT HOME$
 11410 PRINT "    Sie können jetzt den Status eines Mitglieds auf `ausgetreten'"
 11420 PRINT "    ändern. Damit wird der Stammsatz beim Ausdruck von Mitglieds-"
 11430 PRINT "    listen nicht berüchsichtigt."
@@ -656,12 +671,14 @@
 11460 PRINT "    Geben Sie die Mitgliedsnummer des betreffenden Stammsatzes "
 11470 PRINT "    ein. Bei Tippfehlern können Sie mit der DELETE-Taste"
 11480 PRINT "    korrigieren."
-11490 GOSUB 13200:RETURN
+11490 GOSUB 13200
+11491 RETURN
 11500 '
 11510 ' *** Help-Text "Stammsatz suchen" **************************************
 11520 '
 11530 IF DRUCKFLAG THEN 12120
-11540 B$="HILFE":GOSUB 12980:PRINT HOME$
+11540 B$="HILFE":GOSUB 12980
+11541 PRINT HOME$
 11550 PRINT "    Sie können jetzt Stammsätze suchen."
 11560 PRINT
 11570 PRINT "    1 - Suchen nach Nummern"
@@ -678,31 +695,38 @@
 11680 PRINT "        Ein oder mehrere ? zu Beginn des Feldes stellen Platz-"
 11690 PRINT "        halter für beliebige Zeichen dar."
 11700 PRINT
-11710 GOSUB 13200:B$="STAMMSATZ SUCHEN":RETURN
+11710 GOSUB 13200
+11711 B$="STAMMSATZ SUCHEN"
+11712 RETURN
 11720 ' 
 11730 ' *** Help-Text für "Stammsatz drucken" *********************************
 11740 '
-11750 B$="HILFE":GOSUB 12980:PRINT FNCUR$(5,1)
+11750 B$="HILFE":GOSUB 12980
+11751 PRINT FNCUR$(5,1)
 11760 PRINT "   Sie können jetzt einen kompletten Stammsatz, wie er auf"
 11770 PRINT "   dem Bildschirm steht, ausdrucken."
 11780 PRINT
 11790 PRINT "   Geben Sie die Mitgliedsnummer ein. Bei Tippfehlern können"
 11800 PRINT "   Sie mit der DELETE-Taste korrigieren."
-11810 B$="STAMMSATZ DRUCKEN":GOSUB 13200:RETURN
+11810 B$="STAMMSATZ DRUCKEN":GOSUB 13200
+11811 RETURN
 11820 '
 11830 ' *** Help-Text "Verwendungsnachweis (I)" *******************************
 11840 '
-11850 B$="HILFE":GOSUB 12980:PRINT FNCUR$(6,1)
+11850 B$="HILFE":GOSUB 12980
+11851 PRINT FNCUR$(6,1)
 11860 PRINT "    Sie können jetzt einen Verwendungsnachweis ändern."
 11870 PRINT
 11880 PRINT "    Geben Sie die Mitgliedsnummer des betreffenden "
 11890 PRINT "    Verwendungsnachweises ein. Bei Tippfehlern können"
 11900 PRINT "    Sie mit der DELETE-Taste korrigieren."
-11910 GOSUB 13200:RETURN
+11910 GOSUB 13200
+11911 RETURN
 11920 '
 11930 ' *** Help-Text "Verwendungsnachweis (II)" ******************************
 11940 '
-11950 B$="HILFE":GOSUB 12980:PRINT HOME$
+11950 B$="HILFE":GOSUB 12980
+11951 PRINT HOME$
 11960 PRINT "    Sie können jetzt einen bestehenden Verwendungsnachweis ändern."
 11970 PRINT
 11980 PRINT "    Während der Dateneingabe können Sie mit der DELETE-Taste"
@@ -715,11 +739,14 @@
 12050 PRINT "    <F6>  Vorblättern    (ohne die jetzige Seite zu speichern)"
 12060 PRINT "    <F7>  Die aktuelle Seite speichern"
 12070 PRINT "    <F9>  Die aktuelle Seite ausdrucken"
-12080 GOSUB 13200:B$="VERWENDUNGSNACHWEIS":RETURN
+12080 GOSUB 13200
+12081 B$="VERWENDUNGSNACHWEIS"
+12082 RETURN
 12090 '
 12100 ' *** Help-Text "Mitgliedsliste drucken" ********************************
 12110 '
-12120 B$="HILFE":GOSUB 12980:PRINT FNCUR$(4,1)
+12120 B$="HILFE":GOSUB 12980
+12121 PRINT FNCUR$(4,1)
 12130 PRINT "    Sie können jetzt eine Mitgliedsliste drucken lassen." 
 12140 PRINT
 12150 PRINT "    1 - Suchen & Drucken"
@@ -734,7 +761,9 @@
 12240 PRINT "        Der Stammsatz und der Verwendungsnachweis werden im"
 12250 PRINT "        Bildschirmformat mit einer Liste von Mitgliedsver-"
 12260 PRINT "        merken ausgedruckt."
-12270 GOSUB 13200:B$="MITGLIEDSLISTE AUSDRUCKEN":RETURN
+12270 GOSUB 13200
+12271 B$="MITGLIEDSLISTE AUSDRUCKEN"
+12272 RETURN
 12280 '
 12290 ' *** Fielden der Stammsatz Random X.S.-Datei ***************************
 12291 '
