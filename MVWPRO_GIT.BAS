@@ -1285,3 +1285,88 @@
 15635 LRPINT
 15640 LPRINT SPC$;"38***************************";LIN$
 15645 RETURN
+12580:MT$=SAVEMT$              'Basis Maske
+16680 PRINT HOME$
+16690 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+16700 DATENAUSG=1                                                          '???
+16710 RETURN
+16720 '
+16730 ' *** Hilfe-Text "Stammsatz ändern (I)"
+16740 '
+16750 MT$="HILFE":GOSUB 12580                                      'Basis Maske
+16760 PRINT HOME$
+16770 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+16780 RETURN
+16790 '
+16800 ' *** Hilfe-Text "Stammsatz ändern (II)"
+16810 '
+16820 SAVEMT$=MT$:MT$="HILFE":GOSUB 12580:MT$=SAVEMT$              'Basis Maske
+16830 PRINT HOME$
+16840 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+16850 GOSUB 12580                                                  'Basis Maske
+16860 GOSUB 12690                                    'F-Tastenleiste einblenden
+16870 RETURN
+16880 '
+16890 ' *** Hilfe-Text "Stammsatz löschen"
+16900 '
+16910 MT$="HILFE":GOSUB 12580                                      'Basis Maske
+16920 PRINT HOME$
+16930 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+16940 RETURN
+16950 '
+16960 ' *** Hilfe-Text "Stammsatz suchen"
+16970 '
+16980 IF DRUCKFLAG THEN 17270                                              '???
+16990 SAVEMT$=MT$:MT$="HILFE":GOSUB 12580:MT$=SAVEMT$              'Basis Maske
+17000 PRINT HOME$
+17010 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+17020 RETURN
+17030 ' 
+17040 ' *** Hilfe-Text für "Stammsatz drucken"
+17050 '
+17060 SAVEMT$=MT$:MT$="HILFE":GOSUB 12580:MT$=SAVEMT$              'Basis Maske
+17070 PRINT HOME$
+17080 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+17090 RETURN
+17100 '
+17110 ' *** Hilfe-Text "Verwendungsnachweis (I)"
+17120 '
+17130 MT$="HILFE":GOSUB 12580                                      'Basis Maske
+17140 PRINT HOME$
+17150 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+17160 RETURN
+17170 '
+17180 ' *** Hilfe-Text "Verwendungsnachweis (II)"
+17190 '
+17200 SAVEMT$=MT$:MT$="HILFE":GOSUB 12580:MT$=SAVEMT$              'Basis Maske
+17210 PRINT HOME$
+17220 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+17230 RETURN
+17240 '
+17250 ' *** Hilfe-Text "Mitgliedsliste drucken"
+17260 '
+17270 SAVEMT$=MT$:MT$="HILFE":GOSUB 12580:MT$=SAVEMT$              'Basis Maske
+17280 PRINT HOME$
+17290 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
+17300 RETURN
+17310 '
+17320 ' *** Programmfehler ******************************************* REVIEWED
+17330 '
+17340 LIND$=SPACE$(15)
+17350 GOSUB 12580                                                  'Basis Maske
+17360 PRINT HOME$
+17370 PRINT LIND$;"Ein Programmfehler ist aufgetreten."
+17380 PRINT   
+17390 PRINT LIND$;"- Notieren Sie folgende Fehlerinformation:"
+17400 PRINT LIND$;"    ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
+17410 PRINT LIND$;"    ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
+17420 PRINT LIND$;"- Drücken Sie am Rechner den Knopf hinten rechts."
+17430 PRINT LIND$;"19**************************"
+17450 '
+17460 ' *** Programmende ********************************************* REVIEWED
+17470 '
+17480 ON ERROR GOTO 0                                   'Disable error trapping
+17500 PRINT FNCUR$(22,1);HIGHOFF$;CURON$;
+17510 RESET
+17520 'LW RUN "DISKMENU.EXE"
+17530 END                                                           '1340 lines
