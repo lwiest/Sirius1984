@@ -119,16 +119,16 @@
 2000 LANG=FNLNG(FELD$(F)):BEREICH=FNTYP(FELD$(F))
 2010 PRINT FNCUR$(21,1);DELLINE$
 2020 GOSUB 10020                                                         'INPUT
-2030 IF AASC=13 THEN IF MUSS$="=" THEN IF LEN(ANT$)<1 THEN MSG$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2020 'Nachricht
+2030 IF AASC=13 THEN IF MUSS$="=" THEN IF LEN(ANT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2020 'Nachricht
 2040 IF AASC=13 THEN DAT$(F)=ANT$                                       'Return
-2050 IF AASC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 1990 ELSE MSG$="Letztes Feld":GOSUB 12950:GOTO 1990          'ELSE zu IF F< 'Nachricht
+2050 IF AASC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 1990 ELSE N$="Letztes Feld":GOSUB 12950:GOTO 1990          'ELSE zu IF F< 'Nachricht
 2060 IF HOCH<>0 THEN PRINT FNCUR$(Z,S);DAT$(F)+STRING$(LANG-LEN(DAT$(F)),"."):F=F+(HOCH=-1)*(-(F>1)+(F=1)*25)+(HOCH=1)*((F<27)-(F=27)*26):GOTO 1990
 2070 IF ZURUCK=1 THEN GOSUB 10930:GOTO 1940                             'F-Keys
 2080 IF ZURUCK=3 THEN GOSUB 12800:PRINT HIGHOFF$:GOSUB 13220:GOTO 1560
 2090 IF ZURUCK=2 THEN GOSUB 12800:PRINT HIGHOFF$:GOTO 1760
 2100 IF ZURUCK=4 THEN GOSUB 12800:PRINT HIGHOFF$:GOSUB 13160:GOTO 2020
 2110 IF ZURUCK=7 THEN GOSUB 12420:GOSUB 10340:F=1:MTGLZAHL=MTGLZAHL+1:MTGL$=STR$(MTGLZAHL):GOSUB 13220:GOSUB 12890:GOSUB 10420:GOTO 1980
-2120 MSG$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOSUB 10040:GOTO 2030 'Nachricht
+2120 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOSUB 10040:GOTO 2030 'Nachricht
 2130 ' 
 2140 ' *** Stammsatz ändern von 03************ ********************************
 2150 '
@@ -147,9 +147,9 @@
 2270 IF ZURUCK=3 THEN GOSUB 13220:GOTO 1560
 2280 IF ZURUCK=4 THEN GOSUB 13160
 2290 IF HOCH<>0 OR ZURUCK<>0 THEN GOTO 2230                             'Errors
-2300 IF LEN(ANT$)<1 THEN MSG$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2230 ELSE MITGLIED=VAL(ANT$) 'Nachricht
+2300 IF LEN(ANT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2230 ELSE MITGLIED=VAL(ANT$) 'Nachricht
 2310 IF MITGLIED=0 THEN MITGLIED=MTGLMAX+2
-2320 IF MITGLIED>MTGLMAX THEN MSG$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:PRINT HIGHOFF$;FNCUR$(8,39);"...";DELHIGH$:ANT$="":GOTO 2240 'Nachricht
+2320 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:PRINT HIGHOFF$;FNCUR$(8,39);"...";DELHIGH$:ANT$="":GOTO 2240 'Nachricht
 2330 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
 2340 FOR K=4 TO 8:PRINT FNCUR$(K,1);DELLINE$:NEXT:PRINT FNCUR$(21,1);DELLINE$
 2350 GOSUB 12340                                                   'Daten lesen
@@ -158,7 +158,7 @@
 2380 GOSUB 10420
 2390 PRINT FNCUR$(3,46);MTGLZAHL
 2400 KOM$="<F7>=Abspeichern":GOSUB 13030                        'F-Tastenleiste
-2420 S=FNCOL(FELD$(F))+14:Z=FNROW(FELD$(F)):MSG$="":GOSUB 12950      'Nachricht
+2420 S=FNCOL(FELD$(F))+14:Z=FNROW(FELD$(F)):N$="":GOSUB 12950      'Nachricht
 2430 LANG=FNLNG(FELD$(F)):BEREICH=FNTYP(FELD$(F))
 2440 GOSUB 10020                                                         'INPUT
 2450 IF ZURUCK=1 THEN GOSUB 11220:GOTO 2360                 'Hilfe       F-Keys
@@ -168,10 +168,10 @@
 2490 IF ZURUCK=7 THEN 2560                                     'Daten Speichern
 2500 IF HOCH=-1 THEN PRINT FNCUR$(Z,S);DAT$(F);STRING$(LANG-LEN(DAT$(F)),"."):IF F>1  THEN F=F-1:GOTO 2420  ELSE F=26:GOTO 2420 'Cursor hoch
 2510 IF HOCH=1  THEN PRINT FNCUR$(Z,S);DAT$(F);STRING$(LANG-LEN(DAT$(F)),"."):IF F<27 THEN F=F+1:GOTO 2420  ELSE F= 1:GOTO 2420 'Cursor runter
-2520 IF AASC=13 AND LEN(ANT$)<1 AND MUSS$="=" THEN MSG$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2440 'Nachricht
+2520 IF AASC=13 AND LEN(ANT$)<1 AND MUSS$="=" THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 2440 'Nachricht
 2530 IF AASC=13 THEN DAT$(F)=ANT$:PRINT HIGHON$;FNCUR$(Z,S);DAT$(F);STRING$(LANG-LEN(DAT$(F)),".")                    'Return
 2540 IF AASC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 2420 ELSE F=1:GOTO 2420
-2550 MSG$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:FOR KK=1 TO 25000:NEXT:GOTO 2420 'Nachricht
+2550 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:FOR KK=1 TO 25000:NEXT:GOTO 2420 'Nachricht
 2560 GOSUB 12430                                               'Daten speichern
 2570 Q$="Wollen Sie noch einen weiteren Datensatz ändern?":GOSUB 12520 'Ja/Nein-Frage
 2580 IF JA=1 THEN 2160
@@ -193,9 +193,9 @@
 2730 IF ZURUCK=1 THEN GOSUB 11400:GOTO 2630
 2740 IF ZURUCK=4 THEN GOSUB 13160:GOTO 2640
 2750 IF ZURUCK>4 THEN HOCH=1
-2760 IF HOCH<>0 THEN MSG$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 2680 'Nachricht
+2760 IF HOCH<>0 THEN N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 2680 'Nachricht
 2770 MTGLZAHL=VAL(ANT$):IF MTGLZAHL=0 THEN MTGLZAHL=MTGLMAX+1           'Errors
-2780 IF MTGLZAHL>MTGLMAX THEN MSG$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 2680 'Nachricht
+2780 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 2680 'Nachricht
 2790 GOSUB 12340                                                'Daten einlesen
 2800 GOSUB 12980                                                   'Basis Maske
 2801 PRINT FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(3,46);MTGLZAHL;FNCUR$(5,41);"Beruf:":GOSUB 10250:GOSUB 10420 'Feldmaske
@@ -241,7 +241,7 @@
 3170 IF ANT$<>"" OR AASC=13 THEN SUCH$(F)=ANT$:DAT$(F)=ANT$
 3180 IF HOCH=-1 THEN IF F>1 THEN F=F-1 ELSE F=26                   'Cursor hoch
 3190 IF HOCH=1 OR AASC=13 THEN IF F<27 THEN F=F+1 ELSE F=1       'Cursor runter
-3200 MSG$="":GOSUB 12950                                             'Nachricht
+3200 N$="":GOSUB 12950                                             'Nachricht
 3210 GOTO 3080
 3220 PRINT CLS$:PRINT:PRINT                                'Suchen nach Nummern
 3230 Z=7:S=1:IF DRUCKFLAG THEN DRUCK$="gedruckt" ELSE DRUCK$="gesucht "
@@ -260,7 +260,7 @@
 3340 NUMSUCH1=VAL(ANT$)
 3350 IF NUMSUCH1>MTGLMAX OR NUMSUCH1<1 THEN 3480
 3360 Z=9:S=1
-3370 MSG$="":GOSUB 12950                                             'Nachricht
+3370 N$="":GOSUB 12950                                             'Nachricht
 3380 PRINT HOME$:PRINT FNCUR$(Z,S);                       'Ende bei Nr...
 3390 PRINT HIGHOFF$;"Bis zu welcher Mitgliedsnummer soll ";DRUCK$;" werden  =>...":S=56
 3400 GOSUB 10030                                                         'INPUT
@@ -271,7 +271,7 @@
 3450 IF ANT$="" THEN S=1:GOTO 3380
 3460 NUMSUCH2=VAL(ANT$)
 3470 IF NUMSUCH2<=MTGLMAX AND NUMSUCH1<=NUMSUCH2 THEN 3500
-3480 MSG$="Unlogische Eingabe - Bitte neu eingeben":GOSUB 12950         'Errors 'Nachricht
+3480 N$="Unlogische Eingabe - Bitte neu eingeben":GOSUB 12950         'Errors 'Nachricht
 3490 Z=6:S=1:PRINT FNCUR$(9,1);DELLINE$;FNCUR$(Z,S);:Z=7:GOTO 3260
 3500 MTGLZAHL=NUMSUCH1                                               'Feldmaske
 3510 PRINT CURSOFF$
@@ -284,7 +284,7 @@
 3580 IF NUMSUCH1<>0 AND MTGLZAHL<=NUMSUCH2 THEN 3640
 3590 IF DRUCKFLAG THEN GOSUB 13220:GOTO 2880
 3600 PRINT HIGHON$;CURSOFF$;:MTGLZAHL=MTGLZAHL-1
-3610 MSG$="Daten nicht vorhanden. Mit <F2> neue Suchmöglichkeit.":GOSUB 12950 'Nachricht
+3610 N$="Daten nicht vorhanden. Mit <F2> neue Suchmöglichkeit.":GOSUB 12950 'Nachricht
 3620 PRINT HIGHOFF$;
 3630 GOTO 3790
 3640 GOSUB 12340                                                   'Daten lesen
@@ -301,17 +301,17 @@
 3750 GOSUB 10420                                                     'Feldmaske
 3760 MTGL$=STR$(MTGLZAHL) 
 3770 PRINT CURSOFF$;FNCUR$(3,46);MTGL$
-3780 IF DRUCKFLAG THEN GOSUB 14920:IF BRKFLAG THEN BRKFLAG=0:MSG$="":GOSUB 12950:GOTO 2880 ELSE MSG$="":GOSUB 12950:PRINT CURSOFF$:MTGLZAHL=MTGLZAHL+1:GOTO 3570 'Nachricht 'Nachricht
+3780 IF DRUCKFLAG THEN GOSUB 14920:IF BRKFLAG THEN BRKFLAG=0:N$="":GOSUB 12950:GOTO 2880 ELSE N$="":GOSUB 12950:PRINT CURSOFF$:MTGLZAHL=MTGLZAHL+1:GOTO 3570 'Nachricht 'Nachricht
 3790 ZURUCK=ASC(INPUT$(1))-240
-3800 MSG$="":GOSUB 12950                                             'Nachricht
+3800 N$="":GOSUB 12950                                             'Nachricht
 3810 IF ZURUCK=1 THEN GOSUB 11530:GOSUB 3920:PRINT FNCUR$(3,30);"Mitgliedsnummer":GOTO 3750
 3820 IF ZURUCK=2 THEN IF NUMSUCH1<>0 THEN 3220 ELSE 3030
 3830 IF ZURUCK=3 THEN GOSUB 13220:GOTO 1560
-3840 IF ZURUCK=7 THEN GOSUB 15170:GOSUB 13030:MSG$="":GOSUB 12950:GOTO 3750 'F-Tastenleiste 'Nachricht
+3840 IF ZURUCK=7 THEN GOSUB 15170:GOSUB 13030:N$="":GOSUB 12950:GOTO 3750 'F-Tastenleiste 'Nachricht
 3850 IF ZURUCK=4 THEN GOSUB 13160:GOTO 3750
 3860 IF ZURUCK=5 AND NUMSUCH1<>0 THEN IF MTGLZAHL>NUMSUCH1 THEN MTGLZAHL=MTGLZAHL-1:GOTO 3640
 3870 IF ZURUCK=6 THEN 3900
-3880 MSG$="Falsche Eingabe":GOSUB 12950                            'Nachricht
+3880 N$="Falsche Eingabe":GOSUB 12950                            'Nachricht
 3890 GOTO 3790
 3900 MTGLZAHL=MTGLZAHL+1:PRINT FNCUR$(21,1);DELLINE$;HOME$;
 3910 GOTO 3570
@@ -339,14 +339,14 @@
 4120 IF ZURUCK>4 THEN HOCH=1
 4130 IF HOCH<>0 THEN 4050
 4140 MTGLZAHL=VAL(ANT$):IF MTGLZAHL=0 THEN MTGLZAHL=MTGLMAX+1           'Errors
-4150 IF MTGLZAHL>MTGLMAX THEN MSG$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 4050 'Nachricht
+4150 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 4050 'Nachricht
 4160 GOSUB 12340                                                   'Daten lesen
 4170 GOSUB 12980                                                   'Basis Maske
 4171 PRINT FNCUR$(3,30);"Mitgliedsnummer";HIGHON$;FNCUR$(3,46);MTGLZAHL;HIGHOFF$;FNCUR$(5,41);"Beruf:":GOSUB 10250:GOSUB 10420
 4180 Q$="Wollen Sie diese Daten ausdrucken lassen?":GOSUB 12520  'Ja/Nein-Frage
 4181 IF JA=0 THEN 4010                                            'Ausdrucken ?
 4190 Q$="Ist der Drucker bereit zur Ausgabe?":GOSUB 12520        'Ja/Nein-Frage
-4191 IF JA=0 THEN MSG$="Bitte schalten Sie den Drucker ein.":GOSUB 12950:FOR DEL=0 TO 1000:NEXT:GOTO 4180     'Drucker bereit ? 'Nachricht
+4191 IF JA=0 THEN N$="Bitte schalten Sie den Drucker ein.":GOSUB 12950:FOR DEL=0 TO 1000:NEXT:GOTO 4180     'Drucker bereit ? 'Nachricht
 4200 GOSUB 15310:GOTO 4010                                             'Drucken
 4210 '
 4220 ' Verwendungsnachweis vorbereiten ****************************************
@@ -370,8 +370,8 @@
 4390 IF ZURUCK=4 THEN GOSUB 13160
 4400 IF ZURUCK>4 THEN 4350
 4410 IF HOCH<>0 THEN GOTO 4350
-4420 IF LEN(ANT$)=0 THEN MSG$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 4340 ELSE MITGLIED=VAL(ANT$):IF MITGLIED=0 THEN 4360 'Nachricht
-4430 IF MITGLIED>MTGLMAX THEN MSG$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:PRINT HOME$;HIGHOFF$:GOTO 4340 'Nachricht
+4420 IF LEN(ANT$)=0 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12950:GOTO 4340 ELSE MITGLIED=VAL(ANT$):IF MITGLIED=0 THEN 4360 'Nachricht
+4430 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:PRINT HOME$;HIGHOFF$:GOTO 4340 'Nachricht
 4440 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
 4449 '
 4450 ' *** Einlesen des Mitgliedsnamens ***************************************
@@ -408,15 +408,15 @@
 4740 BEREICH=2-(HP=7)
 4750 Z=VP+13*(VP>13)+6
 4760 S=6-39*(VP>13)-(HP<7)*(HP-1)*3+(HP>3)*(HP<7)*4-(HP=7)*26
-4770 MSG$="":GOSUB 12950                         'ERASE MESSAGE-LINE 'Nachricht
+4770 N$="":GOSUB 12950                         'ERASE MESSAGE-LINE 'Nachricht
 4780 GOSUB 10030                                                         'INPUT
 4790 IF HP<7 THEN IF AASC=13 THEN ANT$=STRING$(2-LEN(ANT$),"0")+ANT$   '+NULLEN
 4800 IF HOCH<>0 OR AASC=13 THEN PRINT FNCUR$(Z,S);ANT$
 4810 IF AASC=13 THEN IF HP<7 THEN MID$(DAT$(VP),-1+2*HP,2)=ANT$ ELSE DAT$(VP)=LEFT$(DAT$(VP),12)+ANT$+SPACE$(8-LEN(ANT$))
-4820 IF AASC=13 AND HP<7 THEN JA=1:TEST$=ANT$:ON HP GOSUB 12730,12750,12770,12730,12750,12770:IF JA=0 THEN MSG$="Ungültiges Datum":GOSUB 12950:GOTO 4780 'Datums-Check 'Nachricht
+4820 IF AASC=13 AND HP<7 THEN JA=1:TEST$=ANT$:ON HP GOSUB 12730,12750,12770,12730,12750,12770:IF JA=0 THEN N$="Ungültiges Datum":GOSUB 12950:GOTO 4780 'Datums-Check 'Nachricht
 4830 IF AASC=13 THEN IF HP=7 THEN HP=1:VP=VP-(VP<26)-(VP=26)*(-25):GOTO 4730 ELSE HP=HP+1:GOTO 4730     'NEUE SCREEN-POSITION
 4840 IF HOCH<>0 THEN TEST$=MID$(DAT$(VP),-(HP<7)*2*HP-1-(HP=7)*14,-(HP<7)*2-(HP=7)*8):PRINT FNCUR$(Z,S);TEST$
-4850 IF HOCH<>0 THEN IF HP<7 AND NOT TEST$="  " THEN JA=1:ON HP GOSUB 12730,12750,12770,12730,12750,12770:IF JA=0 THEN MSG$="Ungültiges Datum":GOSUB 12950:GOTO 4780 'Nachricht
+4850 IF HOCH<>0 THEN IF HP<7 AND NOT TEST$="  " THEN JA=1:ON HP GOSUB 12730,12750,12770,12730,12750,12770:IF JA=0 THEN N$="Ungültiges Datum":GOSUB 12950:GOTO 4780 'Nachricht
 4860 IF HOCH=1  THEN VP=VP-(VP<26)-(VP=26)*(-25):GOTO 4730
 4870 IF HOCH=-1 THEN VP=VP+(VP>1)-(VP=1)*25     :GOTO 4730
 4880 IF HOCH=2  THEN HP=HP-(HP<7)-(HP=7)*(-6)   :GOTO 4730
@@ -454,7 +454,7 @@
 5170 FOR K=0 TO 2
 5180   S=53+K*3
 5190   VNFLAG=-1:GOSUB 10030:VNFLAG=0    'in order to activate right-left shift
-5200 IF HOCH<>0 THEN JA=1:TEST$=MID$(DATUM$,K*3+1,2):ON K+1 GOSUB 12730,12750,12770:IF JA=0 THEN MSG$="Ungültiges Datum":GOSUB 12950:GOTO 5180 'Nachricht
+5200 IF HOCH<>0 THEN JA=1:TEST$=MID$(DATUM$,K*3+1,2):ON K+1 GOSUB 12730,12750,12770:IF JA=0 THEN N$="Ungültiges Datum":GOSUB 12950:GOTO 5180 'Nachricht
 5210   IF ZURUCK=1 THEN GOSUB 12120:GOTO 5140
 5220   IF ZURUCK=2 THEN 5010
 5230   IF ZURUCK=3 THEN GOSUB 13220:DRUCKFLAG=0:GOTO 1560
@@ -463,21 +463,21 @@
 5260   IF HOCH=+2 THEN IF K=2 THEN K=0:GOTO 5180 ELSE K=K+1:GOTO 5180
 5270   IF AASC<>13 THEN 5180
 5280   ANT$=STRING$(2-LEN(ANT$),"0")+ANT$:PRINT FNCUR$(Z,S);ANT$
-5290   TEST$=ANT$:JA=1:ON K+1 GOSUB 12730,12750,12770:IF JA=0 THEN MSG$="Ungültige Datumseingabe":GOSUB 12950:GOTO 5180 'Nachricht
+5290   TEST$=ANT$:JA=1:ON K+1 GOSUB 12730,12750,12770:IF JA=0 THEN N$="Ungültige Datumseingabe":GOSUB 12950:GOTO 5180 'Nachricht
 5300   MID$(DATUM$,K*3+1,2)=ANT$
 5310 NEXT
 5320 PRINT HIGHOFF$;CURSOFF$
 5330 Q$="Bitte den Drucker bereit machen. Fertig?":GOSUB 12520   'Ja/Nein-Frage
-5331 IF JA=0 THEN MSG$="":GOSUB 12950:GOTO 5140                      'Nachricht
+5331 IF JA=0 THEN N$="":GOSUB 12950:GOTO 5140                      'Nachricht
 5339 '
 5340 ' *** Ausdrucken Anfang **************************************************
 5341 '
-5350 IF NOT DRUCKFLAG THEN PRINT FNCUR$(7,1);DELLINE$CURSOFF$:MSG$="Mitgliedsliste wird gedruckt. Abbrechen mit Taste.":GOSUB 12950 'Nachricht
+5350 IF NOT DRUCKFLAG THEN PRINT FNCUR$(7,1);DELLINE$CURSOFF$:N$="Mitgliedsliste wird gedruckt. Abbrechen mit Taste.":GOSUB 12950 'Nachricht
 5360 IF DRUCKFLAG THEN 2890
 5370 PRINT FNCUR$(23,1);DELLINE$;:GOSUB 15100
 5380 FOR MTGLZAHL=1 TO MTGLMAX
 5390   GOSUB 12340:IF INSTR(DAT$(5),"ausgetreten")>0 THEN 5410
-5400   GOSUB 14920:IF BRKFLAG THEN BRKFLAG=0:MSG$="Drucken abgebrochen":GOSUB 12950:PRINT CURSOFF$:GOTO 5420 ELSE GOSUB 12950:PRINT CURSOFF$ 'Nachricht
+5400   GOSUB 14920:IF BRKFLAG THEN BRKFLAG=0:N$="Drucken abgebrochen":GOSUB 12950:PRINT CURSOFF$:GOTO 5420 ELSE GOSUB 12950:PRINT CURSOFF$ 'Nachricht
 5410 NEXT
 5420 GOSUB 13220:DRUCKFLAG=0:GOTO 5010
 5429 '
@@ -496,11 +496,11 @@
 5530 IF ZURUCK=1 THEN GOSUB 12120:PRINT CURSON$:MENUT$="DATENBLATT DRUCKEN":GOTO 5440
 5540 IF ZURUCK=4 THEN GOSUB 13160:GOTO 5440
 5550 IF ZURUCK>4 THEN HOCH=1 
-5560 IF HOCH<>0 THEN MSG$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 5480 'Nachricht
+5560 IF HOCH<>0 THEN N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 5480 'Nachricht
 5570 MTGLZAHL=VAL(ANT$):IF MTGLZAHL=0 THEN MTGLZAHL=MTGLMAX+1           'Errors
-5580 IF MTGLZAHL>MTGLMAX THEN MSG$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 5480 'Nachricht
+5580 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12950:GOTO 5480 'Nachricht
 5590 Q$="Ist der Drucker bereit zur Ausgabe?":GOSUB 12520        'Ja/Nein-Frage
-5591 IF JA=0 THEN MSG$="Bitte schalten Sie den Drucker ein.":GOSUB 12950:FOR DEL=0 TO 1000:NEXT:GOTO 5440     'Drucker bereit ? 'Nachricht
+5591 IF JA=0 THEN N$="Bitte schalten Sie den Drucker ein.":GOSUB 12950:FOR DEL=0 TO 1000:NEXT:GOTO 5440     'Drucker bereit ? 'Nachricht
 5600 GOSUB 12340                                            'S.S.Daten einlesen
 5610 NNAM$ = LEFT$(DD1$,25) : NNAM$ = LEFT$(NNAM$,INSTR(NNAM$," "))
 5620 NAMM$ = NNAM$ + MID$(DD1$,26,25)
@@ -532,7 +532,7 @@
 10130 IF VNFLAG AND AASC=202 THEN HOCH=-2:GOSUB 10180:RETURN
 10140 IF VNFLAG AND AASC=203 THEN HOCH=2 :GOSUB 10180:RETURN
 10150 IF AASC>240 AND AASC<250 THEN ZURUCK=AASC-240:RETURN              'F-Keys
-10160 MSG$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 10040 'Nachricht
+10160 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12950:GOTO 10040 'Nachricht
 10169 '
 10170 ' *** Cursor hoch/runter Repeat Blockierung *****************************
 10171 '
@@ -810,14 +810,14 @@
 12460 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
 12470 PRINT FNCUR$(21,1);
 12480 PUT #2,MTGLZAHL
-12490 MSG$="Die Daten sind auf Diskette abgespeichert.":GOSUB 12950 'Nachricht
+12490 N$="Die Daten sind auf Diskette abgespeichert.":GOSUB 12950 'Nachricht
 12500 RETURN
 12509 '
 12510 ' *** Ja/Nein - Frage ***************************************************
 12511 '
 12512 ' IN:  Q$ - Frage
 12513 ' OUT: JA 1 = true, 0 = false
-12520 MSG$=Q$+" (J=Ja/N=Nein)":GOSUB 12950                      'Nachricht
+12520 N$=Q$+" (J=Ja/N=Nein)":GOSUB 12950                      'Nachricht
 12530 PRINT HOME$;" ";
 12531 PRINT FNCUR$(23,1);DELLINE$;FNCUR$(24,1);DELLINE$;HOME$
 12540 PRINT CURSOFF$;
@@ -864,22 +864,28 @@
 12810 PRINT FNCUR$(21,1);DELLINE$
 12820 IF INSTR(SPACE$(25),DAT$(K))<>0 THEN K=K+1:IF K<28 THEN 12820 ELSE MTGLZAHL=MTGLZAHL-1:MTGL$=STR$(MTGLZAHL):GOTO 12850
 12830 Q$="Wollen Sie diese Daten abspeichern?":GOSUB 12520       'Ja/Nein-Frage
-12840 IF JA=1 THEN GOSUB 12420:MSG$="Daten werden abgespeichert.":GOSUB 12950 ELSE MSG$="Daten werden nicht abgespeichert.":GOSUB 12950:M=MTGLZAHL-1:MTGL$=STR$(M) 'Nachricht 'Nachricht
+12840 IF JA=1 THEN GOSUB 12420:N$="Daten werden abgespeichert.":GOSUB 12950 ELSE N$="Daten werden nicht abgespeichert.":GOSUB 12950:M=MTGLZAHL-1:MTGL$=STR$(M) 'Nachricht 'Nachricht
 12850 OPEN "O",#1,"B:MTGLZAHL.DAT":PRINT #1,MTGL$:CLOSE #1
 12860 MTGLMAX=MTGLZAHL:MTGL$=STR$(MTGLZAHL)
 12870 RETURN
 12879 '
 12880 ' *** Voreinstellungen im ERFASSEN  (Defaults) **************************
 12881 '
-12890 DAT$( 5)="10***" : DAT$(21)="3"
-12900 DAT$( 7)=""11**""  : DAT$(22)="Nein"
-12910 DAT$(11)="12**"  : DAT$(23)="Nein"
-12920 DAT$(12)="13******" : DAT$(25)="Nein"
-12930 RETURN
+12890 DAT$(5)="10***"
+12901 DAT$(7)=""11**""
+12910 DAT$(11)="12**"
+12911 DAT$(12)="13******"
+12820 DAT$(21)="3"
+12921 DAT$(22)="Nein"
+12930 DAT$(23)="Nein"
+12931 DAT$(25)="Nein"
+12932 RETURN
 12939 '
-12940 ' *** Nachricht anzeigen ************************************************
+12940 ' *** Nachricht anzeigen *********************************************OK*
 12941 '
-12950 PRINT HOME$;" ":PRINT FNCUR$(21,2);DELLINE$;INVON$;" ";MSG$";" ";INVOFF$
+12942 ' IN: N$ - Nachricht
+12950 PRINT HOME$;" "                                'TODO: is this neccessary?
+12950 PRINT FNCUR$(21,2);DELLINE$;INVON$;" ";N$";" ";INVOFF$
 12960 RETURN
 12969 '
 12970 ' *** Bildschirmmaske - Basis ****************************************OK*
@@ -912,7 +918,7 @@
 13110 A$=INPUT$(1)
 13120 IF A$>"0"  AND ASC(A$)<FK+1 THEN N=VAL(A$)    :RETURN
 13130 IF A$>="q" AND A$<"u"       THEN F=ASC(A$)-240:RETURN
-13140 MSG$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12950:GOTO 13110 'Nachricht
+13140 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12950:GOTO 13110 'Nachricht
 13149 '
 13150 ' *** Rückkehr ins Hauptmenü ? ******************************************
 13151 '
@@ -922,7 +928,7 @@
 13189 '
 13190 ' *** Rückkehr aus HELP-Text ? ******************************************
 13191 '
-13200 MSG$="Zurück ? (J=Ja)":GOSUB 12950:GOSUB 12530:IF JA=1 THEN RETURN ELSE 13200 'Nachricht 'TODO why not 12520?
+13200 N$="Zurück ? (J=Ja)":GOSUB 12950:GOSUB 12530:IF JA=1 THEN RETURN ELSE 13200 'Nachricht 'TODO why not 12520?
 13209 '
 13210 ' *** Leerlesen von DAT$() (Ersetzt ERASE-Befehl) ***********************
 13211 '
@@ -1010,7 +1016,7 @@
 13741 '
 13750 TMPOINT=VAL(POINT1$)
 13760 IF TMPOINT<>0 THEN 13770
-13761 MSG$="Erste Seite":GOSUB 12950                               'Nachricht
+13761 N$="Erste Seite":GOSUB 12950                               'Nachricht
 13762 FOR KK=1 TO 9999:NEXT                                              'Delay
 13763 RETURN
 13770 CPOINT=TMPOINT
@@ -1032,13 +1038,13 @@
 13844 GET #4,CPOINT:GOSUB 14500
 13846 HP=1:VP=1
 13847 RETURN
-13850 MSG$="Letzte Seite"
+13850 N$="Letzte Seite"
 13860 IF INSTR(SPACE$(20),DAT$(26))=0 THEN 13868 
 13862 GOSUB 12950                                                    'Nachricht
 13864 FOR KK=1 TO 20000:NEXT                                             'Delay
 13866 RETURN
 13868 Q$="Letzte Seite - Neue Seite anlegen?":GOSUB 12520        'Ja/Nein-Frage
-13869 MSG$="":GOSUB 12950                                            'Nachricht
+13869 N$="":GOSUB 12950                                            'Nachricht
 13870 IF JA=0 THEN 13880
 13872 GOSUB 14060
 13873 BLATT=BLATT+1
@@ -1210,7 +1216,7 @@
 15151 '
 15160 ' *** UPRO ADRESSAUFKLEBER DRUCKEN **************************************
 15161 '
-15170 MSG$="Ist der Drucker bereit und positioniert? (J/N)":GOSUB 12950 'Nachricht
+15170 N$="Ist der Drucker bereit und positioniert? (J/N)":GOSUB 12950 'Nachricht
 15180 GOSUB 12530                                           'TODO Why not 12520
 15190 IF JA=0 THEN RETURN
 15200 LPRINT "   ";DAT$(7)
