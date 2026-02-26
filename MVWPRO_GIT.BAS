@@ -1,4 +1,4 @@
-1000 ' RELEASE 01***** Neubearbeitung durch 04**********
+D1000 ' RELEASE 01***** Neubearbeitung durch 04**********
 1010 '
 1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:5
 1050 '
@@ -54,13 +54,14 @@
 1510 '
 1520 ' *** Mitgliederverwaltungsmenü (MVW-Menü) *******************************
 1530 '
-1540 GOSUB 12300:GOSUB 13550
-1541 OPEN "I",#1,"B:FELD.DAT"
-1542 INPUT #1,FELDMAX
-1543 FOR K=1 TO FELDMAX
-1544   INPUT #1,FELD$(K)
-1545 NEXT
-1546 CLOSE #1
+1540 GOSUB 12300                                         'Fielden der STS-Datei
+1541 GOSUB 13550                                        'Fielden der VN-Dateien
+1542 OPEN "I",#1,"B:FELD.DAT"
+1543 INPUT #1,FELDMAX
+1544 FOR I=1 TO FELDMAX
+1545   INPUT #1,FELD$(I)
+1546 NEXT
+1547 CLOSE #1
 1560 MENUT$="MITGLIEDERVERWALTUNG":MENUID$="G-01000":GOSUB 12980   'Basis Maske
 1561 KOM$="":GOSUB 13030                                        'F-Tastenleiste
 1570 VNFLAG=0
@@ -69,10 +70,10 @@
 1590 PRINT TAB(26);"2 - Verwendungsnachweis"
 1591 PRINT
 1600 PRINT TAB(26);"3 - Mitgliedsliste drucken"
-1610 FK=51:PRINT CURSOFF$:GOSUB 13100:PRINT CURSON$                  'Key check
+1610 FKEYMAX=3:GOSUB 13100                                         'Menüeingabe
 1620 DRUCKFLAG=0                                                     '(???????)
-1630 IF N THEN ON N GOTO 1700,4240,5010
-1640 ON F GOTO 1650,1660,1560,1660
+1630 IF NKEY THEN ON NKEY GOTO 1700,4240,5010
+1640 ON FKEY GOTO 1650,1660,1560,1660
 1650 GOSUB 10520:GOTO 1560                                           'Help TEXT
 1660 GOSUB 13160:GOTO 1560                                  'Zurück & Hauptmenü
 1669 '
@@ -96,9 +97,9 @@
 1800 PRINT TAB(29);"4 - Stammsatz drucken"
 1801 PRINT
 1810 PRINT TAB(29);"5 - Stammsatz suchen"
-1820 FK=53:PRINT CURSOFF$:GOSUB 13100:PRINT CURSON$                  'Key check
-1830 IF N THEN GOSUB 10200:ON N GOTO 1910,2160,2630,4010,2880
-1840 ON F GOTO 1850,1860,1860,1870
+1820 FKEYMAX=5:GOSUB 13100                                         'Menüeingabe
+1830 IF NKEY THEN GOSUB 10200:ON NKEY GOTO 1910,2160,2630,4010,2880
+1840 ON FKEY GOTO 1850,1860,1860,1870
 1850 GOSUB 10720:GOTO 1760                                           'Help TEXT
 1860 GOSUB 13220:GOTO 1560
 1870 GOSUB 13160:GOTO 1760                                           'Hauptmenü
@@ -218,12 +219,12 @@
 2940 IF DRUCKFLAG THEN A$=" Drucken " ELSE A$=" Suchen "
 2950 PRINT FNCUR$(6,30)"1 -";A$;"nach Nummern"
 2960 PRINT FNCUR$(8,30)"2 -";A$;"nach Maske  ":GOSUB 13220
-2970 FK=50:PRINT CURSOFF$:GOSUB 13100:PRINT CURSON$
-2980 IF F=1 THEN GOSUB 11530:GOTO 2900                                  'F-Keys
-2990 IF F=2 THEN IF DRUCKFLAG THEN GOSUB 13220:GOTO 5010 ELSE 1760
-3000 IF F=3 THEN GOSUB 13220: GOTO 1560
-3010 IF F=4 THEN GOSUB 13160:GOTO 2970
-3020 IF N=1 THEN 3220
+2970 FKEYMAX=2:GOSUB 13100                                             'Menüeingabe
+2980 IF FKEY=1 THEN GOSUB 11530:GOTO 2900                                  'F-Keys
+2990 IF FKEY=2 THEN IF DRUCKFLAG THEN GOSUB 13220:GOTO 5010 ELSE 1760
+3000 IF FKEY=3 THEN GOSUB 13220: GOTO 1560
+3010 IF FKEY=4 THEN GOSUB 13160:GOTO 2970
+3020 IF NKEY=1 THEN 3220
 3030 F=1                                                     'Suchen nach Maske
 3040 FOR I=1 TO 27:SUCH$(I)="":DAT$(I)="":NEXT
 3050 KOM$="<F5>=Suchen ":GOSUB 3920
@@ -440,13 +441,13 @@
 5040 PRINT FNCUR$( 6,30);"1 - Suchen & Ausdrucken
 5050 PRINT FNCUR$( 8,30);"2 - Komplett ausdrucken"
 5060 PRINT FNCUR$(10,30);"3 - Datenblatt drucken"
-5070 FK=51:PRINT CURSOFF$:GOSUB 13100:PRINT CURSON$
-5080 IF F=1 THEN GOSUB 12120:GOTO 5020
-5090 IF F=2 OR F=3 THEN GOSUB 13220:DRUCKFLAG=0:GOTO 1560
-5100 IF F=4 THEN GOSUB 13160:GOTO 5070
-5110 IF N=1 THEN 5140
-5120 IF N=2 THEN DRUCKFLAG=0:GOTO 5140
-5130 IF N=3 THEN 5440
+5070 FKEYMAX=3:GOSUB 13100                                             'Menüeingabe
+5080 IF FKEY=1 THEN GOSUB 12120:GOTO 5020
+5090 IF FKEY=2 OR FKEY=3 THEN GOSUB 13220:DRUCKFLAG=0:GOTO 1560
+5100 IF FKEY=4 THEN GOSUB 13160:GOTO 5070
+5110 IF NKEY=1 THEN 5140
+5120 IF NKEY=2 THEN DRUCKFLAG=0:GOTO 5140
+5130 IF NKEY=3 THEN 5440
 5140 GOSUB 12980                                                   'Basis Maske
 5141 GOSUB 13030                                                'F-Tastenleiste
 5150 PRINT FNCUR$(7,13);"Geben Sie bitte das heutige Datum ein :   .  .  ":Z=7:LANG=2:BEREICH=2
@@ -785,7 +786,7 @@
 12271 MENUT$="MITGLIEDSLISTE AUSDRUCKEN"
 12272 RETURN
 12280 '
-12290 ' *** Fielden der Stammsatz Random X.S.-Datei ***************************
+12290 ' *** Fielden der Stammsatz Random X.S.-Datei ************************OK*
 12291 '
 12300 OPEN "R",#2,"B:MV.DAT",462
 12310 FIELD #2,236 AS DD1$,225 AS DD2$
@@ -875,7 +876,7 @@
 12901 DAT$(7)=""11**""
 12910 DAT$(11)="12**"
 12911 DAT$(12)="13******"
-12820 DAT$(21)="3"
+12920 DAT$(21)="3"
 12921 DAT$(22)="Nein"
 12930 DAT$(23)="Nein"
 12931 DAT$(25)="Nein"
@@ -885,7 +886,7 @@
 12941 '
 12942 ' IN: N$ - Nachricht
 12950 PRINT HOME$;" "                                'TODO: is this neccessary?
-12950 PRINT FNCUR$(21,2);DELLINE$;INVON$;" ";N$";" ";INVOFF$
+12951 PRINT FNCUR$(21,2);DELLINE$;INVON$;" ";N$;" ";INVOFF$
 12960 RETURN
 12969 '
 12970 ' *** Bildschirmmaske - Basis ****************************************OK*
@@ -897,8 +898,8 @@
 12982 PRINT "00**********************",
 12990 PRINT FNCUR$(1,(80-LEN(MENUT$))/2);MENUT$;FNCUR$(1,72);MENUID$
 13000 PRINT STRICH$;
-13000 PRINT FNCUR$(21,1);
-13000 PRINT STRICH$
+13001 PRINT FNCUR$(21,1);
+13002 PRINT STRICH$
 13010 RETURN
 13019 '
 13020 ' *** Funktionstasten Leiste (KEY LABELS) *******************************
@@ -909,16 +910,24 @@
 13051 '
 13060 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
 13061 '
-13070 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts            "+" <F8>=Drucken";HOME$;" "
+13070 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
+13071 PRINT HOME$;" "
 13080 RETURN
 13081 '
 13090 ' *** Eingabe bei Menübildern *******************************************
 13091 '
-13100 N=0:F=0:FOR II=1 TO 30:A$=INKEY$:NEXT
+13092 ' IN: FKEYMAX - max valid function key
+13093 ' OUT: FKEY - number of pressed function key or 0
+13094 ' OUT: NKEY - number of pressed numeric key or 0
+13100 PRINT CURSOFF$
+13101 NKEY=0:FKEY=0
+13102 FOR I=1 TO 30:A$=INKEY$:NEXT                              'Key debouncing
 13110 A$=INPUT$(1)
-13120 IF A$>"0"  AND ASC(A$)<FK+1 THEN N=VAL(A$)    :RETURN
-13130 IF A$>="q" AND A$<"u"       THEN F=ASC(A$)-240:RETURN
-13140 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12950:GOTO 13110 'Nachricht
+13120 IF A$>"0" AND ASC(A$)<48+FKEYMAX+1 THEN NKEY=VAL(A$):PRINT CURSON$:RETURN
+13121 'IF A$>="q" AND A$<"u" THEN FKEY=ASC(A$)-240:PRINT CURSON$:RETURN
+13130 IF A$>CHR$(240) AND A$<CHR$(245) THEN FKEY=ASC(A$)-240:PRINT CURSON$:RETURN
+13140 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12950 'Nachricht
+13141 GOTO 13110
 13149 '
 13150 ' *** Rückkehr ins Hauptmenü ? ******************************************
 13151 '
@@ -983,7 +992,7 @@
 13570 OPEN "R",#4,"B:VN.POI",8
 13580 FIELD #4,4 AS POINT1$, 4 AS POINT2$
 13590 OPEN "R",#5,"B:VN.DAT",560
-13600 FIELD #5,240 AS DDD1$, 240 AS DDD2$, 80 AS DDD3$
+13600 FIELD #5,240 AS DDD1$,240 AS DDD2$,80 AS DDD3$
 13610 RETURN
 13611 '
 13620 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
