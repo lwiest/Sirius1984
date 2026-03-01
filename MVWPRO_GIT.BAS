@@ -27,18 +27,16 @@
 1260 ' 
 1270 ON ERROR GOTO 13240
 1280 '
-1281 ' Tasten deaktivieren
-1290 RESTORE 1330
-1291 KEY=0
-1292 WHILE KEY>=0
-1293 ' Map unshifted logical key code KEY to ASCII code 0
-1300   PRINT ESC$;"41";CHR$(KEY);CHR$(0);
-1301 ' Map shifted logical key code KEY to ASCII code 0
-1310   PRINT ESC$;"42";CHR$(KEY);CHR$(0);
-1320   READ KEY
-1321 WEND                                                    'Logical key codes
-1330 DATA 11,26,27,32,33,47,48,53    'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
-1370 DATA 53,67,68,73,94,97,-1       'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
+1290 ' Tasten deaktivieren
+1300 READ KEY
+1310 IF KEY<0 THEN 1410
+1320 ' Map unshifted logical key code KEY to ASCII code 0
+1330   PRINT ESC$;"41";CHR$(KEY);CHR$(0);
+1340 ' Map shifted logical key code KEY to ASCII code 0
+1350   PRINT ESC$;"42";CHR$(KEY);CHR$(0);
+1360 GOTO 1300
+1370 DATA 11,26,27,32,33,47,48,53    'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
+1380 DATA 53,67,68,73,94,97,-1       'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
 1400 ' Map unshifted logical cursor key codes to ASCII codes
 1410 PRINT ESC$;"41";CHR$(88);CHR$(200);    'Key 88 "Cursor up"    -> ASCII 200
 1420 PRINT ESC$;"41";CHR$(89);CHR$(201);    'Key 89 "Cursor down"  -> ASCII 201
@@ -62,16 +60,17 @@
 1540 GOSUB 12300                                         'Fielden der STS-Datei
 1541 GOSUB 13550                                        'Fielden der VN-Dateien
 1542 '
-1543 OPEN "I",#1,"B:FELD.DAT"                        'Einlesen Stammdatenfelder
-1544 INPUT #1,FELDMAX
-1545 FOR I=1 TO FELDMAX
-1546   INPUT #1,FELD$(I)
-1547 NEXT
-1548 CLOSE #1
-1549 '
+1543 ' Einlesen Stammdatenfelder
+1544 OPEN "I",#1,"B:FELD.DAT"                        
+1545 INPUT #1,FELDMAX
+1546 FOR I=1 TO FELDMAX
+1547   INPUT #1,FELD$(I)
+1548 NEXT
+1549 CLOSE #1
+1550 '
 1560 MT$="MITGLIEDERVERWALTUNG":MI$="G-01000":GOSUB 12980          'Basis Maske
 1561 FKEYS$="":GOSUB 13030                                      'F-Tastenleiste
-1570 VNFLAG=0
+1570 VNFLAG=0                                                              '???
 1580 PRINT TAB(26);"1 - Stammsatzpflege"                              'Menütext
 1581 PRINT
 1590 PRINT TAB(26);"2 - Verwendungsnachweis"
@@ -80,7 +79,7 @@
 1610 FKEYMAX=3:GOSUB 13100                                         'Menüeingabe
 1620 DRUCKFLAG=0                                                           '???
 1630 IF NKEY THEN ON NKEY GOTO 1700,4240,5010
-1640 ON FKEY GOTO 1650,1660,1560,1660
+1640 ON FKEY GOTO 1650,1660,1560,1660         'Hilfe, Zurück, Anfang, Hauptmenü
 1650 GOSUB 10520:GOTO 1560                                     'F1 -> Help Text
 1660 GOSUB 13160:GOTO 1560                       'F2 -> Zurück, F4 -> Hauptmenü
 1680 '
@@ -97,8 +96,8 @@
 1730 '
 1740 ' *** Stammsatzpflegemenü (STS-Menü) *************************************
 1750 '
-1760 MT$="STAMMSATZPFLEGE":MI$="G-01100":GOSUB 12980        'Basis Maske
-1761 FKEYS$="":GOSUB 13030                                        'F-Tastenleiste
+1760 MT$="STAMMSATZPFLEGE":MI$="G-01100":GOSUB 12980               'Basis Maske
+1761 FKEYS$="":GOSUB 13030                                      'F-Tastenleiste
 1770 PRINT TAB(29);"1 - Stammsatz anlegen"                            'Menütext
 1771 PRINT
 1780 PRINT TAB(29);"2 - Stammsatz ändern"
@@ -109,11 +108,11 @@
 1801 PRINT
 1810 PRINT TAB(29);"5 - Stammsatz suchen"
 1820 FKEYMAX=5:GOSUB 13100                                         'Menüeingabe
-1830 IF NKEY THEN GOSUB 10200:ON NKEY GOTO 1910,2160,2630,4010,2880
-1840 ON FKEY GOTO 1850,1860,1860,1870
-1850 GOSUB 10720:GOTO 1760                                           'Help-Text
-1860 GOSUB 13220:GOTO 1560
-1870 GOSUB 13160:GOTO 1760                                           'Hauptmenü
+1830 IF NKEY THEN GOSUB 10200:ON NKEY GOTO 1910,2160,2630,4010,2880 'Variablen Init: MTGLZAHL DAT$(), SUCH$()
+1840 ON FKEY GOTO 1850,1860,1860,1870         'Hilfe, Zurück, Anfang, Hauptmenü
+1850 GOSUB 10720:GOTO 1760                                     'F1 -> Help-Text
+1860 GOSUB 13220:GOTO 1560                  'F2,F3 -> Erase DAT$(), -> MVW-Menü  
+1870 GOSUB 13160:GOTO 1760                                     'F4 -> Hauptmenü
 1880 '
 1890 ' *** Stammsatz erfassen von 02************ ******************************
 1900 '
@@ -367,20 +366,21 @@
 4234 ' *                                                                      *
 4235 ' ************************************************************************
 4236 '
-4240 OPEN "I",#1,"B:MTGLZAHL.DAT":INPUT #1,MTGL$:MTGLMAX=VAL(MTGL$):CLOSE #1
-4250 DEL$=BSP$+" "+BSP$:VNFLAG=-1
+4240 GOSUB 10234                                              'Einlesen MTGLMAX
+4250 DEL$=BSP$+" "+BSP$
+4251 VNFLAG=-1
 4260 '
 4270 ' Verwendungsnachweis Menü ***********************************************
 4280 '
-4290 MT$="VERWENDUNGSNACHWEIS ":MI$="G-01200":GOSUB 12980   'Basis Maske
-4300 F=4:PRINT CURSON$:FKEYS$="":GOSUB 13030                      'F-Tastenleiste
+4290 MT$="VERWENDUNGSNACHWEIS":MI$="G-01200":GOSUB 12980           'Basis Maske
+4300 F=4:PRINT CURSON$:FKEYS$="":GOSUB 13030                    'F-Tastenleiste
 4301 PRINT HIGHOFF$
-4310 PRINT FNCUR$(4,23)"Bitte geben Sie die Mitgliedsnummer"
+4310 PRINT FNCUR$(4,20)"   Bitte geben Sie die Mitgliedsnummer"
 4320 PRINT FNCUR$(5,20)"des zu ändernden Verwendungsnachweises ein"
-4330 PRINT FNCUR$(6,22)"und beenden Sie die Eingabe mit RETURN"
-4340 PRINT FNCUR$(8,37)"=>..."
-4350 LANG=3:BEREICH=2:Z=8:S=39
-4360 GOSUB 10020
+4330 PRINT FNCUR$(6,20)"  und beenden Sie die Eingabe mit RETURN"
+4340 PRINT FNCUR$(8,20)"                 =>..."
+4350 Z=8:S=39:LANG=3:BEREICH=2
+4360 GOSUB 10020                                                         'INPUT
 4370 IF ZURUCK=1 THEN GOSUB 11850:GOTO 4290
 4380 IF ZURUCK=2 OR ZURUCK=3 THEN GOSUB 13220:VNFLAG=0:GOTO 1560
 4390 IF ZURUCK=4 THEN GOSUB 13160
