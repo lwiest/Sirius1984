@@ -28,6 +28,7 @@
 1270 ON ERROR GOTO 14550
 1280 '
 1290 ' Tasten deaktivieren
+1295 RESTORE 1370
 1300 READ KEY
 1310 IF KEY<0 THEN 1400
 1320 ' Map unshifted logical key code KEY to ASCII code 0
@@ -35,8 +36,8 @@
 1340 ' Map shifted logical key code KEY to ASCII code 0
 1350   PRINT ESC$;"42";CHR$(KEY);CHR$(0);
 1360 GOTO 1300
-1370 DATA 11,26,27,32,33,47,48,53    'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
-1380 DATA 53,67,68,73,94,97,-1       'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
+1370 DATA 11,26,27,32,33,47,48:      'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
+1380 DATA 53,67,68,73,94,97,-1:      'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
 1390 ' Map unshifted logical cursor key codes to ASCII codes
 1400 PRINT ESC$;"41";CHR$(88);CHR$(200);    'Key 88 "Cursor up"    -> ASCII 200
 1410 PRINT ESC$;"41";CHR$(89);CHR$(201);    'Key 89 "Cursor down"  -> ASCII 201
@@ -76,7 +77,7 @@
 1750 PRINT TAB(26);"2 - Verwendungsnachweis"
 1760 PRINT
 1770 PRINT TAB(26);"3 - Mitgliedsliste drucken"
-1780 FKEYMAX=3:GOSUB 14230                                         'Menüeingabe
+1780 NKEYMAX=3:GOSUB 14230                                         'Menüeingabe
 1790 DRUCKFLAG=0                                                           '???
 1800 IF NKEY THEN ON NKEY GOTO 1930,4680,5560
 1810 ON FKEY GOTO 1820,1830,1700,1830         'Hilfe, Zurück, Anfang, Hauptmenü
@@ -107,7 +108,7 @@
 2060 PRINT TAB(29);"4 - Stammsatz drucken"
 2070 PRINT
 2080 PRINT TAB(29);"5 - Stammsatz suchen"
-2090 FKEYMAX=5:GOSUB 14230                                         'Menüeingabe
+2090 NKEYMAX=5:GOSUB 14230                                         'Menüeingabe
 2100 IF NKEY THEN GOSUB 10310:ON NKEY GOTO 2180,2450,2920,4370,3210 'Variablen Init: Read MTGLZAHL DAT$(), clear SUCH$()
 2110 ON FKEY GOTO 2120,2130,2130,2140         'Hilfe, Zurück, Anfang, Hauptmenü
 2120 GOSUB 11020:GOTO 1980                                     'F1 -> Help-Text
@@ -229,7 +230,7 @@
 3280 IF DRUCKFLAG THEN A$=" Drucken " ELSE A$=" Suchen "
 3290 PRINT FNCUR$(6,30)"1 -";A$;"nach Nummern"
 3300 PRINT FNCUR$(8,30)"2 -";A$;"nach Maske  ":GOSUB 14480
-3310 FKEYMAX=2:GOSUB 14230                                         'Menüeingabe
+3310 NKEYMAX=2:GOSUB 14230                                         'Menüeingabe
 3320 IF FKEY=1 THEN GOSUB 11970:GOTO 3230                               'F-Keys
 3330 IF FKEY=2 THEN IF DRUCKFLAG THEN GOSUB 14480:GOTO 5560 ELSE 1980
 3340 IF FKEY=3 THEN GOSUB 14480: GOTO 1700
@@ -470,7 +471,7 @@
 5690 PRINT FNCUR$( 6,28);"1 - Suchen & Ausdrucken"
 5700 PRINT FNCUR$( 8,28);"2 - Komplett ausdrucken"
 5710 PRINT FNCUR$(10,28);"3 - Datenblatt drucken"
-5720 FKEYMAX=3:GOSUB 14230                                         'Menüeingabe
+5720 NKEYMAX=3:GOSUB 14230                                         'Menüeingabe
 5730 IF FKEY=1 THEN GOSUB 12670:GOTO 5640
 5740 IF FKEY=2 OR FKEY=3 THEN GOSUB 14480:DRUCKFLAG=0:GOTO 1700
 5750 IF FKEY=4 THEN GOSUB 14350:GOTO 5720
@@ -967,15 +968,14 @@
 14170 '
 14180 ' *** Eingabe bei Menübildern *******************************************
 14190 '
-14200 ' IN: FKEYMAX - max valid function key
+14200 ' IN:  NKEYMAX - max valid numeric key
 14210 ' OUT: FKEY - number of pressed function key or 0
 14220 ' OUT: NKEY - number of pressed numeric key or 0
 14230 PRINT CURSOFF$
 14240 NKEY=0:FKEY=0
 14250 FOR I=1 TO 30:A$=INKEY$:NEXT                              'Key debouncing
 14260 A$=INPUT$(1)
-14270 IF A$>"0" AND ASC(A$)<48+FKEYMAX+1 THEN NKEY=VAL(A$):PRINT CURSON$:RETURN
-14280 'IF A$>="q" AND A$<"u" THEN FKEY=ASC(A$)-240:PRINT CURSON$:RETURN
+14270 IF A$>"0" AND ASC(A$)<48+NKEYMAX+1 THEN NKEY=VAL(A$):PRINT CURSON$:RETURN
 14290 IF A$>CHR$(240) AND A$<CHR$(245) THEN FKEY=ASC(A$)-240:PRINT CURSON$:RETURN
 14300 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 13860 'Nachricht
 14310 GOTO 14260
