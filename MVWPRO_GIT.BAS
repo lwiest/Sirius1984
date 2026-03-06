@@ -58,8 +58,8 @@
 1560 ' *                                                                      *
 1570 ' ************************************************************************
 1580 '
-1590 GOSUB 12890                                         'Fielden der STS-Datei
-1600 GOSUB 14940                                        'Fielden der VN-Dateien
+1590 GOSUB 12890                                   'Fielden der Stammsatz-Datei
+1600 GOSUB 14940                       'Fielden der Verwendungsnachweis-Dateien
 1610 '
 1620 ' Einlesen Stammdatenfelder
 1630 OPEN "I",#1,"B:FELD.DAT"                        
@@ -81,8 +81,8 @@
 1790 DRUCKFLAG=0                                                           '???
 1800 IF NKEY THEN ON NKEY GOTO 1930,4680,5560
 1810 ON FKEY GOTO 1820,1830,1700,1830         'Hilfe, Zurück, Anfang, Hauptmenü
-1820 GOSUB 10800:GOTO 1700                                     'F1 -> Help Text
-1830 GOSUB 14350:GOTO 1700                       'F2 -> Zurück, F4 -> Hauptmenü
+1820 GOSUB 10800:GOTO 1700                                       'F1->Help Text
+1830 GOSUB 14350:GOTO 1700                           'F2->Zurück, F4->Hauptmenü
 1840 '
 1850 DEL$=BSP$+"."+BSP$                 'Zeichen links löschen 'TODO ever used?
 1860 '
@@ -95,7 +95,7 @@
 1930 GOSUB 10400                                              'Einlesen MTGLMAX
 1940 IF DRUCKFLAG THEN RETURN                                              '???
 1950 '
-1960 ' *** Stammsatzpflegemenü (STS-Menü) *************************************
+1960 ' *** Stammsatzpflege-Menü ***********************************************
 1970 '
 1980 MT$="STAMMSATZPFLEGE":MI$="G-01100":GOSUB 13940               'Basis Maske
 1990 FKEYS$="":GOSUB 14060                                      'F-Tastenleiste
@@ -109,11 +109,11 @@
 2070 PRINT
 2080 PRINT TAB(29);"5 - Stammsatz suchen"
 2090 NKEYMAX=5:GOSUB 14230                                         'Menüeingabe
-2100 IF NKEY THEN GOSUB 10310:ON NKEY GOTO 2180,2450,2920,4370,3210 'Variablen Init: Read MTGLZAHL DAT$(), clear SUCH$()
+2100 IF NKEY THEN GOSUB 10310:ON NKEY GOTO 2180,2450,2920,4370,3210 'Variablen Init: Read MTGLZAHL, clear DAT$(), SUCH$()
 2110 ON FKEY GOTO 2120,2130,2130,2140         'Hilfe, Zurück, Anfang, Hauptmenü
-2120 GOSUB 11020:GOTO 1980                                     'F1 -> Help-Text
-2130 GOSUB 14480:GOTO 1700                  'F2,F3 -> Erase DAT$(), -> MVW-Menü  
-2140 GOSUB 14350:GOTO 1980                                     'F4 -> Hauptmenü
+2120 GOSUB 11020:GOTO 1980                                       'F1->Help-Text
+2130 GOSUB 14480:GOTO 1700                      'F2,F3->Clear DAT$(),->MVW-Menü  
+2140 GOSUB 14350:GOTO 1980                                       'F4->Hauptmenü
 2150 '
 2160 ' *** Stammsatz erfassen von 02************ ******************************
 2170 '
@@ -140,7 +140,9 @@
 2380 IF ZURUCK=2 THEN GOSUB 13620:PRINT HIGHOFF$:GOTO 1980
 2390 IF ZURUCK=4 THEN GOSUB 13620:PRINT HIGHOFF$:GOSUB 14350:GOTO 2310
 2400 IF ZURUCK=7 THEN GOSUB 13050:GOSUB 10590:F=1:MTGLZAHL=MTGLZAHL+1:MTGL$=STR$(MTGLZAHL):GOSUB 14480:GOSUB 13730:GOSUB 10690:GOTO 2270
-2410 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 13860:GOSUB 10110:GOTO 2320 'Nachricht
+2410 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 13860          'Nachricht
+2411 GOSUB 10110                                       'INPUT (2 Zeilen später)
+2412 GOTO 2320                                                      'Auswertung 
 2420 ' 
 2430 ' *** Stammsatz ändern von 03************ ********************************
 2440 '
@@ -216,7 +218,7 @@
 3140 DAT$(5)="ausgetreten     ":PRINT FNCUR$(9,16);HIGHON$;DAT$(5);HIGHOFF$
 3150 GOSUB 13060                                             'Daten abspeichern
 3160 Q$="Soll noch jemand gelöscht werden?":GOSUB 13190          'Ja/Nein-Frage
-3170 IF JA=1 THEN 2920 ELSE GOTO 1980
+3170 IF JA=1 THEN 2920 ELSE 1980
 3180 '
 3190 ' *** Stammsatz suchen von 05*************** *****************************
 3200 '
@@ -461,7 +463,7 @@
 5590 ' GOSUB 1680                                               'TODO Sad hack!
 5600 DEL$=BSP$+"."+BSP$
 5610 GOSUB 10400                                              'Einlesen MTGLMAX
-5620 GOSUB 10310           'Variablen Init: Read MTGLZAHL DAT$(), clear SUCH$()
+5620 GOSUB 10310          'Variablen Init: Read MTGLZAHL, clear DAT$(), SUCH$()
 5630 '
 5640 PRINT CLS$;
 5650 PRINT HIGHOFF$;
@@ -575,7 +577,9 @@
 10240 '
 10250 ' *** Cursor hoch/runter Repeat Blockierung *****************************
 10260 '
-10270 A$=INKEY$:IF A$>CHR$(199) THEN 10270 ELSE RETURN
+10270 A$=INKEY$
+10271 IF A$>CHR$(199) THEN 10270                    'Blocks any cursor movement
+10272 RETURN
 10280 '
 10290 ' *** Disk I/O Variablen Initalisierung *********************************
 10300 '
@@ -594,35 +598,41 @@
 10430 CLOSE #1
 10440 RETURN 
 10450 '
-10460 ' *** Feldnamen Maske ***************************************************
+10460 ' *** Maske Feldnamen und Feldwerte-Platzhalter (Pünktchen) *************
 10470 '
-10480 PRINT HIGHOFF$CURSOFF$;
+10471 ' IN: FELDMAX
+10472 ' IN: MTGLZAHL
+10480 PRINT HIGHOFF$;
+10481 PRINT CURSOFF$;
 10490 FOR K=1 TO FELDMAX
 10500   S=FNCOL(FELD$(K))
 10510   Z=FNROW(FELD$(K))
-10520   PRINT FNCUR$(Z,S);MID$(FELD$(K),1,14);STRING$(FNLNG(FELD$(K)),46)
+10520   PRINT FNCUR$(Z,S);MID$(FELD$(K),1,14);STRING$(FNLNG(FELD$(K)),".")
 10530 NEXT
-10540 MTGL$=STR$(MTGLZAHL):PRINT CURSON$;
+10540 PRINT CURSON$;
+10541 MTGL$=STR$(MTGLZAHL)                                              'TODO ?
 10550 RETURN
 10560 '
-10570 ' *** Pünktchen der Felder **********************************************
+10570 ' *** Maske Feldwerte-Platzhalter (Pünktchen) ***************************
 10580 '
-10590 PRINT HOME$;" "
+10581 ' IN: FELDMAX
+10590 PRINT HOME$;" "                                         'TODO Not needed?
 10600 FOR K=1 TO FELDMAX
 10610   S=FNCOL(FELD$(K))+14
 10620   Z=FNROW(FELD$(K))
-10630   PRINT FNCUR$(Z,S);STRING$(FNLNG(FELD$(K)),46)
+10630   PRINT FNCUR$(Z,S);STRING$(FNLNG(FELD$(K)),".")
 10640 NEXT
 10650 RETURN
 10660 '
-10670 ' *** Felddaten ausgeben ************************************************
+10670 ' *** Maske Feldwerte ***************************************************
 10680 '
+10681 ' IN: FELDMAX
 10690 PRINT HIGHON$
 10700 FOR K=1 TO FELDMAX
-10710   LNG=FNLNG(FELD$(K))
-10720   E1=FNCOL(FELD$(K))+14
-10730   E2=FNROW(FELD$(K))
-10740   PRINT FNCUR$(E2,E1);DAT$(K)
+10710   LNG=FNLNG(FELD$(K))                                   'TODO Not needed?
+10720   S=FNCOL(FELD$(K))+14
+10730   Z=FNROW(FELD$(K))
+10740   PRINT FNCUR$(Z,S);DAT$(K)
 10750 NEXT
 10760 RETURN
 10770 '
@@ -873,7 +883,8 @@
 13220 PRINT CURSOFF$;
 13230 ANSWER$=INPUT$(1)
 13240 PRINT CURSON$;BSP$;
-13250 IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:GOSUB 14060:RETURN 'F-Tastenleiste
+13249 'IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:GOSUB 14060:RETURN 'F-Tastenleiste
+13250 IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:RETURN            'F-Tastenleiste
 13260 IF ANSWER$="N" OR ANSWER$="n" THEN JA=0:RETURN
 13270 GOTO 13220
 13280 '
@@ -989,7 +1000,7 @@
 14390 ' *** Rückkehr aus HELP-Text? ****************************************OK*
 14400 '
 14410 N$="Zurück? (J=Ja)":GOSUB 13860                                'Nachricht
-14420 GOSUB 13200                                          'TODO why not 12520?
+14420 GOSUB 13200                                          'TODO why not *****?
 14430 IF JA=0 THEN 14410
 14440 RETURN
 14450 '
