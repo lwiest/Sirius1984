@@ -99,7 +99,7 @@
 1970 '
 1980 MT$="STAMMSATZPFLEGE":MI$="G-01100":GOSUB 13940               'Basis Maske
 1990 FKEYS$="":GOSUB 14060                                      'F-Tastenleiste
-2000 PRINT TAB(29);"1 - Stammsatz anlegen"                            'Menütext
+2000 PRINT TAB(29);"1 - Stammsatz anlegen"            'TODO LINE 4    'Menütext
 2010 PRINT
 2020 PRINT TAB(29);"2 - Stammsatz ändern"
 2030 PRINT
@@ -652,8 +652,8 @@
 10910 PRINT
 10920 PRINT "        3 - MITGLIEDSLISTE DRUCKEN"
 10930 PRINT "            Ausdruck von Mitgliedslisten nach verschiedenen"
-10940 PRINT
-10950 PRINT "            Gesichtspunkten."
+10940 PRINT "            Gesichtspunkten."
+10950 PRINT
 10960 PRINT "    Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 10970 GOSUB 14410                                       'Rückkehr aus Help-Text
 10980 RETURN
@@ -945,7 +945,7 @@
 13830 ' *** Nachricht anzeigen *********************************************OK*
 13840 '
 13850 ' IN: N$ - Nachricht
-13860 PRINT HOME$;" "                                'TODO: is this neccessary?
+13860 PRINT HOME$;" "                                        'TODO: Not needed?
 13870 PRINT FNCUR$(21,2);DELLINE$;INVON$;" ";N$;" ";INVOFF$
 13880 RETURN
 13890 '
