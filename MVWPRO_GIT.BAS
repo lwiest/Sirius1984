@@ -72,11 +72,11 @@
 1700 MT$="MITGLIEDERVERWALTUNG":MI$="G-01000":GOSUB 13940          'Basis Maske
 1710 FKEYS$="":GOSUB 14060                                      'F-Tastenleiste
 1720 VNFLAG=0                                                              '???
-1730 PRINT TAB(26);"1 - Stammsatzpflege"                              'Menütext
-1740 PRINT
-1750 PRINT TAB(26);"2 - Verwendungsnachweis"
-1760 PRINT
-1770 PRINT TAB(26);"3 - Mitgliedsliste drucken"
+1730 PRINT FNCUR$(4,26);"1 - Stammsatzpflege"                         'Menütext
+1740 'TODO XOX Obsolete PRINT
+1750 PRINT FNCUR$(6,26);"2 - Verwendungsnachweis"
+1760 'TODO XOX Obsolete PRINT
+1770 PRINT FNCUR$(8,26);"3 - Mitgliedsliste drucken"
 1780 NKEYMAX=3:GOSUB 14230                                         'Menüeingabe
 1790 DRUCKFLAG=0                                                           '???
 1800 IF NKEY THEN ON NKEY GOTO 1930,4680,5560
@@ -99,15 +99,15 @@
 1970 '
 1980 MT$="STAMMSATZPFLEGE":MI$="G-01100":GOSUB 13940               'Basis Maske
 1990 FKEYS$="":GOSUB 14060                                      'F-Tastenleiste
-2000 PRINT TAB(29);"1 - Stammsatz anlegen"            'TODO LINE 4    'Menütext
-2010 PRINT
-2020 PRINT TAB(29);"2 - Stammsatz ändern"
-2030 PRINT
-2040 PRINT TAB(29);"3 - Stammsatz löschen"
-2050 PRINT
-2060 PRINT TAB(29);"4 - Stammsatz drucken"
-2070 PRINT
-2080 PRINT TAB(29);"5 - Stammsatz suchen"
+2000 PRINT FNCUR$(4,29);"1 - Stammsatz anlegen"            'TODO LINE 4    'Menütext
+2010 ' PRINT
+2020 PRINT FNCUR$(6,29);"2 - Stammsatz ändern"
+2030 ' PRINT
+2040 PRINT FNCUR$(8,29);"3 - Stammsatz löschen"
+2050 ' PRINT
+2060 PRINT FNCUR$(10,29);"4 - Stammsatz drucken"
+2070 ' PRINT
+2080 PRINT FNCUR$(12,29);"5 - Stammsatz suchen"
 2090 NKEYMAX=5:GOSUB 14230                                         'Menüeingabe
 2100 IF NKEY THEN GOSUB 10310:ON NKEY GOTO 2180,2450,2920,4370,3210 'Variablen Init: Read MTGLZAHL, clear DAT$(), SUCH$()
 2110 ON FKEY GOTO 2120,2130,2130,2140         'Hilfe, Zurück, Anfang, Hauptmenü
@@ -967,8 +967,8 @@
 14050 ' IN: FKEYS$ - Additional funtion key labels 
 14060 PRINT HIGHOFF$;
 14070 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
-14080 PRINT FKEYS$;
-14090 PRINT HOME$;" "
+14080 PRINT FKEYS$ 'TODO Obsolete;
+14090 'TODO LW Obsolete PRINT HOME$;" "
 14100 RETURN
 14110 '
 14120 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
