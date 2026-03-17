@@ -24,6 +24,7 @@
 1230 DEF FNLNG(F$)=VAL(MID$(F$,19,2))                         'Länge des Feldes
 1240 DEF FNTYP(F$)=VAL(RIGHT$(F$,1))                     'Gültigkeits-Test Flag
 1250 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
+1251 IN$=STRING$(10," ")                                 'Indent für Hilfe-Texte
 1260 ' 
 1270 ON ERROR GOTO 22550                          'Program Error Trap Nachricht
 1280 '
@@ -37,11 +38,7 @@
 1500 Q$="Bitte legen Sie sie ein. Fertig?":GOSUB 13190           'Ja/Nein-Frage
 1510 IF JA=0 THEN RUN "DISKMENU.EXE"
 1520 '
-1530 ' ************************************************************************
-1540 ' *                                                                      *
-1550 ' *                 Mitgliederverwaltungsmenü (MVW-Menü)                 *
-1560 ' *                                                                      *
-1570 ' ************************************************************************
+1550 ' ################# Mitgliederverwaltungsmenü (MVW-Menü) #################
 1580 '
 1590 GOSUB 12890                                   'Fielden der Stammsatz-Datei
 1600 GOSUB 14940                       'Fielden der Verwendungsnachweis-Dateien
@@ -69,11 +66,7 @@
 1840 '
 1850 DEL$=BSP$+"."+BSP$                 'Zeichen links löschen 'TODO ever used?
 1860 '
-1870 ' ************************************************************************
-1880 ' *                                                                      *
-1890 ' *                           Stammsatzpflege                            *
-1900 ' *                                                                      *
-1910 ' ************************************************************************
+1890 ' ########################### Stammsatzpflege ############################
 1920 '
 1930 GOSUB 10400                                              'Einlesen MTGLMAX
 1940 IF DRUCKFLAG THEN RETURN                                              '???
@@ -227,7 +220,7 @@
 3440 PRINT FNCUR$(Z,S)
 3450 ANT$="":GOSUB 10090                                                 'INPUT
 3460 IF ZURUCK=5 THEN MTGLZAHL=1:GOTO 3870                              'F-Keys
-3470 IF ZURUCK=1 THEN GOSUB 11970:GOSUB 4280:GOSUB 10690:GOTO 3400
+3470 IF ZURUCK=1 THEN GOSUB 20970:GOSUB 4280:GOSUB 10690:GOTO 3400
 3480 IF ZURUCK=4 THEN GOSUB 14350:GOTO 3420
 3490 IF ZURUCK=2 THEN 3210
 3500 IF ZURUCK=3 THEN GOSUB 14480: GOTO 1700
@@ -245,7 +238,7 @@
 3620 PRINT HOME$;:PRINT FNCUR$(Z,S);                    'Beginn bei Nr...
 3630 PRINT HIGHOFF$;"Ab welcher Mitgliedsnummer soll ";DRUCK$;" werden      =>...":S=56
 3640 GOSUB 10100                                                         'INPUT
-3650 IF ZURUCK=1 THEN GOSUB 11970:GOTO 3560                             'F-Keys
+3650 IF ZURUCK=1 THEN GOSUB 20970:GOTO 3560                             'F-Keys
 3660 IF ZURUCK=2 THEN 3210
 3670 IF ZURUCK=3 THEN GOSUB 14480: GOTO 1700
 3680 IF ZURUCK=4 THEN GOSUB 14350:S=1:GOTO 3620
@@ -257,7 +250,7 @@
 3740 PRINT HOME$:PRINT FNCUR$(Z,S);                       'Ende bei Nr...
 3750 PRINT HIGHOFF$;"Bis zu welcher Mitgliedsnummer soll ";DRUCK$;" werden  =>...":S=56
 3760 GOSUB 10100                                                         'INPUT
-3770 IF ZURUCK=1 THEN GOSUB 11970:GOTO 3560                             'F-Keys
+3770 IF ZURUCK=1 THEN GOSUB 20970:GOTO 3560                             'F-Keys
 3780 IF ZURUCK=2 THEN 3210
 3790 IF ZURUCK=3 THEN GOSUB 14480: GOTO 1700
 3800 IF ZURUCK=4 THEN GOSUB 14350:S=1:GOTO 3740
@@ -297,7 +290,7 @@
 4140 IF DRUCKFLAG THEN GOSUB 16960:IF BRKFLAG THEN BRKFLAG=0:N$="":GOSUB 13860:GOTO 3210 ELSE N$="":GOSUB 13860:PRINT CURSOFF$:MTGLZAHL=MTGLZAHL+1:GOTO 3930 'Nachricht 'Nachricht
 4150 ZURUCK=ASC(INPUT$(1))-240
 4160 N$="":GOSUB 13860                                               'Nachricht
-4170 IF ZURUCK=1 THEN GOSUB 11970:GOSUB 4280:PRINT FNCUR$(3,30);"Mitgliedsnummer":GOTO 4110
+4170 IF ZURUCK=1 THEN GOSUB 20970:GOSUB 4280:PRINT FNCUR$(3,30);"Mitgliedsnummer":GOTO 4110
 4180 IF ZURUCK=2 THEN IF NUMSUCH1<>0 THEN 3560 ELSE 3370
 4190 IF ZURUCK=3 THEN GOSUB 14480:GOTO 1700
 4200 IF ZURUCK=7 THEN GOSUB 17320:GOSUB 14060:N$="":GOSUB 13860:GOTO 4110 'F-Tastenleiste 'Nachricht
@@ -342,11 +335,7 @@
 4590 IF JA=0 THEN N$="Bitte schalten Sie den Drucker ein.":GOSUB 13860:FOR DEL=0 TO 1000:NEXT:GOTO 4560     'Drucker bereit ? 'Nachricht
 4600 GOSUB 17520:GOTO 4370                                             'Drucken
 4610 '
-4620 ' ************************************************************************
-4630 ' *                                                                      *
-4640 ' *                         Verwendungsnachweis                          *
-4650 ' *                                                                      *
-4660 ' ************************************************************************
+4640 ' ######################### Verwendungsnachweis ##########################
 4670 '
 4680 GOSUB 10400                                              'Einlesen MTGLMAX
 4690 DEL$=BSP$+" "+BSP$                                        'TODO ever used?
@@ -429,11 +418,7 @@
 5470 IF ZURUCK=7 THEN GOSUB 16110:GOTO 5290             'ABSPEICHERN DANN INPUT
 5480 IF ZURUCK=9 THEN GOSUB 16680:GOSUB 15660:GOTO 5280
 5490 '
-5500 ' ************************************************************************
-5510 ' *                                                                      *
-5520 ' *             Mitgliedsliste drucken von 05***************             *
-5530 ' *                                                                      *
-5540 ' ************************************************************************
+5520 ' ############# Mitgliedsliste drucken von 05*************** #############
 5550 '
 5560 DRUCKFLAG=-1
 5570 MTGL$=""
@@ -448,9 +433,9 @@
 5660 PRINT CURSOFF$;
 5670 MT$="MITGLIEDSLISTE DRUCKEN":MI$="G-01300":GOSUB 13940        'Basis Maske
 5680 FKEYS$="":GOSUB 14060                                      'F-Tastenleiste
-5690 PRINT FNCUR$( 6,28);"1 - Suchen & Ausdrucken"
-5700 PRINT FNCUR$( 8,28);"2 - Komplett ausdrucken"
-5710 PRINT FNCUR$(10,28);"3 - Datenblatt drucken"
+5690 PRINT FNCUR$(4,28);"1 - Suchen & Ausdrucken"
+5700 PRINT FNCUR$(6,28);"2 - Komplett ausdrucken"
+5710 PRINT FNCUR$(8,28);"3 - Datenblatt drucken"
 5720 NKEYMAX=3:GOSUB 14230                                         'Menüeingabe
 5730 IF FKEY=1 THEN GOSUB 21670:GOTO 5640
 5740 IF FKEY=2 OR FKEY=3 THEN GOSUB 14480:DRUCKFLAG=0:GOTO 1700
@@ -469,7 +454,7 @@
 5870   S=53+K*3
 5880   VNFLAG=-1:GOSUB 10100:VNFLAG=0    'in order to activate right-left shift
 5890   IF HOCH<>0 THEN JA=1:TEST$=MID$(DATUM$,K*3+1,2):ON K+1 GOSUB 13530,13550,13570:IF JA=0 THEN N$="Ungültiges Datum":GOSUB 13860:GOTO 5870 'Nachricht
-5900   IF ZURUCK=1 THEN GOSUB 12670:GOTO 5820
+5900   IF ZURUCK=1 THEN GOSUB 21670:GOTO 5820
 5910   IF ZURUCK=2 THEN 5560
 5920   IF ZURUCK=3 THEN GOSUB 14480:DRUCKFLAG=0:GOTO 1700
 5930   IF ZURUCK=4 THEN GOSUB 14350:GOTO 5870
@@ -512,7 +497,7 @@
 6300 PRINT HIGHON$:GOSUB 10100:PRINT HIGHOFF$                            'INPUT
 6310 IF ZURUCK=2 THEN 5560                                              'F-Keys
 6320 IF ZURUCK=3 THEN GOSUB 14480: GOTO 1700
-6330 IF ZURUCK=1 THEN GOSUB 12670:PRINT CURSON$:MT$="DATENBLATT DRUCKEN":GOTO 6230
+6330 IF ZURUCK=1 THEN GOSUB 21670:PRINT CURSON$:MT$="DATENBLATT DRUCKEN":GOTO 6230
 6340 IF ZURUCK=4 THEN GOSUB 14350:GOTO 6230
 6350 IF ZURUCK>4 THEN HOCH=1 
 6360 IF HOCH<>0 THEN N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 13860:GOTO 6280 'Nachricht
@@ -529,11 +514,7 @@
 6470 GOSUB 17780                                             'Mitgliedsvermerke
 6480 GOTO 6230
 10000 '
-10010 ' ***********************************************************************
-10020 ' *                                                                     *
-10030 ' *        Unterprogramme von 06*****, 07****, 08**** und 09****        *
-10040 ' *                                                                     *
-10041 ' ***********************************************************************
+10030 ' ######## Unterprogramme von 06*****, 07****, 08**** und 09**** ########
 10042 '
 10043 ' *** Tasten deaktivieren, ASCII Codes für Cursortasten vergeben ********
 10044 '
@@ -677,23 +658,26 @@
 13290 ' *** Testbereich 1 (Alpha) *********************************************
 13300 '
 13310 DRIN=0
-13320 IF AASC>57 THEN IF AASC<127        THEN DRIN=1:RETURN
-13330 IF AASC>31 THEN IF AASC<48         THEN DRIN=1
+13320 IF AASC>57 THEN IF AASC<127 THEN DRIN=1:RETURN
+13330 IF AASC>31 THEN IF AASC<48 THEN DRIN=1
 13340 RETURN
 13350 '
 13360 ' *** Testbereich 2 (Numerisch) *****************************************
 13370 '
-13380 DRIN=0:IF AASC>47 AND AASC<58      THEN DRIN=1
+13380 DRIN=0
+13381 IF AASC>47 AND AASC<58 THEN DRIN=1
 13390 RETURN
 13400 '
 13410 ' *** Testbereich 3 (Alphanumerisch) ************************************
 13420 '
-13430 DRIN=0:IF AASC>31 THEN IF AASC<127 THEN DRIN=1
+13430 DRIN=0
+13431 IF AASC>31 THEN IF AASC<127 THEN DRIN=1
 13440 RETURN
 13450 '
 13460 ' *** Testbereich 4 (Numerisch + "/" und ".") ***************************
 13470 '
-13480 DRIN=0:IF AASC>45 THEN IF AASC<58  THEN DRIN=1
+13480 DRIN=0
+13481 IF AASC>45 THEN IF AASC<58 THEN DRIN=1
 13490 RETURN
 13500 '
 13510 ' *** DATUMS-TEST (bei VN und M-Liste drucken) **************************
@@ -1121,31 +1105,27 @@
 18050 LPRINT TAB(9);"38***************************";LIN$
 18060 RETURN
 19000 '
-19010 ' ***********************************************************************
-19020 ' *                                                                     *
-19030 ' *                             Hilfe-Texte                             *
-19040 ' *                                                                     *
-19041 ' ***********************************************************************
+19030 ' ############################# Hilfe-Texte #############################
 19042 '
 19780 ' *** Hilfe-Text "Mitgliederverwaltung" ********************************* 
 19790 '
 19800 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 19810 PRINT HOME$
-19820 PRINT "       Die MITGLIEDERVERWALTUNG bietet folgende Funktionen an :"
+19820 PRINT IN$;"Die MITGLIEDERVERWALTUNG bietet folgende Funktionen an :"
 19830 PRINT 
-19840 PRINT "        1 - STAMMSATZPFLEGE"
-19850 PRINT "            Bearbeiten von Mitgliedsdaten gemäß dem Personal-"
-19860 PRINT "            stammblatt." 
+19840 PRINT IN$;"1 - STAMMSATZPFLEGE"
+19850 PRINT IN$;"    Bearbeiten von Mitgliedsdaten gemäß dem Personalstamm-"
+19860 PRINT IN$;"    blatt." 
 19870 PRINT
-19880 PRINT "        2 - VERWENDUNGSNACHWEIS"
-19890 PRINT "            Bearbeiten von Mitgliedsdaten, die Ämter umd Amts-"
-19900 PRINT "            perioden eines Mitglieds enthalten."
+19880 PRINT IN$;"2 - VERWENDUNGSNACHWEIS"
+19890 PRINT IN$;"    Bearbeiten von Mitgliedsdaten, die Ämter umd Amtsperioden"
+19900 PRINT IN$;"    eines Mitglieds enthalten."
 19910 PRINT
-19920 PRINT "        3 - MITGLIEDSLISTE DRUCKEN"
-19930 PRINT "            Ausdruck von Mitgliedslisten nach verschiedenen"
-19940 PRINT "            Gesichtspunkten."
+19920 PRINT IN$;"3 - MITGLIEDSLISTE DRUCKEN"
+19930 PRINT IN$;"    Ausdruck von Mitgliedslisten nach verschiedenen Gesichts-"
+19940 PRINT IN$;"    punkten."
 19950 PRINT
-19960 PRINT "    Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
+19960 PRINT IN$;"Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 19970 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 19980 RETURN
 19990 '
@@ -1153,22 +1133,24 @@
 20010 '
 20020 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20030 PRINT HOME$
-20040 PRINT "     Die STAMMSATZPFLEGE bietet folgende Funktionen an:"
+20040 PRINT IN$;"Die STAMMSATZPFLEGE bietet folgende Funktionen an:"
 20050 PRINT
-20060 PRINT "      1 - STAMMSATZ ANLEGEN"
-20070 PRINT "          Erfassen der Daten eines neuen Mitglieds."
+20060 PRINT IN$;"1 - STAMMSATZ ANLEGEN"
+20070 PRINT IN$;"    Erfassen der Daten eines neuen Mitglieds."
 20080 PRINT
-20090 PRINT "      2 - STAMMSATZ ÄNDERN"
-20100 PRINT "          Verändern eines bereits bestehenden Stammsatzes."
+20090 PRINT IN$;"2 - STAMMSATZ ÄNDERN"
+20100 PRINT IN$;"    Verändern eines bereits bestehenden Stammsatzes."
 20110 PRINT
-20120 PRINT "      3 - STAMMSATZ LÖSCHEN"
-20130 PRINT "          Verändern des Mitgliedsstatus auf `ausgetreten`."
+20120 PRINT IN$;"3 - STAMMSATZ LÖSCHEN"
+20130 PRINT IN$;"    Verändern des Mitgliedsstatus auf `ausgetreten`."
 20140 PRINT
-20150 PRINT "      4 - STAMMSATZ DRUCKEN"
-20160 PRINT "          Ausdrucken eines kompletten Stammsatzes."
+20150 PRINT IN$;"4 - STAMMSATZ DRUCKEN"
+20160 PRINT IN$;"    Ausdrucken eines kompletten Stammsatzes."
 20170 PRINT
-20180 PRINT "      5 - STAMMSATZ SUCHEN"
-20190 PRINT "          Suchen vom Stammsätzen nach bestimmten Gesichtspunkten."
+20180 PRINT IN$;"5 - STAMMSATZ SUCHEN"
+20190 PRINT IN$;"    Suchen vom Stammsätzen nach bestimmten Gesichtspunkten."
+20191 PRINT
+20192 PRINT IN$;"Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 20200 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 20210 RETURN
 20220 '
@@ -1176,20 +1158,20 @@
 20240 '
 20250 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20260 PRINT HOME$
-20270 PRINT "   Sie können jetzt Daten eines neuen Mitglieds eingeben,"
-20280 PRINT "   jedoch nicht die eines bestehenden Mitglieds ändern."
+20270 PRINT IN$;"Sie können jetzt Daten eines neuen Mitglieds eingeben, jedoch"
+20280 PRINT IN$;"nicht die eines bestehenden Mitglieds ändern."
 20290 PRINT
-20300 PRINT "   Die Mitgliedsnummer wird laufend vergeben."
+20300 PRINT IN$;"Die Mitgliedsnummer wird laufend vergeben."
 20310 PRINT
-20320 PRINT "   Während der Dateneingebe können Sie mit der DELETE-Taste "
-20330 PRINT "   korrigieren. Ist ein Feld ausgefüllt worden, muß RETURN"
-20340 PRINT "   gedrückt werden, da sonst die Eingabe nicht gespeichert"
-20350 PRINT "   wird. Mit den Cursortasten kann das Feld gewechselt werden."
+20320 PRINT IN$;"Während der Dateneingebe können Sie mit der DELETE-Taste"
+20330 PRINT IN$;"korrigieren. Ist ein Feld ausgefüllt worden, muß RETURN"
+20340 PRINT IN$;"gedrückt werden, da sonst die Eingabe nicht gespeichert wird."
+20350 PRINT IN$;"Mit den Cursortasten kann das Feld gewechselt werden."
 20360 PRINT
-20370 PRINT "   `=>`-Felder sollten ausgefüllt werden."
+20370 PRINT IN$;"`=>`-Felder müssen ausgefüllt werden."
 20380 PRINT
-20390 PRINT "   Weitere Funktionstasten :"
-20400 PRINT "   <F7>  Diesen Stammsatz abspeichern."
+20390 PRINT IN$;"Weitere Funktionstasten:"
+20400 PRINT IN$;"<F7>  Diesen Stammsatz speichern."
 20410 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 20420 MT$="STAMMSATZ ANLEGEN"
 20430 DATENAUSG=1                                                          '???
@@ -1199,11 +1181,10 @@
 20470 '
 20480 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20490 PRINT HOME$
-20500 PRINT "      Sie können jetzt einen bestehenden Stammsatz ändern."
+20500 PRINT IN$;"Sie können jetzt einen bestehenden Stammsatz ändern."
 20510 PRINT
-20520 PRINT "      Geben Sie die Mitgliedsnummer des betreffenen Stammsatzes"
-20530 PRINT "      ein. Bei Tippfehlern können Sie mit DELETE-Taste korri-"
-20540 PRINT "      gieren."
+20520 PRINT IN$;"Geben Sie die Mitgliedsnummer des Stammsatzes ein."
+20530 PRINT IN$;"Bei Tippfehlern können Sie mit der DELETE-Taste korrigieren."
 20550 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 20560 RETURN
 20570 '
@@ -1211,19 +1192,17 @@
 20590 '
 20600 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20610 PRINT HOME$
-20620 PRINT "    Sie können jetzt einen bestehenden Stammsatz ändern."
+20620 PRINT IN$;"Sie können jetzt einen bestehenden Stammsatz ändern."
 20630 PRINT
-20640 PRINT "    Während der Dateneingabe können Sie mit der DELETE-Taste"
-20650 PRINT "    korrigieren. Ist ein Feld ausgefüllt, muß RETURN gedrückt"
-20660 PRINT "    werden, da sonst die Änderung nicht gespeichert wird."
-20670 PRINT "      Mit den Cursortasten kann das Feld zum nächsten oberen,"
-20680 PRINT "    bzw. unteren Feld gewechselt werden."
+20640 PRINT IN$;"Während der Dateneingabe können Sie mit der DELETE-Taste"
+20650 PRINT IN$;"korrigieren. Ist ein Feld geändert worden, muß RETURN"
+20660 PRINT IN$;"gedrückt werden, da sonst die Änderung nicht gespeichert wird."
+20670 PRINT IN$;"Mit den Cursortasten kann das Feld gewechselt werden."
 20690 PRINT
-20700 PRINT "    `=>`-Felder sollten ausgefüllt werden."
+20700 PRINT IN$;"`=>`-Felder müssen ausgefüllt werden."
 20710 PRINT
-20720 PRINT "    Weitere Funktionstasten :"
-20730 PRINT
-20740 PRINT "    <F7>  Diesen Stammsatz speichern.
+20720 PRINT IN$;"Weitere Funktionstasten:"
+20740 PRINT IN$;"<F7>  Diesen Stammsatz speichern.
 20750 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 20760 MT$="STAMMDATEN ÄNDERN":GOSUB 13940                          'Basis Maske
 20770 GOSUB 14060                                               'F-Tastenleiste
@@ -1233,37 +1212,38 @@
 20810 '
 20820 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20830 PRINT HOME$
-20840 PRINT "    Sie können jetzt den Status eines Mitglieds auf `ausgetreten'"
-20850 PRINT "    ändern. Damit wird der Stammsatz beim Ausdruck von Mitglieds-"
-20860 PRINT "    listen nicht berüchsichtigt."
-20870 PRINT "    Auf keinen Fall werden die Daten WIRKLICH gelöscht."
+20840 PRINT IN$;"Sie können jetzt den Status eines Mitglieds auf `ausgetreten`"
+20850 PRINT IN$;"ändern. Damit wird der Stammsatz beim Ausdruck von Mitglieds-"
+20860 PRINT IN$;"listen nicht berüchsichtigt."
+20870 PRINT IN$;"Auf keinen Fall werden die Daten WIRKLICH gelöscht."
 20880 PRINT
-20890 PRINT "    Geben Sie die Mitgliedsnummer des betreffenden Stammsatzes "
-20900 PRINT "    ein. Bei Tippfehlern können Sie mit der DELETE-Taste"
-20910 PRINT "    korrigieren."
+20890 PRINT IN$;"Geben Sie die Mitgliedsnummer des Stammsatzes ein."
+20891 PRINT IN$;"Bei Tippfehlern können Sie mit der DELETE-Taste korrigieren."
 20920 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 20930 RETURN
 20940 '
 20950 ' *** Hilfe-Text "Stammsatz suchen" *************************************
 20960 '
-20970 IF DRUCKFLAG THEN 12670                                              '???
+20970 IF DRUCKFLAG THEN 21670                                              '???
 20980 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 20990 PRINT HOME$
-21000 PRINT "    Sie können jetzt Stammsätze suchen."
+21000 PRINT IN$;"Sie können jetzt Stammsätze suchen."
 21010 PRINT
-21020 PRINT "    1 - Suchen nach Nummern"
-21030 PRINT "        Geben Sie ein Intervall von Mitgliedsnummern ein."
-21040 PRINT "        Es werden alle Stammsätze ausgegeben, deren Nummern"
-21050 PRINT "        im Intervall liegt."
+21020 PRINT IN$;"1 - Suchen nach Nummern"
+21030 PRINT IN$;"    Geben Sie ein Intervall von Mitgliedsnummern ein."
+21040 PRINT IN$;"    Es werden alle Stammsätze ausgegeben, deren Nummern im"
+21050 PRINT IN$;"    Intervall liegen."
 21060 PRINT
-21070 PRINT "    2 - Suchen nach Maske"
-21080 PRINT "        Sie füllen ein Formular aus. Diejenigen Stammsätze, die"
-21090 PRINT "        mit dem Formular übereinstimmen, werden ausgegeben."
-21100 PRINT "        Leere Felder bezeichnen beliebige Stammsatzdaten."
-21110 PRINT "        Ein * zu Beginn des Feldes bedeutet : Das folgende Wort"
-21120 PRINT "        darf sich an beliebiger Stelle des Feldes befinden."
-21130 PRINT "        Ein oder mehrere ? zu Beginn des Feldes stellen Platz-"
-21140 PRINT "        halter für beliebige Zeichen dar."
+21070 PRINT IN$;"2 - Suchen nach Maske"
+21080 PRINT IN$;"    Sie füllen ein Formular aus. Diejenigen Stammsätze, die"
+21090 PRINT IN$;"    mit dem Formular übereinstimmen, werden ausgegeben."
+21100 PRINT IN$;"    Leere Felder bezeichnen beliebige Stammsatzdaten."
+21110 PRINT IN$;"    Ein * zu Beginn des Feldes bedeutet: Das folgende Wort"
+21120 PRINT IN$;"    darf sich an beliebiger Stelle des Feldes befinden."
+21130 PRINT IN$;"    Ein oder mehrere ? zu Beginn des Feldes stellen Platz-"
+21140 PRINT IN$;"    halter für beliebige Zeichen dar."
+21142 PRINT
+21144 PRINT IN$;"Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 21160 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 21170 MT$="STAMMSATZ SUCHEN"
 21180 RETURN
@@ -1272,11 +1252,11 @@
 21210 '
 21220 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 21230 PRINT HOME$
-21240 PRINT "   Sie können jetzt einen kompletten Stammsatz, wie er auf"
-21250 PRINT "   dem Bildschirm steht, ausdrucken."
+21240 PRINT IN$;"Sie können jetzt einen kompletten Stammsatz, wie er auf dem"
+21250 PRINT IN$;"Bildschirm steht, ausdrucken."
 21260 PRINT
-21270 PRINT "   Geben Sie die Mitgliedsnummer ein. Bei Tippfehlern können"
-21280 PRINT "   Sie mit der DELETE-Taste korrigieren."
+21270 PRINT IN$;"Geben Sie die Mitgliedsnummer des Stammsatzes ein."
+21280 PRINT IN$;"Bei Tippfehlern können Sie mit der DELETE-Taste korrigieren."
 21290 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 21300 MT$="STAMMSATZ DRUCKEN"
 21310 RETURN
@@ -1285,11 +1265,10 @@
 21340 '
 21350 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 21360 PRINT HOME$
-21370 PRINT "    Sie können jetzt einen Verwendungsnachweis ändern."
+21370 PRINT IN$;"Sie können jetzt einen Verwendungsnachweis ändern."
 21380 PRINT
-21390 PRINT "    Geben Sie die Mitgliedsnummer des betreffenden "
-21400 PRINT "    Verwendungsnachweises ein. Bei Tippfehlern können"
-21410 PRINT "    Sie mit der DELETE-Taste korrigieren."
+21390 PRINT IN$;"Geben Sie die Mitgliedsnummer des Verwendungsnachweises ein."
+21400 PRINT IN$;"Bei Tippfehlern können Sie mit der DELETE-Taste korrigieren."
 21420 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 21430 RETURN
 21440 '
@@ -1297,18 +1276,18 @@
 21460 '
 21470 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 21480 PRINT HOME$
-21490 PRINT "    Sie können jetzt einen bestehenden Verwendungsnachweis ändern."
+21490 PRINT IN$;"Sie können jetzt einen bestehenden Verwendungsnachweis ändern."
 21500 PRINT
-21510 PRINT "    Während der Dateneingabe können Sie mit der DELETE-Taste"
-21520 PRINT "    korrigieren. Ist ein Feld ausgefüllt worden, muß RETURN"
-21530 PRINT "    gedrückt werden, da sonst die Änderung nicht gespeichert"
-21540 PRINT "    wird. Mit den Cursortasten kann das Feld gewechselt werden."
+21510 PRINT IN$;"Während der Dateneingabe können Sie mit der DELETE-Taste"
+21520 PRINT IN$;"korrigieren. Ist ein Feld ausgefüllt worden, muß RETURN"
+21530 PRINT IN$;"gedrückt werden, da sonst die Änderung nicht gespeichert"
+21540 PRINT IN$;"wird. Mit den Cursortasten kann das Feld gewechselt werden."
 21550 PRINT
-21560 PRINT "    Weitere Funktionstasten :"
-21570 PRINT "    <F5>  Zurückblättern (ohne die jetzige Seite zu speichern)"
-21580 PRINT "    <F6>  Vorblättern    (ohne die jetzige Seite zu speichern)"
-21590 PRINT "    <F7>  Die aktuelle Seite speichern"
-21600 PRINT "    <F9>  Die aktuelle Seite ausdrucken"
+21560 PRINT IN$;"Weitere Funktionstasten:"
+21570 PRINT IN$;"<F5>  Zurückblättern (ohne die jetzige Seite zu speichern)"
+21580 PRINT IN$;"<F6>  Vorblättern (ohne die jetzige Seite zu speichern)"
+21590 PRINT IN$;"<F7>  Die aktuelle Seite speichern."
+21600 PRINT IN$;"<F9>  Die aktuelle Seite ausdrucken."
 21610 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 21620 MT$="VERWENDUNGSNACHWEIS"
 21630 RETURN
@@ -1317,49 +1296,42 @@
 21660 '
 21670 MT$="HILFE":GOSUB 13940                                      'Basis Maske
 21680 PRINT HOME$
-21690 PRINT "    Sie können jetzt eine Mitgliedsliste drucken lassen." 
+21690 PRINT IN$;"Sie können jetzt eine Mitgliedsliste drucken." 
 21700 PRINT
-21710 PRINT "    1 - Suchen & Drucken"
-21720 PRINT "        Sie können Stammsätze nach verschiedenen Gesichtspunkten"
-21730 PRINT "        suchen und drucken lassen."
+21710 PRINT IN$;"1 - Suchen & Drucken"
+21720 PRINT IN$;"    Sie können Stammsätze nach verschiedenen Gesichtspunkten"
+21730 PRINT IN$;"    suchen und drucken."
 21740 PRINT
-21750 PRINT "    2 - Komplett drucken"
-21760 PRINT "        Es wird eine komplette Mitgliedsliste ausgedruckt."
-21770 PRINT "        Ausgetretene Mitglieder werden nicht berücksichtigt."
+21750 PRINT IN$;"2 - Komplett drucken"
+21760 PRINT IN$;"    Es wird eine komplette Mitgliedsliste ausgedruckt."
+21770 PRINT IN$;"    Ausgetretene Mitglieder werden nicht berücksichtigt."
 21780 PRINT
-21790 PRINT "    3 - Datenblatt drucken"
-21800 PRINT "        Der Stammsatz und der Verwendungsnachweis werden im"
-21810 PRINT "        Bildschirmformat mit einer Liste von Mitgliedsver-"
-21820 PRINT "        merken ausgedruckt."
+21790 PRINT IN$;"3 - Datenblatt drucken"
+21800 PRINT IN$;"    Der Stammsatz und der Verwendungsnachweis werden im"
+21810 PRINT IN$;"    Bildschirmformat mit einer Liste von Mitgliedsvermerken"
+21820 PRINT IN$;"    ausgedruckt."
+21821 PRINT
+21822 PRINT IN$;"Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 21830 GOSUB 14410                                      'Rückkehr aus Hilfe-Text
 21840 MT$="MITGLIEDSLISTE AUSDRUCKEN"
 21850 RETURN
 22520 '
 22530 ' *** Program Error Trap Nachricht **************************************
 22540 '
-22550 PRINT CLS$
-22560 PRINT FNCUR$(13,1);STRICH$
-22570 PRINT
-22580 PRINT
-22590 GOSUB 13940                                                  'Basis Maske
-22600 IF ERR<50 THEN PRINT FNCUR$(5,1);"Programmfehler."
-22610 PRINT "   14*********************"
+22550 GOSUB 13940                                                  'Basis Maske
+22600 PRINT HOME$
+22610 PRINT IN$;"14*********************"
 22620 PRINT
-22630 PRINT "   15************************************************************"
-22640 PRINT "   16*************************************************"
-22650 PRINT "   
-22660 PRINT "   17**********************"
-22670 PRINT
-22680 PRINT "         18********************************************"
-22690 PRINT
-22700 PRINT "         19**************************"
+22630 PRINT IN$;"ein Programmfehler ist aufgetreten."
+22640 PRINT   
+22650 PRINT IN$;"- Notieren Sie folgende Fehlerinformation:"
+22660 PRINT IN$;"    ERL (Error Line):";ERL
+22670 PRINT IN$;"    ERR (Error Code):";ERR
+22680 PRINT IN$;"- Drücken Sie am Rechner auf das Knöpfchen hinten rechts."
+22700 PRINT IN$;"19**************************"
 22710 PRINT
-22720 PRINT "                                      20***************"
+22720 PRINT IN$;"                                           20***************"
 22730 PRINT
-22740 PRINT STRICH$;
 22750 PRINT CURSON$
-22760 PRINT "ERL (Error Line) :";ERL                                'LW - Added
-22770 PRINT "ERR (Error Code) :";ERR                                'LW - Added
 22780 RESET
-22790 'LW GOTO 13450                                       'LW - Endlosschleife
 22800 END
