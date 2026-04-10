@@ -571,30 +571,48 @@
 10210 '
 10220 ' *** Eingaberoutine (INPUT) ********************************************
 10230 '
-10231 ' IN: Z=Zeile     OUT: MUSS$    TMP: I
+10231 ' IN: Z=Zeile     OUT: MUSS$    TMP: P
 10232 ' IN: S=Spalte    OUT: ANT$     TMP: VALID (1=true 0=false)
 10233 ' IN: LNG= Länge  OUT: CKEY
 10234 ' IN: TYP=Typ     OUT: FKEY
 10235 ' IN: DEL$        OUT: AASC
 10236 ' IN: VNFLAG      OUT: (A$)
-10238 ' XOX
+10238 '
 10240 MUSS$=MID$(FELD$(F),13,1)
-10250 PRINT HIGHON$                                          'TODO: Entry point
-10251 ANT$="":I=1
-10260 CKEY=0:FKEY=0                                        'TODO: Entry point
-10261 PRINT HOME$;" ":PRINT FNCUR$(Z,S+I-1);
-10270 A$=INPUT$(1):AASC=ASC(A$)
-10280 ON TYP GOSUB 11440,11510,11570,11630                      'Bereichs check
-10290 IF VALID THEN IF I<=LNG THEN PRINT A$;:ANT$=LEFT$(ANT$,I-1)+A$:I=I+1:GOTO 10270 ELSE GOTO 10270
-10300 IF AASC=ASCBSP THEN IF I>1 THEN PRINT DEL$;:I=I-1:ANT$=LEFT$(ANT$,I-1):GOTO 10260 ELSE GOTO 10270                'Delete
-10310 IF VNFLAG THEN IF AASC=13 THEN PRINT HIGHOFF$;STRING$(LNG-I+1," ");HIGHON$:RETURN 'BEI VN RETURN OHNE PUNKTE
-10320 IF AASC=ASCRET  THEN PRINT HIGHOFF$;STRING$(LNG-I+1,"."):RETURN       'Return
-10330 IF AASC=ASCCUP THEN CKEY=CKEYUP:GOSUB 10420:RETURN             'Block cursor auto-repeat
-10340 IF AASC=ASCCDN THEN CKEY=CKEYDN:GOSUB 10420:RETURN             'Block cursor auto-repeat
-10350 IF VNFLAG AND AASC=ASCCLT THEN CKEY=CKEYLT:GOSUB 10420:RETURN  'Block cursor auto-repeat 
-10360 IF VNFLAG AND AASC=ASCCRT THEN CKEY=CKEYRT:GOSUB 10420:RETURN  'Block cursor auto-repeat 
-10370 IF AASC>=ASCF1 AND AASC<=ASCF9 THEN FKEY=AASC-ASCF1+1:RETURN              'F-Keys
-10380 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12020:GOTO 10260 'Nachricht
+10250 PRINT HIGHON$                                           'TODO Entry point
+10251 ANT$=""
+10252 P=1
+10260 CKEY=0:FKEY=0                                           'TODO Entry point
+10261 PRINT HOME$;" "                                         'TODO Necesssary?
+10262 PRINT FNCUR$(Z,S+P-1);
+10270 A$=INPUT$(1):AASC=ASC(A$)                                      'Press key
+10280 ON TYP GOSUB 11440,11510,11570,11630                      'Bereichs-Check
+10289 'IF VALID THEN IF P<=LNG THEN PRINT A$;:ANT$=LEFT$(ANT$,P-1)+A$:P=P+1:GOTO 10270 ELSE GOTO 10270
+10290 IF VALID=0 THEN 10300
+10291   IF P>LNG THEN 10270                                    'Valid character
+10292   PRINT A$;
+10293   ANT$=LEFT$(ANT$,P-1)+A$
+10294   P=P+1
+10295   GOTO 10270 
+10299 ' IF AASC=ASCBSP THEN IF P>1 THEN PRINT DEL$;:P=P-1:ANT$=LEFT$(ANT$,P-1):GOTO 10260 ELSE GOTO 10270 'Delete
+10300 IF AASC<>ASCBSP THEN 10310
+10302   IF P=0 THEN 10270                                            'Backspace
+10303   PRINT DEL$;
+10304   P=P-1
+10305   ANT$=LEFT$(ANT$,P-1)
+10306   GOTO 10260
+10310 IF AASC<>ASCRET THEN 10330
+10315   IF VNFLAG THEN FILL$="." ELSE FILL$=" "                'Carriage return 
+10320   PRINT HIGHOFF$;STRING$(LNG-I+1,FILL$)
+10321   RETURUN
+10330 IF AASC=ASCCUP THEN CKEY=CKEYUP:GOSUB 10420:RETURN  'Block cursor auto-repeat
+10340 IF AASC=ASCCDN THEN CKEY=CKEYDN:GOSUB 10420:RETURN  'Block cursor auto-repeat
+10342 IF VNFLAG=0 THEN 10370
+10350   IF AASC=ASCCLT THEN CKEY=CKEYLT:GOSUB 10420:RETURN  'Block cursor auto-repeat 
+10360   IF AASC=ASCCRT THEN CKEY=CKEYRT:GOSUB 10420:RETURN  'Block cursor auto-repeat 
+10370 IF AASC>=ASCF1 AND AASC<=ASCF9 THEN FKEY=AASC-ASCF1+1:RETURN      'F-Keys
+10380 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12020         'Nachricht
+10382 GOTO 10260
 10390 '
 10400 ' *** Block cursor auto-repeat ******************************************
 10410 '
@@ -833,7 +851,6 @@
 12710 '
 12720 ' **** VN - Subroutines, permitting one page handling *******************
 12730 ' ****         by 04********** 21*******              *******************
-12740 '
 12750 '
 12760 ' **** OPEN & FIELDING VERWENDUNGSNACHWEIS ******************************
 12770 '
@@ -1166,7 +1183,7 @@
 15910 '
 15920 ' ############################# Hilfe-Texte #############################
 15930 '
-15940 ' *** Hilfe-Text "Mitgliederverwaltung" ********************************* 
+15940 ' *** Hilfe-Text "Mitgliederverwaltung" 
 15950 '
 15960 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 15970 PRINT HOME$
@@ -1188,7 +1205,7 @@
 16130 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 16140 RETURN
 16150 '
-16160 ' *** Hilfe-Text "Stammsatzpflege" ************************************** 
+16160 ' *** Hilfe-Text "Stammsatzpflege" 
 16170 '
 16180 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 16190 PRINT HOME$
@@ -1213,7 +1230,7 @@
 16380 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 16390 RETURN
 16400 '
-16410 ' *** Hilfe-Text "Stammsatz anlegen" ************************************
+16410 ' *** Hilfe-Text "Stammsatz anlegen"
 16420 '
 16430 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
 16440 PRINT HOME$
@@ -1235,7 +1252,7 @@
 16610 DATENAUSG=1                                                          '???
 16620 RETURN
 16630 '
-16640 ' *** Hilfe-Text "Stammsatz ändern (I)" *********************************
+16640 ' *** Hilfe-Text "Stammsatz ändern (I)"
 16650 '
 16660 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 16670 PRINT HOME$
@@ -1246,7 +1263,7 @@
 16720 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 16730 RETURN
 16740 '
-16750 ' *** Hilfe-Text "Stammsatz ändern (II)" ********************************
+16750 ' *** Hilfe-Text "Stammsatz ändern (II)"
 16760 '
 16770 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
 16780 PRINT HOME$
@@ -1266,7 +1283,7 @@
 16920 GOSUB 12210                                               'F-Tastenleiste
 16930 RETURN
 16940 '
-16950 ' *** Hilfe-Text "Stammsatz löschen" ************************************
+16950 ' *** Hilfe-Text "Stammsatz löschen"
 16960 '
 16970 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 16980 PRINT HOME$
@@ -1280,7 +1297,7 @@
 17060 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 17070 RETURN
 17080 '
-17090 ' *** Hilfe-Text "Stammsatz suchen" *************************************
+17090 ' *** Hilfe-Text "Stammsatz suchen"
 17100 '
 17110 IF DRUCKFLAG THEN 17810                                              '???
 17120 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
@@ -1305,7 +1322,7 @@
 17310 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 17330 RETURN
 17340 ' 
-17350 ' *** Hilfe-Text für "Stammsatz drucken" ********************************
+17350 ' *** Hilfe-Text für "Stammsatz drucken"
 17360 '
 17370 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
 17380 PRINT HOME$
@@ -1317,7 +1334,7 @@
 17440 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 17460 RETURN
 17470 '
-17480 ' *** Hilfe-Text "Verwendungsnachweis (I)" ******************************
+17480 ' *** Hilfe-Text "Verwendungsnachweis (I)"
 17490 '
 17500 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 17510 PRINT HOME$
@@ -1328,7 +1345,7 @@
 17560 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 17570 RETURN
 17580 '
-17590 ' *** Hilfe-Text "Verwendungsnachweis (II)" *****************************
+17590 ' *** Hilfe-Text "Verwendungsnachweis (II)"
 17600 '
 17610 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
 17620 PRINT HOME$
@@ -1347,7 +1364,7 @@
 17750 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 17770 RETURN
 17780 '
-17790 ' *** Hilfe-Text "Mitgliedsliste drucken" *******************************
+17790 ' *** Hilfe-Text "Mitgliedsliste drucken"
 17800 '
 17810 SAVEMT$=MT$:MT$="HILFE":GOSUB 12090:MT$=SAVEMT$              'Basis Maske
 17820 PRINT HOME$
@@ -1370,7 +1387,7 @@
 17990 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 18010 RETURN
 18020 '
-18030 ' *** Programfehler *****************************************************
+18030 ' *** Programfehler
 18040 '
 18050 GOSUB 12090                                                  'Basis Maske
 18060 PRINT HOME$
@@ -1385,7 +1402,7 @@
 18190 PRINT CURON$;HIGHOFF$
 18200 GOTO 18250                                                  'Programmende
 18220 '
-18230 ' *** Programmende ******************************************************
+18230 ' *** Programmende
 18240 '
 18245 ' RUN "DISKMENU.EXE"
 18250 PRINT FNCUR$(22,1)
