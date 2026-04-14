@@ -4,7 +4,7 @@
 1040 ' *** Initialisierung, Dimensionierung ***********************************
 1050 '
 1060 DEFINT A-Z                                              'Integerdefinition
-1070 DIM FELD$(27),SUCH$(27),DAT$(27)                    'Arrays dimensionieren
+1070 DIM SUCH$(27),DAT$(27)                    'Arrays dimensionieren
 1080 BSP$    =CHR$(8)                                                'Backspace
 1085 DEL$    =BSP$+"."+BSP$                                             'Delete
 1090 ESC$    =CHR$(27)                                'Einleitung Escapesequenz
@@ -19,10 +19,17 @@
 1180 DELHIGH$=ESC$+"+"                                   'Helle Schrift löschen
 1190 STRICH$ =STRING$(79,"-")                                           'Strich
 1200 DEF FNCUR$(Z,S)=ESC$+"Y"+CHR$(31+Z)+CHR$(31+S)       'Cursor positionieren
-1210 DEF FNROW(F$)=VAL(MID$(F$,17,2))                     'Zeile des Feldnamens
-1220 DEF FNCOL(F$)=VAL(MID$(F$,15,2))                    'Spalte des Feldnamens
-1230 DEF FNLNG(F$)=VAL(MID$(F$,19,2))                         'Länge des Feldes
-1240 DEF FNTYP(F$)=VAL(RIGHT$(F$,1))                     'Gültigkeits-Test Flag
+1201 '
+1210 'DEF FNROW(F$)=VAL(MID$(F$,17,2))                     'Zeile des Feldnamens
+1220 'DEF FNCOL(F$)=VAL(MID$(F$,15,2))                    'Spalte des Feldnamens
+1230 'DEF FNLNG(F$)=VAL(MID$(F$,19,2))                         'Länge des Feldes
+1240 'DEF FNTYP(F$)=VAL(RIGHT$(F$,1))                     'Gültigkeits-Test Flag
+1241 DIM FINAM$(27)
+1242 DIM FIROW(27)
+1243 DIM FICOL(27)
+1244 DIM FILNG(27)
+1245 DIM FITYP(27)
+1246 '
 1250 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
 1260 IN$=STRING$(10," ")                                 'Indent für Hilfe-Texte
 1261 ' 
@@ -62,7 +69,13 @@
 1460 OPEN "I",#1,"B:FELD.DAT"                        
 1470 INPUT #1,FELDMAX
 1480 FOR I=1 TO FELDMAX
-1490   INPUT #1,FELD$(I)
+1490   '***INPUT #1,FELD$(I)
+1491   INPUT #1,F$
+1492   FINAM$(I)=MID$(F$,1,14)                                        'Feldname
+1493   FICOL(I)=VAL(MID$(F$,15,2))                        'Spalte des Feldnamens
+1494   FIROW(I)=VAL(MID$(F$,17,2))                         'Zeile des Feldnamens
+1495   FILNG(I)=VAL(MID$(F$,19,2))                         '    Länge des Feldes
+1496   FITYP(I)=VAL(RIGHT$(F$,1))                         'Gültigkeits-Test Flag
 1500 NEXT
 1510 CLOSE #1
 1520 '
@@ -114,16 +127,15 @@
 1980 IF DATENAUSG=1 THEN GOSUB 10910:DATENAUSG=0             'wenn vorher HILFE
 1990 PRINT FNCUR$(21,1);DELLINE$                               'Cursorparameter 'TODO Dup 2030?
 2000 PRINT HIGHON$;CURON$;FNCUR$(3,46);MTGL$
-2010 Z=FNROW(FELD$(F)):S=FNCOL(FELD$(F))+14
-2020 LNG=FNLNG(FELD$(F)):TYP=FNTYP(FELD$(F))
+2010 Z=FIROW(F):S=FICOL(F)+14
+2020 LNG=FILNG(F):TYP=FITYP(F)
 2030 PRINT FNCUR$(21,1);DELLINE$
 2040 INTEXT$=DAT$(F)                                          'TODO Entry Point
 2041 GOSUB 10240                                                         'INPUT
 2050 IF ASCC=13 THEN IF MUSS$="=" THEN IF LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12020:GOTO 2040 'Nachricht
 2060 IF ASCC=13 THEN DAT$(F)=OUTTEXT$                                       'Return
 2070 IF ASCC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 2010 ELSE N$="Letztes Feld":GOSUB 12020:GOTO 2010          'ELSE zu IF F< 'Nachricht
-2080 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);DAT$(F)+STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26):GOTO 2010
-2081 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26):GOTO 2010
+2080 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26):GOTO 2010
 2090 IF FKEY=1 THEN GOSUB 16430:GOTO 1940                             'F-Keys
 2100 IF FKEY=3 THEN GOSUB 11780:PRINT HIGHOFF$:GOSUB 12610:GOTO 1530 '..., Clear DAT$() 12610
 2110 IF FKEY=2 THEN GOSUB 11780:PRINT HIGHOFF$:GOTO 1750
@@ -161,8 +173,8 @@
 2430 GOSUB 10910
 2440 PRINT FNCUR$(3,46);MTGLZAHL
 2450 FKEYS$="<F7>=Abspeichern":GOSUB 12210                      'F-Tastenleiste
-2460 S=FNCOL(FELD$(F))+14:Z=FNROW(FELD$(F)):N$="":GOSUB 12020        'Nachricht
-2470 LNG=FNLNG(FELD$(F)):TYP=FNTYP(FELD$(F))
+2460 S=FICOL(F)+14:Z=FIROW(F):N$="":GOSUB 12020        'Nachricht
+2470 LNG=FILNG(F):TYP=FITYP(F)
 2480 GOSUB 10240                                                         'INPUT
 2490 IF FKEY=1 THEN GOSUB 16770:GOTO 2410                 'Hilfe-Text  F-Keys
 2500 IF FKEY=2 THEN GOSUB 12680: GOTO 2200                   'Eing.-Mtgl.-Nr.
@@ -233,8 +245,8 @@
 3140 FKEYS$="<F5>=Suchen ":GOSUB 4030
 3150 IF DRUCKFLAG THEN FKEYS$="<F5>=Suchen & Drucken"
 3160 GOSUB 12210                                                'F-Tastenleiste
-3170 Z=FNROW(FELD$(F)):S=FNCOL(FELD$(F))+14                    'Cursorparameter
-3180 LNG=FNLNG(FELD$(F)):TYP=3
+3170 Z=FIROW(F):S=FICOL(F)+14                    'Cursorparameter
+3180 LNG=FILNG(F):TYP=3
 3190 PRINT FNCUR$(Z,S)
 3200 OUTTEXT$="":GOSUB 10240                                                 'INPUT
 3210 IF FKEY=5 THEN MTGLZAHL=1:GOTO 3620                              'F-Keys
@@ -572,14 +584,14 @@
 10220 ' *** Eingaberoutine (INPUT) ********************************************
 10230 '
 10231 ' IN: Z=Zeile     OUT: MUSS$    TMP: P
-10232 ' IN: S=Spalte    OUT: OUTTEXT$     TMP: VALID (1=true 0=false)
+10232 ' IN: S=Spalte    OUT: OUTTEXT$ TMP: VALID (1=true 0=false)
 10233 ' IN: LNG= Länge  OUT: CKEY
 10234 ' IN: TYP=Typ     OUT: FKEY
 10235 ' IN: DEL$        OUT: ASCC
 10236 ' IN: VNFLAG      OUT: (A$)
 10238 ' IN: INTEXT$
 10239 '
-10240 MUSS$=MID$(FELD$(F),13,1)
+10240 MUSS$=MID$(FINAM$(F),13,1)                                          'TODO
 10250 PRINT FNCUR$(Z,S);HIGHON$;INTEXT$;HIGHOFF$;             'TODO Entry point
 10251 P=LEN(INTEXT$)
 10252 IF P<LNG THEN PRINT STRING$(LNG-P,".");
@@ -595,7 +607,7 @@
 10293   OUTTEXT$=OUTTEXT$+A$
 10294   P=P+1
 10295   GOTO 10270
-10301 IF ASCC<>ASCBSP THEN 10310
+10300 IF ASCC<>ASCBSP THEN 10310
 10302   IF P<1 THEN 10270                                            'Backspace
 10303   PRINT DEL$;
 10304   P=P-1
@@ -644,9 +656,9 @@
 10670 PRINT HIGHOFF$;
 10680 PRINT CUROFF$;
 10690 FOR K=1 TO FELDMAX
-10700   S=FNCOL(FELD$(K))
-10710   Z=FNROW(FELD$(K))
-10720   PRINT FNCUR$(Z,S);MID$(FELD$(K),1,14);STRING$(FNLNG(FELD$(K)),".")
+10700   S=FICOL(K)
+10710   Z=FIROW(K)
+10720   PRINT FNCUR$(Z,S);FINAM$(K);STRING$(FILNG(K),".") 'XOX Auffüllen?
 10730 NEXT
 10740 PRINT CURON$;
 10750 MTGL$=STR$(MTGLZAHL)                                              'TODO ?
@@ -656,9 +668,9 @@
 10790 '
 10800 ' IN: FELDMAX
 10810 FOR K=1 TO FELDMAX
-10820   S=FNCOL(FELD$(K))+14
-10830   Z=FNROW(FELD$(K))
-10840   PRINT FNCUR$(Z,S);STRING$(FNLNG(FELD$(K)),".")
+10820   S=FICOL(K)+14
+10830   Z=FIROW(K)
+10840   PRINT FNCUR$(Z,S);STRING$(FILNG(K),".")
 10850 NEXT
 10860 RETURN
 10870 '
@@ -667,8 +679,8 @@
 10900 ' IN: FELDMAX
 10910 PRINT HIGHON$
 10920 FOR K=1 TO FELDMAX
-10930   S=FNCOL(FELD$(K))+14
-10940   Z=FNROW(FELD$(K))
+10930   S=FICOL(K)+14
+10940   Z=FIROW(K)
 10950   PRINT FNCUR$(Z,S);DAT$(K)
 10960 NEXT
 10970 RETURN
@@ -684,15 +696,15 @@
 11070 GET #2,MTGLZAHL
 11080 FOR LL=1 TO FELDMAX:DAT$(LL)="":NEXT
 11090 HLANG=1
-11100 FOR K=1 TO 14:LNG=FNLNG(FELD$(K)):DAT$(K)=MID$(DD1$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
+11100 FOR K=1 TO 14:LNG=FILNG(K):DAT$(K)=MID$(DD1$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
 11110 HLANG=1
-11120 FOR K=15 TO 27:LNG=FNLNG(FELD$(K)):DAT$(K)=MID$(DD2$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
+11120 FOR K=15 TO 27:LNG=FILNG(K):DAT$(K)=MID$(DD2$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
 11130 RETURN
 11140 '
 11150 ' *** Abspeichern der Felddaten auf Disk ********************************
 11160 '
 11170 GOSUB 12880       'NEUES VN-BLATT ANLEGEN   DARF NUR STS-ERF. ANSPRINGEN!
-11180 FOR K=1 TO 27:LNG=FNLNG(FELD$(K)):DAT$(K)=DAT$(K)+STRING$(LNG-LEN(DAT$(K))," "):NEXT
+11180 FOR K=1 TO 27:LNG=FILNG(K):DAT$(K)=DAT$(K)+STRING$(LNG-LEN(DAT$(K))," "):NEXT
 11190 HH$=""
 11200 FOR K=1 TO 14:HH$=HH$+DAT$(K):NEXT:LSET DD1$=HH$
 11210 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
@@ -1126,16 +1138,16 @@
 15380 LPRINT
 15390 LPRINT TAB(30);"Mitgliedsnummer  ";MTGLZAHL
 15400 LPRINT
-15410 LPRINT TAB(2);LEFT$(FELD$(1),14);DAT$(1);TAB(41);"Beruf:"
+15410 LPRINT TAB(2);FINAM$(1);DAT$(1);TAB(41);"Beruf:"
 15420 FOR I=1 TO 6:READ A,B
-15430   LPRINT TAB(2);LEFT$(FELD$(A),14);DAT$(A);
+15430   LPRINT TAB(2);FINAM$(A);DAT$(A);
 15440   IF B=0 THEN LPRINT:GOTO 15460
-15450   LPRINT TAB(41);LEFT$(FELD$(B),14);DAT$(B);
+15450   LPRINT TAB(41);FINAM$(B);DAT$(B);
 15460 NEXT
 15470 DATA 2,15,3,16,4,0,5,17,6,18,0,19
 15480 FOR I=7 TO 14
-15490   LPRINT TAB(2);LEFT$(FELD$(I),14);DAT$(I);
-15500   LPRINT TAB(41);LEFT$(FELD$(I+13),14);DAT$(I+13);
+15490   LPRINT TAB(2);FINAM$(I);DAT$(I);
+15500   LPRINT TAB(41);FINAM$(I+13);DAT$(I+13);
 15510 NEXT
 15520 LPRINT
 15530 LPRINT
@@ -1280,14 +1292,6 @@
 18160 PRINT
 18190 PRINT CURON$;HIGHOFF$
 18200 GOTO 18250                                                  'Programmende
-18220 '
-18230 ' *** Programmende
-18240 '
-18245 ' RUN "DISKMENU.EXE"
-18250 PRINT FNCUR$(22,1)
-18260 RESET
-18270 END
-50                                                  'Programmende
 18220 '
 18230 ' *** Programmende
 18240 '
