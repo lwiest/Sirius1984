@@ -49,24 +49,30 @@
 1275 ASCF1=241
 1283 ASCF9=249
 1285 '
-1289 ON ERROR GOTO 18050                                 'Enable error trapping
-1290 '
+1286 ' Other global variables:
+1287 ' LIND$ - Local text indent
+1288 '
+1298 ON ERROR GOTO 18050                                 'Enable error trapping
+1299 '
 1300 GOSUB 10050    'Tasten deaktivieren, ASCII Codes für Cursortasten vergeben
+1305 PRINT CUROFF$;
 1310 '
 1320 ' *** Beginn des Mitgliederverwaltungsprogramms **************************
 1330 '
 1340 MT$="MITGLIEDERVERWALTUNG":MI$="G-01000":GOSUB 12090          'Basis Maske
 1350 Q$="Befindet sich die Daten-Diskette im Laufwerk B?":GOSUB 11310 'Ja/Nein-Frage
-1360 IF JA=1 THEN 1420
+1360 IF JA=1 THEN 1382
 1370 Q$="Bitte legen Sie sie ein. Fertig?":GOSUB 11310           'Ja/Nein-Frage
 1380 IF JA=0 THEN 18250                                           'Programmende
+1381 '
+1382 N$="Einen Moment...":GOSUB 12020                                'Nachricht
+1383 GOSUB 10444                          'Einlesen Stammdatenfelder-Definition
+1384 GOSUB 11010                                   'Fielden der Stammsatz-Datei
+1385 GOSUB 12780                       'Fielden der Verwendungsnachweis-Dateien
+1386 N$="":GOSUB 12020                                               'Nachricht
 1390 '
 1400 ' ################# Mitgliederverwaltungsmenü (MVW-Menü) #################
 1410 '
-1420 GOSUB 10444                          'Einlesen Stammdatenfelder-Definition
-1430 GOSUB 11010                                   'Fielden der Stammsatz-Datei
-1440 GOSUB 12780                       'Fielden der Verwendungsnachweis-Dateien
-1520 '
 1530 MT$="MITGLIEDERVERWALTUNG":MI$="G-01000":GOSUB 12090          'Basis Maske
 1540 FKEYS$="":GOSUB 12210                                      'F-Tastenleiste
 1550 VNFLAG=0                                                              '???
@@ -123,7 +129,9 @@
 2050 IF ASCC=13 THEN IF FEMUSS(F) THEN IF LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12020:GOTO 2040 'Nachricht
 2060 IF ASCC=13 THEN DAT$(F)=OUTTEXT$                                       'Return
 2070 IF ASCC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 2010 ELSE N$="Letztes Feld":GOSUB 12020:GOTO 2010          'ELSE zu IF F< 'Nachricht
-2080 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26):GOTO 2010
+2080 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-
+
+(F=27)*26):GOTO 2010
 2090 IF FKEY=1 THEN GOSUB 16430:GOTO 1940                             'F-Keys
 2100 IF FKEY=3 THEN GOSUB 11780:PRINT HIGHOFF$:GOSUB 12610:GOTO 1530 '..., Clear DAT$() 12610
 2110 IF FKEY=2 THEN GOSUB 11780:PRINT HIGHOFF$:GOTO 1750
@@ -537,9 +545,9 @@
 6130 GOSUB 15620                                             'Mitgliedsvermerke
 6140 GOTO 5890
 10000 '
-10010 ' ######## Unterprogramme von 06*****, 07****, 08**** und 09**** ########
+10010 ' ### Unterprogramme von 06*****, 07****, 08**** und 09**** #############
 10020 '
-10030 ' *** Tasten deaktivieren, ASCII Codes für Cursortasten vergeben ********
+10030 ' *** Tasten deaktivieren, ASCII Codes für Cursortasten vergeben
 10040 '
 10050 RESTORE 10130
 10060 READ KEY
@@ -549,18 +557,16 @@
 10100 ' Map shifted logical key code KEY to ASCII code 0
 10110   PRINT ESC$;"42";CHR$(KEY);CHR$(0);
 10120 GOTO 10060
-10130 DATA    26,27,32,33,47,48:     '     CLR, DEL CHR, INT, TAB, INS, DEL/EOL
+10130 DATA 11,26,27,32,33,47,48:     'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
 10140 DATA 53,67,68,73,94,97,-1:     'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
 10150 ' Map unshifted logical cursor key codes to ASCII codes
 10160 PRINT ESC$;"41";CHR$(88);CHR$(ASCCUP);            'Key 88 "Cursor up"   .
 10170 PRINT ESC$;"41";CHR$(89);CHR$(ASCCDN);            'Key 89 "Cursor down" .
 10180 PRINT ESC$;"41";CHR$(98);CHR$(ASCCLT);            'Key 98 "Cursor left" .
 10190 PRINT ESC$;"41";CHR$(99);CHR$(ASCCRT);            'Key 99 "Cursor right".
-10191 ' TODO
-10192 PRINT ESC$;"41";CHR$(11);CHR$(ASCESC);            'Key 11 "Escape".
-10193 PRINT ESC$;"42";CHR$(11);CHR$(ASCESC);            'Key 11 "Escape".
-10194 PRINT ESC$;"41";CHR$(33);CHR$(ASCESC);            'Key 11 "Escape".
-10195 PRINT ESC$;"42";CHR$(33);CHR$(ASCESC);            'Key 11 "Escape".
+10191 ' Map unshifted and shifted logical tab key codes to ASCII code 'Escape'
+10194 PRINT ESC$;"41";CHR$(33);CHR$(ASCESC);            'Key 33 "Escape".
+10195 PRINT ESC$;"42";CHR$(33);CHR$(ASCESC);            'Key 33 "Escape".
 10200 RETURN
 10201 '
 10202 ' *** Delay *************************************************************
@@ -721,17 +727,14 @@
 11290 ' IN:  Q$ - Frage
 11300 ' OUT: JA 1 = true, 0 = false
 11310 N$=Q$+" (J=Ja/N=Nein)":GOSUB 12020                             'Nachricht
-11320 PRINT HOME$;" ";                                        'TODO: Necessary?
-11330 PRINT FNCUR$(23,1);DELLINE$;
+11320 PRINT FNCUR$(23,1);DELLINE$;            'Delete F-keys 'TODO: Entry-Point
 11331 PRINT FNCUR$(24,1);DELLINE$;
-11332 PRINT HOME$                                             'TODO: Necessary?       
-11340 PRINT CUROFF$;
+11332 PRINT HOME$                                             'TODO: Necessary?
 11350 ANSWER$=INPUT$(1)
-11360 PRINT CURON$;
 11361 PRINT BSP$;                                             'TODO: Necessary?
-11380 IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:RETURN            'F-Tastenleiste
+11380 IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:RETURN
 11390 IF ANSWER$="N" OR ANSWER$="n" THEN JA=0:RETURN
-11400 GOTO 11340
+11400 GOTO 11350
 11410 '
 11420 ' *** Testbereich 1 (Alpha) *********************************************
 11430 '
@@ -807,7 +810,7 @@
 12110 PRINT "00**********************";
 12120 PRINT FNCUR$(1,(80-LEN(MT$))/2);MT$;FNCUR$(1,72);MI$
 12130 PRINT STRICH$
-12140 PRINT FNCUR$(21,1);
+12140 PRINT FNCUR$(22,1);
 12150 PRINT STRICH$
 12160 RETURN
 12170 '
@@ -815,13 +818,13 @@
 12190 '
 12200 ' IN: FKEYS$ - Additional function key labels 
 12210 PRINT HIGHOFF$;
-12220 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
-12230 PRINT FKEYS$
+12220 PRINT FNCUR$(24,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
+12230 PRINT FKEYS$;
 12240 RETURN
 12250 '
 12260 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
 12270 '
-12280 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
+12280 PRINT FNCUR$(25,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
 12290 PRINT HOME$;" "
 12300 RETURN
 12310 '
@@ -1047,17 +1050,17 @@
 14510 ' IN: NAMM$
 14520 Q$="Ist der Drucker eingeschaltet und bereit zur Ausgabe?":GOSUB 11310 'Ja/Nein-Frage TODO Back to main code?
 14530 IF JA=0 THEN 14730
-14531 LIN$=SPACE(2," ")
+14531 LIND$=SPACE(2," ")
 14535 '
 14540 LPRINT STRICH$
 14550 LPRINT
-14560 LPRINT LIN$;"Blatt:";BLATT
+14560 LPRINT LIND$;"Blatt:";BLATT
 14570 LPRINT
-14580 LPRINT LIN$;"Mitglieds-Nr.:";MTGLZAHL;TAB(24);"Name:";NAMM$
+14580 LPRINT LIND$;"Mitglieds-Nr.:";MTGLZAHL;TAB(24);"Name:";NAMM$
 14590 LPRINT
 14600 FOR K=1 TO 13
 14610   KK=K:GOSUB 14700
-14620   LPRINT LIN$;"Von:";VON$;" Bis:";BIS$;" Amt:";AMT$;
+14620   LPRINT LIND$;"Von:";VON$;" Bis:";BIS$;" Amt:";AMT$;
 14630   KK=K+13:GOSUB 14700
 14640   LPRINT " Von:";VON$;" Bis:";BIS$;" Amt:";AMT$
 14650 NEXT 
@@ -1070,10 +1073,10 @@
 14720 AMT$=RIGHT$(DAT$(KK),8)
 14730 RETURN
 14731 '
-14732 ' *** Unterprogramme "Mitgliedsliste drucken" ***************************
+14732 ' ### Unterprogramme "Mitgliedsliste drucken" ###########################
 14733 '
 14734 '
-14735 ' *** Mitgliedsliste drucken (Kopf) *************************************
+14735 ' *** Mitgliedsliste drucken (Kopf)
 14736 '
 14737 ' IN: DATUM$
 14738 LPRINT TAB(16);"MITGLIEDSLISTE 25*******************************"
@@ -1087,7 +1090,7 @@
 14746 LPRINT TAB(71);"Amt"
 14747 RETURN
 14748 '
-14770 ' *** Mitgliedsliste drucken (Mitglied) *********************************
+14770 ' *** Mitgliedsliste drucken (Mitglied)
 14780 '
 14790 ' IN:  MTGLZAHL
 14791 ' OUT: ISBRKPRNT (1=stop printing, 0=continue printing)
@@ -1113,19 +1116,18 @@
 14970 IF JA THEN ISBRKPRNT=1 ELSE ISBRKPRNT=0
 14980 RETURN
 15130 '
-15140 ' *** Adressaufkleber drucken *******************************************
+15140 ' *** Adressaufkleber drucken
 15150 '
-15160 N$="Ist der Drucker eingeschaltet und bereit zur Ausgabe? (J/N)":GOSUB 12020 'Nachricht 'TODO Move 3 lines back in main code
-15170 GOSUB 11320                                           'TODO Why not 12520
+15160 N$="Ist der Drucker eingeschaltet und bereit zur Ausgabe?":GOSUB 11310 'Ja/Nein-Frage
 15180 IF JA=0 THEN RETURN
-15186 LIN$=SPACE(3," ")
+15186 LIND$=SPACE(3," ")
 15187 '
-15190 LPRINT LIN$;DAT$(7)                                               'Anrede
-15210 LPRINT LIN$;LEFT$(DAT$(2),INSTR(DAT$(2)," "));DAT$(1)   'Vorname Nachname
+15190 LPRINT LIND$;DAT$(7)                                              'Anrede
+15210 LPRINT LIND$;LEFT$(DAT$(2),INSTR(DAT$(2)," "));DAT$(1)  'Vorname Nachname
 15220 LPRINT
-15230 LPRINT LIN$;DAT$(10)                                   'Straße Hausnummer
+15230 LPRINT LIND$;DAT$(10)                                  'Straße Hausnummer
 15240 LPRINT
-15250 LPRINT LIN$;DAT$(11);" ";DAT$(12)                       'Postleitzahl Ort
+15250 LPRINT LIND$;DAT$(11);" ";DAT$(12)                      'Postleitzahl Ort
 15260 LPRINT
 15270 LPRINT
 15280 LPRINT
@@ -1134,7 +1136,7 @@
 15310 LPRINT
 15320 RETURN
 15330 '
-15340 ' *** Stammsatz drucken (Bildschirmformat) ******************************
+15340 ' *** Stammsatz drucken (Bildschirmformat)
 15350 '
 15360 RESTORE 15470
 15370 LPRINT STRICH$
@@ -1158,10 +1160,10 @@
 15550 LPRINT STRICH$
 15560 RETURN
 15570 '
-15580 ' *** Mitgliedsvermerke drucken *****************************************
+15580 ' *** Mitgliedsvermerke drucken
 15590 '
 15600 ' IN: NAMM$ =
-15620 LIN$=SPACE(9," ")
+15620 LIND$=SPACE(9," ")
 15621 SLOT1$="___"
 15622 SLOT2$="___ / ___"
 15623 SLOT3$="___ / ___ / ___"
@@ -1170,34 +1172,34 @@
 15626 LPRINT TAB(28);"Name: ";NAMM$;
 15630 LPRINT TAB(65);"Datum: ";SLOT3$
 15640 LPRINT
-15650 LPRINT LIN$;"26*************************** ";SLOT3$
+15650 LPRINT LIND$;"26*************************** ";SLOT3$
 15660 LRPINT
-15670 LPRINT LIN$;"27*************************** ";SLOT3$
+15670 LPRINT LIND$;"27*************************** ";SLOT3$
 15680 LRPINT
-15690 LPRINT LIN$;"28*************************** ";SLOT3$
+15690 LPRINT LIND$;"28*************************** ";SLOT3$
 15700 LRPINT
-15710 LPRINT LIN$;"29*************************** ";SLOT3$
+15710 LPRINT LIND$;"29*************************** ";SLOT3$
 15720 LRPINT
-15730 LPRINT LIN$;"30*************************** ";SLOT2$
+15730 LPRINT LIND$;"30*************************** ";SLOT2$
 15740 LRPINT
-15750 LPRINT LIN$;"31*************************** ";SLOT3$
+15750 LPRINT LIND$;"31*************************** ";SLOT3$
 15760 LRPINT
-15770 LPRINT LIN$;"32*************************** ";SLOT3$
+15770 LPRINT LIND$;"32*************************** ";SLOT3$
 15780 LRPINT
-15790 LPRINT LIN$;"33*************************** ";SLOT1$
+15790 LPRINT LIND$;"33*************************** ";SLOT1$
 15800 LRPINT
-15810 LPRINT LIN$;"34*************************** ";SLOT3$
+15810 LPRINT LIND$;"34*************************** ";SLOT3$
 15820 LRPINT
-15830 LPRINT LIN$;"35*************************** ";SLOT3$
+15830 LPRINT LIND$;"35*************************** ";SLOT3$
 15840 LRPINT
-15850 LPRINT LIN$;"36*************************** ";SLOT3$
+15850 LPRINT LIND$;"36*************************** ";SLOT3$
 15860 LRPINT
-15870 LPRINT LIN$;"37*************************** ";SLOT3$
+15870 LPRINT LIND$;"37*************************** ";SLOT3$
 15880 LRPINT
-15890 LPRINT LIN$;"38*************************** ";SLOT3$
+15890 LPRINT LIND$;"38*************************** ";SLOT3$
 15900 RETURN
 15910 '
-15920 ' ############################# Hilfe-Texte #############################
+15920 ' ### Hilfe-Texte #######################################################
 15930 '
 15940 ' *** Hilfe-Text "Mitgliederverwaltung" 
 15950 '
@@ -1210,7 +1212,6 @@
 16170 '
 16180 MT$="HILFE":GOSUB 12090                                      'Basis Maske
 16190 PRINT HOME$
-16370 PRINT IN$;"Wählen Sie aus, indem Sie die zugehörige Zahlentaste drücken."
 16380 GOSUB 12540                                      'Rückkehr aus Hilfe-Text
 16390 RETURN
 16400 '
@@ -1283,18 +1284,17 @@
 18020 '
 18030 ' *** Programfehler
 18040 '
-18050 GOSUB 12090                                                  'Basis Maske
-18055 LIN$=SPACE(15," ")
+18050 LIND$=STRING$(15," ")
+18055 GOSUB 12090                                                  'Basis Maske
 18060 PRINT HOME$
-18090 PRINT IN$;"Ein Programmfehler ist aufgetreten."
+18090 PRINT LIND$;"Ein Programmfehler ist aufgetreten."
 18100 PRINT   
-18110 PRINT IN$;"- Notieren Sie folgende Fehlerinformation:"
-18120 PRINT IN$;"    ERL (Error Line):";HIGHON$;ERL;HIGHOFF$
-18130 PRINT IN$;"    ERR (Error Code):";HIGHON$;ERR;HIGHOFF$
-18140 PRINT IN$;"- Drücken Sie am Rechner den Knopf hinten rechts."
-18150 PRINT IN$;"19**************************"
+18110 PRINT LIND$;"- Notieren Sie folgende Fehlerinformation:"
+18120 PRINT LIND$;"    ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
+18130 PRINT LIND$;"    ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
+18140 PRINT LIND$;"- Drücken Sie am Rechner den Knopf hinten rechts."
+18150 PRINT LIND$;"19**************************"
 18160 PRINT
-18200 GOTO 18250                                                  'Programmende
 18220 '
 18230 ' *** Programmende
 18240 '
