@@ -810,21 +810,20 @@
 12110 PRINT "00**********************";
 12120 PRINT FNCUR$(1,(80-LEN(MT$))/2);MT$;FNCUR$(1,72);MI$
 12130 PRINT STRICH$
-12140 PRINT FNCUR$(22,1);
+12140 PRINT FNCUR$(21,1);
 12150 PRINT STRICH$
 12160 RETURN
 12170 '
 12180 ' *** Funktionstasten Leiste (KEY LABELS) *******************************
 12190 '
 12200 ' IN: FKEYS$ - Additional function key labels 
-12210 PRINT HIGHOFF$;
-12220 PRINT FNCUR$(24,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
+12210 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
 12230 PRINT FKEYS$;
 12240 RETURN
 12250 '
 12260 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
 12270 '
-12280 PRINT FNCUR$(25,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
+12280 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
 12290 PRINT HOME$;" "
 12300 RETURN
 12310 '
@@ -833,12 +832,11 @@
 12340 ' IN:  NKEYMAX - max valid numeric key
 12350 ' OUT: FKEY - number of pressed function key or 0
 12360 ' OUT: NKEY - number of pressed numeric key or 0
-12370 PRINT CUROFF$
-12380 NKEY=0:FKEY=0
+12370 NKEY=0:FKEY=0
 12390 FOR I=1 TO 30:A$=INKEY$:NEXT                              'Key debouncing
 12400 A$=INPUT$(1)
-12410 IF A$>"0" AND ASC(A$)<48+NKEYMAX+1 THEN NKEY=VAL(A$):PRINT CURON$:RETURN
-12420 IF A$>CHR$(240) AND A$<CHR$(245) THEN FKEY=ASC(A$)-240:PRINT CURON$:RETURN
+12410 IF A$>"0" AND ASC(A$)<48+NKEYMAX+1 THEN NKEY=VAL(A$):RETURN
+12420 IF A$>CHR$(240) AND A$<CHR$(245) THEN FKEY=ASC(A$)-240:RETURN
 12430 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12020 'Nachricht
 12440 GOTO 12400
 12450 '
