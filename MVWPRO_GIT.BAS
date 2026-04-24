@@ -1,4 +1,5 @@
-1000 '
+1000 ' RELEASE 01***** Neubearbeitung durch 04**********
+1005 '
 1010 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:5
 1020 '
 1030 ' *** Initialisierung, Dimensionierung ***********************************
@@ -34,10 +35,10 @@
 1330 DEF FNCUR$(Z,S)=ESC$+"Y"+CHR$(31+Z)+CHR$(31+S)       'Cursor positionieren
 1340 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
 1350 ' 
-1360 CKEYUP=1                                                               '-1
-1370 CKEYDN=2                                                               '+1
-1380 CKEYLT=3                                                               '-2
-1390 CKEYRT=4                                                               '+2
+1360 CKEYUP=1
+1370 CKEYDN=2
+1380 CKEYLT=3
+1390 CKEYRT=4
 1400 '
 1410 ASCBSP=8
 1420 ASCRET=13
@@ -52,12 +53,12 @@
 1510 ' Other global variables:
 1520 ' LIND$ - Local text indent
 1521 ' F     - Feldindex 1..27
-1521 XOFF=14             'Offset Colum Feldname to Column Wertefeld (Pünktchen)
+1522 XOFF=14             'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 1530 '
 1540 ON ERROR GOTO 17380                                 'Enable error trapping
 1550 '
 1560 GOSUB 10050    'Tasten deaktivieren, ASCII Codes für Cursortasten vergeben
-1570 PRINT CUROFF$;
+1570 PRINT CUROFF$
 1580 '
 1590 ' *** Beginn des Mitgliederverwaltungsprogramms **************************
 1600 '
@@ -88,8 +89,6 @@
 1850 GOSUB 16570:GOTO 1750                                      'F1->Hilfe-Text
 1860 GOSUB 12980:GOTO 1750                           'F2->Zurück, F4->Hauptmenü
 1870 '
-1880 DEL$=BSP$+"."+BSP$                 'Zeichen links löschen 'TODO ever used?
-1890 '
 1900 ' ########################### Stammsatzpflege ############################
 1910 '
 1920 GOSUB 11080                                              'Einlesen MTGLMAX
@@ -113,37 +112,74 @@
 2100 '
 2110 ' *** Stammsatz erfassen von 02************ ******************************
 2120 '
-2130 MT$="STAMMSATZ ANLEGEN":MI$="G-01101":PRINT CURON$:DATENAUSG=1:F=1
-2140 MTGLZAHL=MTGLMAX
-2150 MTGLZAHL=MTGLZAHL+1:MTGL$=STR$(MTGLZAHL)
-2160 GOSUB 12610                                                   'Basis Maske
+2130 MTGLZAHL=MTGLMAX+1                                       'TODO Entry point
+2134 F=1
+2135 DATENAUSG=1                                                           '???
+2160 MT$="STAMMSATZ ANLEGEN":MI$="G-01101":GOSUB 12610             'Basis Maske
 2170 FKEYS$="<F7>=Speichern":GOSUB 12730                        'F-Tastenleiste
 2180 PRINT FNCUR$(3,31);"Mitgliedsnummer"
-2181 GOSUB 11180                 'Feldmaske mit Namen und Eingabefelder ausgeben
+2181 GOSUB 11200                                      'Leere Feldmaske ausgeben
 2190 GOSUB 12410                                           'Defaultwerte setzen
-2200 IF DATENAUSG=1 THEN GOSUB 11420:DATENAUSG=0             'wenn vorher HILFE
-2210 'LW *** PRINT FNCUR$(21,1);DELLINE$                               'Cursorparameter 'TODO Dup 2030?
-2220 PRINT FNCUR$(3,47);HIGHON$;MTGL$;HIGHOFF$
-2221 'LW *** PRINT HIGHON$;CURON$;FNCUR$(3,46);MTGL$
-2230 PRINT FNCUR$(21,1);DELLINE$                              'TODO Entry point
+2200 IF DATENAUSG=1 THEN GOSUB 11420:DATENAUSG=0 '??? wenn vorher HILFE 'Feldwerte ausgeben
+2220 PRINT FNCUR$(3,46);HIGHON$;MTGLZAHL;HIGHOFF$
 2240 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F)
 2260 INTEXT$=DAT$(F)                                          'TODO Entry Point
 2270 GOSUB 10410                                                         'Input
-2280 IF ASCC=13 THEN IF FEMUSS(F) THEN IF LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12540:GOTO 2260 'Nachricht
-2290 IF ASCC=13 THEN DAT$(F)=OUTTEXT$                                   'Return
-2300 IF ASCC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 2230 ELSE N$="Letztes Feld":GOSUB 12540:GOTO 2230          'ELSE zu IF F< 'Nachricht
-2310 IF CKEY<>0 THEN PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),"."):F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26):GOTO 2230
-2320 IF FKEY=1 THEN GOSUB 16710:GOTO 2160                               'F-Keys
-2330 IF FKEY=3 THEN GOSUB 12300:PRINT HIGHOFF$:GOSUB 13110:GOTO 1750 '..., Clear DAT$() 12610
-2340 IF FKEY=2 THEN GOSUB 12300:PRINT HIGHOFF$:GOTO 1970
-2350 IF FKEY=4 THEN GOSUB 12300:PRINT HIGHOFF$:GOSUB 12980:GOTO 2260
-2360 IF FKEY=7 THEN GOSUB 11680:GOSUB 11320:F=1:MTGLZAHL=MTGLZAHL+1:MTGL$=STR$(MTGLZAHL):GOSUB 13110:GOSUB 12410:GOSUB 11420:GOTO 2220 '..., Clear DAT$() 12610
-2370 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12540          'Nachricht
-2380 GOSUB 10460                                                       'INPUT+2
-2390 GOTO 2280                                                      'Auswertung
-2400 ' 
-2410 ' *** Stammsatz ändern von 03************ ********************************
-2420 '
+2272 IF ASCC<>ASCRET THEN 2319                                 'Carriage return
+2280   IF FEMUSS(F) AND LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12540:GOTO 2260 'Nachricht
+2290   DAT$(F)=OUTTEXT$
+2300   F=F+1:IF F>FELDMAX THEN F=1
+2301   GOTO 2240
+2319 IF CKEY=0 THEN 2339                                           'Cursor keys
+2320   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")
+2329 'LW *** Turing Award:  F=F+(CKEY=CKEYUP)*(-(F>1)+(F=1)*25)+(CKEY=CKEYDN)*((F<27)-(F=27)*26)
+2330   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
+2331   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
+2335   GOTO 2240
+2339 IF FKEY=1 THEN GOSUB 16710:GOTO 2160                               'F-Keys
+2340 IF FKEY=2 THEN GOSUB 2386:GOTO 1970                '12300 Exit "Erfassen"
+2345 IF FKEY=3 THEN GOSUB 2386:GOSUB 13110:GOTO 1750  '12300 Exit "Erfassen", 13110 Clear DAT$()
+2350 IF FKEY=4 THEN GOSUB 2386:GOSUB 12980:GOTO 2240  '12300 Exit "Erfassen" 12980 Implicit No
+2360 IF FKEY<>7 THEN 2379
+2361   N$="Stammdatensatz wird abgespeichert...":GOSUB 12540         'Nachricht
+2362   GOSUB 13370                                      'Erste Seite VN anlegen
+2363   GOSUB 11690                            'Speichern der Felddaten auf Disk
+2364   GOSUB 11320                              'Leere Feldplatzhalter ausgeben
+2365   N$="":GOSUB 12540                                             'Nachricht
+2366   MTGLZAHL=MTGLZAHL+1
+2367   F=1
+2368   GOSUB 13110                                                'Clear DAT$()
+2369   GOSUB 12410                                         'Defaultwerte setzen
+2370   GOSUB 11420                                 'Aktuelle Feldwerte ausgeben
+2371   GOTO 2220
+2379 N$="Sad hack! Ungültige Eingabe - Bitte wiederholen":GOSUB 12540 'Nachricht
+2380 GOSUB 10460                                   'INPUT+2 TODO: ??? Sad hack!
+2381 GOTO 2280                                              'Erneute Auswertung
+2382 '
+2385 ' IN: MTGLZAHL
+2386 FOR K=1 TO 30:A$=INKEY$:NEXT K                      '??? Debounce keyboard
+2387 PRINT FNCUR$(21,1);DELLINE$                            '??? Delete message
+2388 TMPF=1
+2389 IF INSTR(SPACE$(25),DAT$(TMPF))=0 THEN 2394                           '???
+2390   N$="DEBUG: DAT$() with 25 spaces!":GOSUB 12540             'LW Nachricht
+2391   TMPF=TMPF+1:IF TMPF<28 THEN 2389
+2392   MTGLZAHL=MTGLZAHL-1
+2393   GOTO 2402
+2394 Q$="Wollen Sie diese Daten speichern?":GOSUB 11820          'Ja/Nein-Frage
+2395 IF JA=1 THEN 2399
+2396   N$="Daten werden nicht abgespeichert.":GOSUB 12540            'Nachricht
+2397   MTGLZAHL=MTGLZAHL-1 
+2398   GOTO 2404
+2399 N$="Daten werden abgespeichert...":GOSUB 12540                  'Nachricht
+2400 GOSUB 13370                                        'Erste Seite VN anlegen
+2401 GOSUB 11690                              'Speichern der Felddaten auf Disk
+2402 GOSUB 11125                                            'Schreiben MTGLZAHL
+2403 MTGLMAX=MTGLZAHL
+2404 PRINT FNCUR$(21,1);DELLINE$                                'Delete message
+2405 RETURN
+2427 ' 
+2428 ' *** Stammsatz ändern von 03************ ********************************
+2429 '
 2430 MT$="STAMMSATZ ÄNDERN":MI$="G-01102":GOSUB 12610              'Basis Maske
 2440 F=1:PRINT CURON$
 2450 FKEYS$="":GOSUB 12730                                      'F-Tastenleiste
@@ -166,7 +202,7 @@
 2620 FOR K=4 TO 8:PRINT FNCUR$(K,1);DELLINE$:NEXT:PRINT FNCUR$(21,1);DELLINE$
 2630 GOSUB 11580                                                   'Daten lesen
 2640 PRINT HIGHOFF$;FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(5,41);"Beruf:"
-2650 GOSUB 11180
+2650 GOSUB 11200
 2660 GOSUB 11420
 2670 PRINT FNCUR$(3,46);MTGLZAHL
 2680 FKEYS$="<F7>=Speichern":GOSUB 12730                        'F-Tastenleiste
@@ -210,7 +246,7 @@
 3060 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12540:GOTO 2960 'Nachricht
 3070 GOSUB 11580                                                'Daten einlesen
 3080 GOSUB 12610                                                   'Basis Maske
-3090 PRINT FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(3,46);MTGLZAHL;FNCUR$(5,41);"Beruf:":GOSUB 11180:GOSUB 11420 'Feldmaske
+3090 PRINT FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(3,46);MTGLZAHL;FNCUR$(5,41);"Beruf:":GOSUB 11200:GOSUB 11420 'Feldmaske
 3100 Q$="Endgültig löschen?":GOSUB 11820                         'Ja/Nein-Frage
 3110 IF JA=0 THEN 3140                                               'Löschen ?
 3120 DAT$(5)="ausgetreten     ":PRINT FNCUR$(9,16);HIGHON$;DAT$(5);HIGHOFF$
@@ -332,7 +368,7 @@
 4280 GOTO 3920
 4290 GOSUB 12610                                                   'Basis Maske
 4300 IF DRUCKFLAG THEN MT$="SUCHEN & DRUCKEN" ELSE MT$="STAMMSATZ SUCHEN"
-4310 GOSUB 11180
+4310 GOSUB 11200
 4320 IF NOT DRUCKFLAG THEN GOSUB 12730                          'F-Tastenleiste
 4330 PRINT FNCUR$(5,41);"BERUF:"
 4340 RETURN
@@ -357,7 +393,7 @@
 4530 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12540:GOTO 4430 'Nachricht
 4540 GOSUB 11580                                                   'Daten lesen
 4550 GOSUB 12610                                                   'Basis Maske
-4560 PRINT FNCUR$(3,30);"Mitgliedsnummer";HIGHON$;FNCUR$(3,46);MTGLZAHL;HIGHOFF$;FNCUR$(5,41);"Beruf:":GOSUB 11180:GOSUB 11420
+4560 PRINT FNCUR$(3,30);"Mitgliedsnummer";HIGHON$;FNCUR$(3,46);MTGLZAHL;HIGHOFF$;FNCUR$(5,41);"Beruf:":GOSUB 11200:GOSUB 11420
 4570 Q$="Wollen Sie diese Daten drucken lassen?":GOSUB 11820     'Ja/Nein-Frage
 4580 IF JA=0 THEN 4380                                               'Drucken ?
 4590 Q$="Ist der Drucker eingeschaltet und bereit zur Ausgabe?":GOSUB 11820 'Ja/Nein-Frage
@@ -651,51 +687,59 @@
 11030 NEXT K
 11040 RETURN
 11050 '
-11060 ' *** Einlesen MTGLMAX **************************************************
+11060 ' *** Lesen MTGLMAX
 11070 '
+11071 ' OUT: MTGLMAX
 11080 OPEN "I",#1,"B:MTGLZAHL.DAT"
 11090   INPUT #1,MTGLMAX$
 11100   MTGLMAX=VAL(MTGLMAX$)
 11110 CLOSE #1
-11120 RETURN 
+11120 RETURN
+11121 '
+11122 ' *** Schreiben MTGLZAHL
+11123 '
+11124 ' IN: MTGLZAHL
+11125 OPEN "O",#1,"B:MTGLZAHL.DAT"
+11126   PRINT #1,STR$(MTGLZAHL)
+11127 CLOSE #1
+11128 RETURN
 11130 '
-11140 ' *** Maske Feldnamen und Eingabefelder (Pünktchen) *********************
+11140 ' *** Maske Feldnamen und Eingabefelder (Pünktchen)
 11150 '
 11160 ' IN: FELDMAX
 11170 ' IN: MTGLZAHL
-11180 'LW *** PRINT HIGHOFF$;                                 'TODO Entry point
-11190 'LW *** PRINT CUROFF$;
 11200 FOR K=1 TO FELDMAX
-11210   S=FECOL(K)
-11220   Z=FEROW(K)
-11230   PRINT FNCUR$(Z,S);FENAM$(K);STRING$(FELNG(K),".")       'XOX Auffüllen?
+11210   Z=FEROW(K)
+11220   S=FECOL(K)
+11230   PRINT FNCUR$(Z,S);FENAM$(K)
+11231   S=S+XOFF
+11232   PRINT FNCUR$(Z,S);STRING$(FELNG(K),".")
 11240 NEXT
-11250 'LW *** PRINT CURON$;
-11260 MTGL$=STR$(MTGLZAHL)                                              'TODO ?
 11270 RETURN
 11280 '
-11290 ' *** Maske Feldwerte-Platzhalter (Pünktchen) ***************************
+11290 ' *** Maske Eingabefelder (Pünktchen)
 11300 '
 11310 ' IN: FELDMAX
 11320 FOR K=1 TO FELDMAX
-11330   S=FECOL(K)+14
-11340   Z=FEROW(K)
+11330   Z=FEROW(K)
+11340   S=FECOL(K)+XOFF
 11350   PRINT FNCUR$(Z,S);STRING$(FELNG(K),".")
 11360 NEXT
 11370 RETURN
 11380 '
-11390 ' *** Maske Feldwerte ***************************************************
+11390 ' *** Maske Feldwerte
 11400 '
 11410 ' IN: FELDMAX
 11420 PRINT HIGHON$
 11430 FOR K=1 TO FELDMAX
-11440   S=FECOL(K)+14
-11450   Z=FEROW(K)
+11440   Z=FEROW(K)
+11450   S=FECOL(K)+XOFF
 11460   PRINT FNCUR$(Z,S);DAT$(K)
 11470 NEXT
+11471 PRINT HIGHOFF$
 11480 RETURN
 11490 '
-11500 ' *** Fielden der Stammsatz Random X.S.-Datei ************************OK*
+11500 ' *** FIELDen der Stammsatz-Datei
 11510 '
 11520 OPEN "R",#2,"B:MV.DAT",462
 11530 FIELD #2,236 AS DD1$,225 AS DD2$
@@ -713,14 +757,14 @@
 11650 '
 11660 ' *** Speichern der Felddaten auf Disk **********************************
 11670 '
-11680 GOSUB 13370       'NEUES VN-BLATT ANLEGEN   DARF NUR STS-ERF. ANSPRINGEN!
+11671 ' IN: MTGLZAHL
 11690 FOR K=1 TO 27:LNG=FELNG(K):DAT$(K)=DAT$(K)+STRING$(LNG-LEN(DAT$(K))," "):NEXT
 11700 HH$=""
 11710 FOR K=1 TO 14:HH$=HH$+DAT$(K):NEXT:LSET DD1$=HH$
 11720 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
 11730 PRINT FNCUR$(21,1);
 11740 PUT #2,MTGLZAHL
-11750 N$="Die Daten sind auf Diskette abgespeichert.":GOSUB 12540    'Nachricht
+11750 N$="Die Daten sind auf Diskette abgespeichert.":GOSUB 12540    'Nachricht 'TODO: Too may messages queued?
 11760 RETURN
 11770 '
 11780 ' *** Ja/Nein - Frage ***************************************************
@@ -728,8 +772,8 @@
 11800 ' IN:  Q$ - Frage
 11810 ' OUT: JA 1 = true, 0 = false
 11820 N$=Q$+" (J=Ja/N=Nein)":GOSUB 12540                             'Nachricht
-11830 PRINT FNCUR$(23,1);DELLINE$;            'Delete F-keys 'TODO: Entry-Point
-11840 PRINT FNCUR$(24,1);DELLINE$;
+11830 PRINT FNCUR$(23,1);DELLINE$             'Delete F-keys 'TODO: Entry-Point
+11840 PRINT FNCUR$(24,1);DELLINE$ 
 11850 PRINT HOME$                                             'TODO: Necessary?
 11860 ANSWER$=INPUT$(1)
 11870 PRINT BSP$;                                             'TODO: Necessary?
@@ -772,17 +816,6 @@
 12240 '
 12250 IF VAL(TEST$)=0 THEN JA=0                                           'Jahr
 12260 RETURN
-12270 '
-12280 ' *** EXIT für ERFASSEN *************************************************
-12290 '
-12300 K=1:FOR II=1 TO 30:A$=INKEY$:NEXT:A$=""
-12310 PRINT FNCUR$(21,1);DELLINE$
-12320 IF INSTR(SPACE$(25),DAT$(K))<>0 THEN K=K+1:IF K<28 THEN 12320 ELSE MTGLZAHL=MTGLZAHL-1:MTGL$=STR$(MTGLZAHL):GOTO 12350
-12330 Q$="Wollen Sie diese Daten speichern?":GOSUB 11820         'Ja/Nein-Frage
-12340 IF JA=1 THEN GOSUB 11680:N$="Daten werden abgespeichert.":GOSUB 12540 ELSE N$="Daten werden nicht abgespeichert.":GOSUB 12540:M=MTGLZAHL-1:MTGL$=STR$(M) 'Nachricht 'Nachricht
-12350 OPEN "O",#1,"B:MTGLZAHL.DAT":PRINT #1,MTGL$:CLOSE #1
-12360 MTGLMAX=MTGLZAHL:MTGL$=STR$(MTGLZAHL)
-12370 RETURN
 12380 '
 12390 ' *** Voreinstellungen im ERFASSEN  (Defaults) **************************
 12400 '
@@ -807,7 +840,6 @@
 12590 ' IN: MT$ - Menu title
 12600 ' IN: MI$ - Menu ID
 12610 PRINT CLS$;
-12620 PRINT HIGHOFF$;
 12630 PRINT "00**********************";
 12640 PRINT FNCUR$(1,(80-LEN(MT$))/2);MT$;FNCUR$(1,72);MI$
 12650 PRINT STRICH$
@@ -819,7 +851,7 @@
 12710 '
 12720 ' IN: FKEYS$ - Additional function key labels 
 12730 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
-12740 PRINT FKEYS$            'NO semicolon after FKEY$ else display is garbled
+12740 PRINT FKEYS$         'LW NO semicolon after FKEY$ else display is garbled
 12750 RETURN
 12760 '
 12770 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
@@ -834,7 +866,7 @@
 12860 ' OUT: FKEY - number of pressed function key or 0
 12870 ' OUT: NKEY - number of pressed numeric key or 0
 12880 NKEY=0:FKEY=0
-12890 FOR I=1 TO 30:A$=INKEY$:NEXT                              'Key debouncing
+12890 FOR I=1 TO 30:A$=INKEY$:NEXT                           'Debounce keyboard
 12900 A$=INPUT$(1)
 12910 IF A$>"0" AND ASC(A$)<48+NKEYMAX+1 THEN NKEY=VAL(A$):RETURN
 12920 IF A$>CHR$(240) AND A$<CHR$(245) THEN FKEY=ASC(A$)-240:RETURN
@@ -882,6 +914,7 @@
 13340 '
 13350 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
 13360 '
+13361 ' IN: MTGLZAHL
 13370 GET #3,1                            'letzte Seitennummer einlesen dann +1
 13380 TMPOINT=VAL(POINT0$)+1
 13390 LSET DDD1$=""                                    'leeren Record speichern
@@ -1074,7 +1107,6 @@
 15260 '
 15270 ' ### Unterprogramme "Mitgliedsliste drucken" ###########################
 15280 '
-15290 '
 15300 ' *** Mitgliedsliste drucken (Kopf)
 15310 '
 15320 ' IN: DATUM$
