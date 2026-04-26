@@ -121,9 +121,8 @@
 2170 MT$="STAMMSATZ ANLEGEN":MI$="G-01101":GOSUB 12580             'Basis Maske
 2180 FKEYS$="<F7>=Speichern":GOSUB 12690                        'F-Tastenleiste
 2190 PRINT FNCUR$(3,31);"Mitgliedsnummer"
-2200 GOSUB 11270                                      'Leere Feldmaske ausgeben
 2210 GOSUB 12380                                           'Defaultwerte setzen
-2220 IF DATENAUSG=1 THEN GOSUB 11490:DATENAUSG=0 '??? wenn vorher HILFE 'Feldwerte ausgeben
+2220 IF DATENAUSG=1 THEN GOSUB 11556:DATENAUSG=0 '??? wenn vorher HILFE 'Feldwerte ausgeben
 2230 PRINT FNCUR$(3,46);HIGHON$;MTGLZAHL;HIGHOFF$
 2240 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F)
 2250 INTEXT$=DAT$(F)                                          'TODO Entry Point
@@ -147,13 +146,12 @@
 2430   N$="Stammdatensatz wird abgespeichert...":GOSUB 12510         'Nachricht
 2440   GOSUB 13340                                      'Erste Seite VN anlegen
 2450   GOSUB 11770                            'Speichern der Felddaten auf Disk
-2460   GOSUB 11390                              'Leere Feldplatzhalter ausgeben
 2470   N$="":GOSUB 12510                                             'Nachricht
 2480   MTGLZAHL=MTGLZAHL+1
 2490   F=1
 2500   GOSUB 13070                                                'Clear DAT$()
 2510   GOSUB 12380                                         'Defaultwerte setzen
-2520   GOSUB 11490                                 'Aktuelle Feldwerte ausgeben
+2520   GOSUB 11556                                 'Aktuelle Feldwerte ausgeben
 2530   GOTO 2230
 2540 N$="Sad hack! Ungültige Eingabe - Bitte wiederholen":GOSUB 12510 'Nachricht
 2550 GOSUB 10460                                   'INPUT+2 TODO: ??? Sad hack!
@@ -205,7 +203,7 @@
 3010 FOR K=4 TO 8:PRINT FNCUR$(K,1);DELLINE$:NEXT:PRINT FNCUR$(21,1);DELLINE$
 3020 GOSUB 11660                                                   'Daten lesen
 3030 PRINT HIGHOFF$;FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(5,41);"Beruf:"
-3040 GOSUB 11270
+3040 GOSUB 11270                                         'LW replace with 11556
 3050 GOSUB 11490
 3060 PRINT FNCUR$(3,46);MTGLZAHL
 3070 FKEYS$="<F7>=Speichern":GOSUB 12690                        'F-Tastenleiste
@@ -249,7 +247,8 @@
 3450 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510:GOTO 3350 'Nachricht
 3460 GOSUB 11660                                                'Daten einlesen
 3470 GOSUB 12580                                                   'Basis Maske
-3480 PRINT FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(3,46);MTGLZAHL;FNCUR$(5,41);"Beruf:":GOSUB 11270:GOSUB 11490 'Feldmaske
+3480 PRINT FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(3,46);MTGLZAHL;FNCUR$(5,41);"Beruf:"
+3481 GOSUB 11270:GOSUB 11490 'Feldmaske                 'LW replace with 11556?
 3490 Q$="Endgültig löschen?":GOSUB 11900                         'Ja/Nein-Frage
 3500 IF JA=0 THEN 3530                                               'Löschen ?
 3510 DAT$(5)="ausgetreten     ":PRINT FNCUR$(9,16);HIGHON$;DAT$(5);HIGHOFF$
@@ -396,7 +395,8 @@
 4920 IF MTGLZAHL>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510:GOTO 4820 'Nachricht
 4930 GOSUB 11660                                                   'Daten lesen
 4940 GOSUB 12580                                                   'Basis Maske
-4950 PRINT FNCUR$(3,30);"Mitgliedsnummer";HIGHON$;FNCUR$(3,46);MTGLZAHL;HIGHOFF$;FNCUR$(5,41);"Beruf:":GOSUB 11270:GOSUB 11490
+4950 PRINT FNCUR$(3,30);"Mitgliedsnummer";HIGHON$;FNCUR$(3,46);MTGLZAHL;HIGHOFF$;FNCUR$(5,41);"Beruf:"
+4951 GOSUB 11270:GOSUB 11490                            'LW replace with 11556?
 4960 Q$="Wollen Sie diese Daten drucken lassen?":GOSUB 11900     'Ja/Nein-Frage
 4970 IF JA=0 THEN 4770                                               'Drucken ?
 4980 Q$="Ist der Drucker eingeschaltet und bereit zur Ausgabe?":GOSUB 11900 'Ja/Nein-Frage
@@ -719,16 +719,6 @@
 11320   PRINT FNCUR$(Z,S);STRING$(FELNG(K),".")
 11330 NEXT
 11340 RETURN
-11350 '
-11360 ' *** Maske Eingabefelder (Pünktchen)
-11370 '
-11380 ' IN: FELDMAX
-11390 FOR K=1 TO FELDMAX
-11400   Z=FEROW(K)
-11410   S=FECOL(K)+XOFF
-11420   PRINT FNCUR$(Z,S);STRING$(FELNG(K),".")
-11430 NEXT
-11440 RETURN
 11450 '
 11460 ' *** Maske Feldwerte
 11470 '
@@ -740,7 +730,22 @@
 11530   PRINT FNCUR$(Z,S);DAT$(K)
 11540 NEXT
 11550 PRINT HIGHOFF$
-11560 RETURN
+11551 RETURN
+11552 '
+11553 ' *** Maske Feldnamen, Eingabefelder und Filler
+11554 '
+11555 ' IN: FELDMAX
+11556 FOR K=1 TO FELDMAX
+11557   Z=FEROW(K)
+11558   S=FECOL(K)
+11559   PRINT FNCUR$(Z,S);FENAM$(K)
+11560   S=S+XOFF
+11561   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
+11562   TMPDATLNG=LEN(DAT$(K))
+11563   TMPLNG=FELNG(K)
+11564   IF TMPDATLNG<TMPLNG THEN PRINT STRING$(TMPLNG-TMPDATLNG,".");
+11565 NEXT
+11566 RETURN
 11570 '
 11580 ' *** FIELDen der Stammsatz-Datei
 11590 '
@@ -1316,7 +1321,7 @@
 17290 GOSUB 13000                                      'Rückkehr aus Hilfe-Text
 17300 RETURN
 17310 '
-17320 ' *** Programfehler
+17320 ' *** Programmfehler
 17330 '
 17340 LIND$=STRING$(15," ")
 17350 GOSUB 12580                                                  'Basis Maske
