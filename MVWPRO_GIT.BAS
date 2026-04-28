@@ -57,8 +57,10 @@
 1530 ' LIND$   - Local text indent
 1540 ' F       - Feldindex 1..27 (FELDMAX)
 1541 ' MTGLMAX - Höchste Mitgliedsnummer
+1542 '
 1550 XOFF=14             'Offset Colum Feldname to Column Wertefeld (Pünktchen)
-1551 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
+1551 '
+1552 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
 1560 '
 1570 ON ERROR GOTO 17340                                 'Enable error trapping
 1580 '
@@ -197,7 +199,7 @@
 3050 GOSUB 11490
 3060 PRINT FNCUR$(3,46);MTGLZAHL
 3070 FKEYS$="<F7>=Speichern":GOSUB 12690                        'F-Tastenleiste
-3080 S=FECOL(F)+14:Z=FEROW(F):N$="":GOSUB 12510                      'Nachricht
+3080 S=FECOL(F)+XOFF:Z=FEROW(F):N$="":GOSUB 12510                    'Nachricht
 3090 LNG=FELNG(F):TYP=FETYP(F)
 3100 GOSUB 10410                                                         'INPUT
 3110 IF FKEY=1 THEN GOSUB 16820:GOTO 3030                   'Hilfe-Text  F-Keys
@@ -270,7 +272,7 @@
 3770 FKEYS$="<F5>=Suchen ":GOSUB 4680
 3780 IF DRUCKFLAG THEN FKEYS$="<F5>=Suchen & Drucken"
 3790 GOSUB 12690                                                'F-Tastenleiste
-3800 Z=FEROW(F):S=FECOL(F)+14                                  'Cursorparameter
+3800 Z=FEROW(F):S=FECOL(F)+XOFF                                'Cursorparameter
 3810 LNG=FELNG(F):TYP=3
 3820 PRINT FNCUR$(Z,S)
 3830 OUTTEXT$="":GOSUB 10410                                             'INPUT
@@ -839,7 +841,8 @@
 12490 '
 12500 ' IN: N$ - Nachricht
 12510 PRINT FNCUR$(21,2);DELLINE$;
-12511 IF N$<>"" THEN PRINT INVON$;" ";N$;" ";INVOFF$; ELSE PRINT " "; '???
+12511 IF N$<>"" THEN PRINT INVON$;" ";N$;" ";INVOFF$;
+12512 PRINT                              'LW workaround quirk in display driver 
 12520 RETURN
 12530 '
 12540 ' *** Bildschirmmaske - Basis ****************************************OK*
@@ -848,10 +851,10 @@
 12570 ' IN: MI$ - Menu ID
 12580 PRINT CLS$;
 12590 PRINT "00**********************";
-12600 PRINT FNCUR$(1,(80-LEN(MT$))/2);MT$;FNCUR$(1,72);MI$
+12600 PRINT FNCUR$(1,(80-LEN(MT$))/2);MT$;FNCUR$(1,73);MI$
 12610 PRINT STRICH$
 12620 PRINT FNCUR$(21,1);
-12630 PRINT STRICH$
+12630 PRINT STRICH$             'quirk in display driver places this in line 22
 12640 RETURN
 12650 '
 12660 ' *** Funktionstasten Leiste (KEY LABELS) *******************************
