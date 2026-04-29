@@ -1,4 +1,3 @@
-1000 ' RELEASE 01***** Neubearbeitung durch 04**********
 1010 '
 1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:5
 1030 '
@@ -54,10 +53,11 @@
 1510 '
 1520 ' Other global variables:
 1521 ' -----------------------
-1530 ' LIND$   - Local text indent
-1540 ' F       - Feldindex 1..27 (FELDMAX)
-1541 ' MTGLMAX - Höchste Mitgliedsnummer
-1542 '
+1530 ' LIND$    - Local text indent
+1540 ' F        - Feldindex 1..27 (FELDMAX)
+1541 ' MTGLMAX  - Höchste auf Disk gespeicherte Mitgliedsnummer
+1542 ' MTGLZAHL - Momentane Mitgliedsnummer
+1543 '
 1550 XOFF=14             'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 1551 '
 1552 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
@@ -73,12 +73,12 @@
 1650 Q$="Bitte Daten-Diskette in Laufwerk B einlegen. Bereit?":GOSUB 11900 'Ja/Nein-Frage
 1660 IF JA=0 THEN 17480                                           'Programmende
 1690 '
-1700 N$="Einen Moment...":GOSUB 12510                                'Nachricht
+1700 N$="Einen Moment...":GOSUB 12519          'Nachricht und F-keys ausblenden
 1710 GOSUB 10830                          'Einlesen Stammdatenfelder-Definition
 1720 GOSUB 11600                                   'Fielden der Stammsatz-Datei
 1730 GOSUB 13230                       'Fielden der Verwendungsnachweis-Dateien
 1735 GOSUB 11090:MTGLZAHL=MTGLMAX                            'Einlesen MTGLZAHL
-1740 N$="":GOSUB 12510                                               'Nachricht
+1740 GOSUB 12533                                             'Nachricht löschen
 1750 '
 1760 ' ################# Mitgliederverwaltungsmenü (MVW-Menü) #################
 1770 '
@@ -98,8 +98,6 @@
 1910 ' ########################### Stammsatzpflege ############################
 1920 '
 1940 IF DRUCKFLAG THEN RETURN                                              '???
-1941 GOSUB 11044                                 'Clear DAT$() TODO: necessary?
-1942 GOSUB 11049                                'Clear SUCH$() TODO: necessary?
 1950 '
 1960 ' *** Stammsatzpflege-Menü ***********************************************
 1970 '
@@ -123,16 +121,14 @@
 2160 DATENAUSG=1                                                           '???
 2170 MT$="STAMMSATZ ANLEGEN":MI$="G-01101":GOSUB 12580             'Basis Maske
 2180 FKEYS$="<F7>=Speichern":GOSUB 12690                        'F-Tastenleiste
-2190 PRINT FNCUR$(3,31);"Mitgliedsnummer"
 2195 GOSUB 11044                                                  'Clear DAT$()
 2210 GOSUB 12380                                           'Defaultwerte setzen
-2220 IF DATENAUSG=1 THEN GOSUB 11556:DATENAUSG=0                           '???
-2230 PRINT FNCUR$(3,46);HIGHON$;MTGLZAHL;HIGHOFF$
+2220 PRINT FNCUR$(3,31);"Mitgliedsnummer";HIGHON$;MTGLZAHL;HIGHOFF$
+2230 IF DATENAUSG=1 THEN GOSUB 11556:DATENAUSG=0     'Felder und Feldwerte '???
 2240 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F):FKEYMASK$="12347"
 2250 INTEXT$=DAT$(F)                                          'TODO Entry Point
 2260 GOSUB 10410                                                         'Input
 2270 IF ASCC<>ASCRET THEN 2320                                 'Carriage return
-2280   IF FEMUSS(F) AND LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12510:GOTO 2250 'Nachricht
 2290   DAT$(F)=OUTTEXT$
 2300   F=F+1:IF F>FELDMAX THEN F=1
 2310   GOTO 2240
@@ -143,32 +139,34 @@
 2360   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
 2370   GOTO 2240
 2380 IF FKEY=1 THEN GOSUB 16670:GOTO 2170                       'F1->Hilfe-Text
-2390 IF FKEY=2 THEN GOSUB 2590:GOTO 1980                  '2590 Exit "Erfassen"
-2400 IF FKEY=3 THEN GOSUB 2590:GOTO 1780                  '2590 Exit "Erfassen"
-2410 IF FKEY=4 THEN GOSUB 2590:GOSUB 12940:GOTO 2240  '2590 Exit "Erfassen" 12980 Implicit No
+2390 IF FKEY=2 THEN GOSUB 2590:GOTO 1980                       'Exit "Erfassen"
+2400 IF FKEY=3 THEN GOSUB 2590:GOTO 1780                       'Exit "Erfassen"
+2410 IF FKEY<>4 THEN 2420
+2412   GOSUB 12973                                'Rückkehr ins Hauptmenü Frage
+2413   IF JA=0 THEN GOSUB 12690:GOTO 2240          'F-Keys TODO: is FKEYS$ set?
+2414   GOSUB 2590                                              'Exit "Erfassen"
+2415   GOTO 17480                                                 'Programmende
 2420 IF FKEY=7 THEN GOSUB 2720:GOTO 2140
-2540 N$="DEBUG: Should never happen!":GOSUB 12510    'TODO: Should never happen 'Nachricht
-2560 GOTO 2260                                       'TODO: Should never happen
 2570 '
-2590 TMPF=1                                                                '???
-2620 IF INSTR(SPACE$(25),DAT$(TMPF))=0 THEN 2670
-2630   N$="DEBUG: DAT$() with 25 spaces!":GOSUB 12510                'Nachricht
-2640   TMPF=TMPF+1:IF TMPF<(FELDMAX+1) THEN 2620
-2650   MTGLZAHL=MTGLZAHL-1
-2660   GOTO 2750
+2590 ' TMPF=1                                                              '???
+2620 ' IF INSTR(SPACE$(25),DAT$(TMPF))=0 THEN 2670
+2630 '   N$="DEBUG: DAT$() with 25 spaces!":GOSUB 12510              'Nachricht
+2640 '   TMPF=TMPF+1:IF TMPF<(FELDMAX+1) THEN 2620
+2650 '   MTGLZAHL=MTGLZAHL-1
+2660 '   GOTO 2750
 2661 '
 2670 GOSUB 10794                                             'Debounce keyboard
-2671 Q$="Wollen Sie vorher diesen Stammsatz speichern?":GOSUB 11900 'Ja/Nein-Frage
+2671 Q$="Wollen Sie vorher den Stammsatz speichern?":GOSUB 11900 'Ja/Nein-Frage
 2680 IF JA=1 THEN 2720
-2690   N$="Stammsatz wird nicht abgespeichert.":GOSUB 12510          'Nachricht
+2690   N$="Stammsatz wird nicht abgespeichert.":GOSUB 12519 'Nachricht und F-Keys löschen
 2700   MTGLZAHL=MTGLZAHL-1
 2710   GOTO 2770
 2711 '
-2720 N$="Stammsatz wird abgespeichert...":GOSUB 12510                'Nachricht
+2720 N$="Stammsatz wird abgespeichert...":GOSUB 12519 'Nachricht und F-Keys löschen
 2730 GOSUB 13340                                        'Erste VN-Seite anlegen
 2740 GOSUB 11770                                       'Speichern der Felddaten
 2750 MTGLMAX=MTGLZAHL:GOSUB 11180                            'Schreiben MTGLMAX
-2770 N$="":GOSUB 12510                                       'Nachricht löschen
+2770 GOSUB 12533                                             'Nachricht löschen
 2780 RETURN
 2790 ' 
 2800 ' *** Stammsatz ändern von 03************ ********************************
@@ -190,7 +188,7 @@
 2960 IF CKEY<>0 OR FKEY<>0 THEN GOTO 2900                               'Errors
 2970 IF LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12510:GOTO 2900 ELSE MITGLIED=VAL(OUTTEXT$) 'Nachricht
 2980 IF MITGLIED=0 THEN MITGLIED=MTGLMAX+2
-2990 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510:PRINT HIGHOFF$;FNCUR$(8,39);"...";DELHIGH$:OUTTEXT$="":GOTO 2910 'Nachricht
+2990 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510:PRINT HIGHOFF$;FNCUR$(8,39);"...";DELHIGH$:OUTTEXT$="":GOTO 2910 'Nachricht 'TODO DELHIGH$ necessary?
 3000 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
 3010 FOR K=4 TO 8:PRINT FNCUR$(K,1);DELLINE$:NEXT:PRINT FNCUR$(21,1);DELLINE$
 3020 GOSUB 11660                                                   'Daten lesen
@@ -608,38 +606,39 @@
 10300 '
 10310 ' *** Eingaberoutine (INPUT) ********************************************
 10320 '
-10330 ' IN: Z=Zeile     OUT: MUSS$    TMP: P
+10330 ' IN: Z=Zeile     OUT:          TMP: P
 10340 ' IN: S=Spalte    OUT: OUTTEXT$ TMP: VALID (1=true 0=false)
-10350 ' IN: LNG= Länge  OUT: CKEY
+10350 ' IN: LNG= Länge  OUT: CKEY     TMP: BADINPUT
 10360 ' IN: TYP=Typ     OUT: FKEY
 10370 ' IN: VNFLAG      OUT: ASCC
 10380 ' IN: INTEXT$
 10390 ' IN: FKEYMASK$
+10391 ' IN: MUSS
 10400 '
 10410 P=LEN(INTEXT$)
-10420 PRINT FNCUR$(Z,S);HIGHON$;INTEXT$;HIGHOFF$;STRING$(LNG-P,".");
+10420 PRINT FNCUR$(Z,S);HIGHON$;INTEXT$;HIGHOFF$;STRING$(LNG-P,".")
 10440 OUTTEXT$=INTEXT$
 10450 PRINT CURON$;
-10451 FEHLER=0
+10451 BADINPUT=0
 10460 CKEY=0:FKEY=0                    'TODO ??? Entry point from EXIT Erfassen
 10470 PRINT FNCUR$(Z,S+P);
 10480 A$=INPUT$(1):ASCC=ASC(A$)
-10481 IF FEHLER THEN N$="":GOSUB 12510:PRINT FNCUR$(Z,S+P);:FEHLER=0
+10481 IF BADINPUT THEN N$="":GOSUB 12510:PRINT FNCUR$(Z,S+P);:BADINPUT=0
 10490 ON TYP GOSUB 12020,12090,12150,12210                          'Type check
 10500 IF VALID=0 THEN 10560
 10510   IF P>=LNG THEN 10480                                   'Valid character
-10520   PRINT HIGHON$;A$;HIGHOFF$;
+10520   PRINT HIGHON$;A$;HIGHOFF$       'LW NO semicolon else screen may garble
 10530   OUTTEXT$=OUTTEXT$+A$
 10540   P=P+1
-10550   GOTO 10480
+10550   GOTO 10470
 10560 IF ASCC<>ASCBSP THEN 10620
 10570   IF P<1 THEN 10480                                            'Backspace
-10580   PRINT DEL$;
+10580   PRINT DEL$                      'LW NO semicolon else screen may garble
 10590   P=P-1
 10600   OUTTEXT$=LEFT$(OUTTEXT$,P)
-10610   GOTO 10480
+10610   GOTO 10470
 10620 IF ASCC=ASCESC THEN 10410                                         'Escape
-10630 IF ASCC=ASCRET THEN 10730
+10630 IF ASCC=ASCRET THEN 10725
 10640 IF ASCC=ASCCUP THEN CKEY=CKEYUP:GOTO 10725
 10650 IF ASCC=ASCCDN THEN CKEY=CKEYDN:GOTO 10725
 10660 IF VNFLAG=0 THEN 10690
@@ -649,11 +648,15 @@
 10691   FKEY=ASCC-ASCF1+1
 10692   IF INSTR(FKEYMASK$,CHR$(FKEY+ASC1-1))>0 THEN 10730
 10700 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12510         'Nachricht
-10701 FEHLER=1
+10701 BADINPUT=1
 10710 GOTO 10470
 10720 '
-10725 GOSUB 10780                                     'Block cursor auto-repeat
-10730 PRINT CUROFF$                 'LW NO semicolon else the screen garbles up
+10725 IF MUSS=0 OR LEN(OUTTEXT$)>0 THEN 10729
+10726   N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12510
+10727   BADINPUT=1 
+10728   GOTO 10470
+10729 IF CKEY<>0 THEN GOSUB 10780                     'Block cursor auto-repeat
+10730 PRINT CUROFF$                     'LW NO semicolon else screen may garble
 10740 RETURN 
 10750 '
 10760 ' *** Block cursor auto-repeat ******************************************
@@ -770,21 +773,16 @@
 11780 HH$=""
 11790 FOR K=1 TO 14:HH$=HH$+DAT$(K):NEXT:LSET DD1$=HH$
 11800 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
-11810 PRINT FNCUR$(21,1);
 11820 PUT #2,MTGLZAHL
-11830 N$="Die Daten sind auf Diskette abgespeichert.":GOSUB 12510    'Nachricht 'TODO: Too may messages queued?
 11840 RETURN
 11850 '
-11860 ' *** Ja/Nein - Frage ***************************************************
+11860 ' *** Ja/Nein-Frage *****************************************************
 11870 '
 11880 ' IN:  Q$ - Frage
 11890 ' OUT: JA - (1=yes, 0=no)
 11900 N$=Q$+" (J=Ja/N=Nein)":GOSUB 12510                             'Nachricht
-11910 PRINT FNCUR$(23,1);DELLINE$             'Delete F-keys 'TODO: Entry-Point
-11920 PRINT FNCUR$(24,1);DELLINE$; 'LW DON'T remove semicolon -> screen scrolls up 
-11930 PRINT HOME$                                             'TODO: Necessary?
+11910 GOSUB 12913                                                'Delete F-keys
 11940 ANSWER$=INPUT$(1)
-11950 PRINT BSP$;                                             'TODO: Necessary?
 11960 IF ANSWER$="J" OR ANSWER$="j" THEN JA=1:RETURN
 11970 IF ANSWER$="N" OR ANSWER$="n" THEN JA=0:RETURN
 11980 GOTO 11940
@@ -840,11 +838,29 @@
 12480 ' *** Nachricht anzeigen *********************************************OK*
 12490 '
 12500 ' IN: N$ - Nachricht
-12510 PRINT FNCUR$(21,2);DELLINE$;
+12510 PRINT FNCUR$(21,1);DELLINE$;
 12511 IF N$<>"" THEN PRINT INVON$;" ";N$;" ";INVOFF$;
 12512 PRINT                              'LW workaround quirk in display driver 
-12520 RETURN
+12513 RETURN
+12515 '
+12516 ' *** Nachricht anzeigen und F-keys ausblenden **************************
+12517 '
+12518 ' IN: N$ - Nachricht
+12519 GOSUB 12510                                                    'Nachricht
+12520 GOSUB 12913                                                'Delete F-Keys
+12521 RETURN
+12523 '
+12524 ' *** Nachricht löschen und F-keys einblenden ***************************
+12525 '
+12527 GOSUB 12533                                            'Nachricht löschen
+12528 GOSUB 12690                                               'Restore F-Keys
+12529 RETURN
 12530 '
+12531 ' *** Nachricht löschen *************************************************
+12532 '
+12533 N$="":GOSUB 12510                                      'Nachricht löschen
+12534 RETURN
+12539 '
 12540 ' *** Bildschirmmaske - Basis ****************************************OK*
 12550 '
 12560 ' IN: MT$ - Menu title
@@ -860,14 +876,14 @@
 12660 ' *** Funktionstasten Leiste (KEY LABELS) *******************************
 12670 '
 12680 ' IN: FKEYS$ - Additional function key labels 
-12690 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü ";
-12700 PRINT FKEYS$         'LW NO semicolon after FKEY$ else display is garbled
+12690 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü";
+12700 IF FKEYS$<>"" THEN PRINT " ";FKEYS$ ELSE PRINT 'LW NO semicolon else display may garbled
 12710 RETURN
 12720 '
 12730 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
 12740 '
 12750 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts             <F8>=Drucken";
-12760 PRINT HOME$;" "
+12760 PRINT HOME$
 12770 RETURN
 12780 '
 12790 ' *** Eingabe bei Menübildern *******************************************
@@ -883,15 +899,26 @@
 12890 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12510 'Nachricht
 12900 GOTO 12860
 12910 '
-12920 ' *** Rückkehr ins Hauptmenü ? ******************************************
+12911 ' *** Delete FKEYS ******************************************************
+12912 '
+12913 PRINT FNCUR$(23,1);DELLINE$
+12914 PRINT FNCUR$(24,1);DELLINE$;
+12915 RETURN
+12919 '
+12920 ' *** Rückkehr ins Hauptmenü? (Original) ********************************
 12930 '
-12940 Q$="Sie wollen wirklich ins Hauptmenü?":GOSUB 11900        'Ja/Nein-Frage
-12950 IF JA AND MT$="STAMMSATZ ÄNDERN" THEN GOSUB 13140                    '???
-12960 IF JA=1 THEN 17480                                          'Programmende
-12961 N$="":GOSUB 12510                                      'Nachricht löschen 
-12962 GOSUB 12690                                  'F-Keys TODO: is FKEYS$ set?
-12963 RETURN
+12940 GOSUB 12973                                 'Rückkehr ins Hauptmenü Frage
+12941 IF JA AND MT$="STAMMSATZ ÄNDERN" THEN GOSUB 13140                    '???
+12942 IF JA=1 THEN 17480                                          'Programmende
+12944 GOSUB 12690                                  'F-Keys TODO: is FKEYS$ set?
+12945 RETURN
 12970 '
+12971 ' *** Rückkehr ins Hauptmenü Frage **************************************
+12972 '
+12973 Q$="Wollen Sie wirklich ins Hauptmenü?":GOSUB 11900        'Ja/Nein-Frage
+12974 N$="":GOSUB 12510                                      'Nachricht löschen
+12975 RETURN
+12979 '
 12980 ' *** Rückkehr aus Hilfe-Text? ***************************************OK*
 12990 '
 13000 N$="Zurück? (J=Ja)":GOSUB 12510                                'Nachricht
@@ -1331,7 +1358,6 @@
 17410 PRINT LIND$;"    ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
 17420 PRINT LIND$;"- Drücken Sie am Rechner den Knopf hinten rechts."
 17430 PRINT LIND$;"19**************************"
-17440 PRINT
 17450 '
 17460 ' *** Programmende
 17470 '
