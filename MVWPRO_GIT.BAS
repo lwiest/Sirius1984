@@ -1,3 +1,4 @@
+1000 ' RELEASE 01***** Neubearbeitung durch 04**********
 1010 '
 1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:5
 1030 '
@@ -42,6 +43,7 @@
 1420 ASCBSP=8
 1430 ASCRET=13
 1440 ASCESC=27
+1444 ASC0=48
 1445 ASC1=49
 1450 ASCCUP=200
 1460 ASCCDN=201
@@ -126,7 +128,7 @@
 2220 PRINT FNCUR$(3,31);"Mitgliedsnummer";HIGHON$;MTGLZAHL;HIGHOFF$
 2230 IF DATENAUSG=1 THEN GOSUB 11556:DATENAUSG=0     'Felder und Feldwerte '???
 2240 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F):MUSS=FEMUSS(F)
-2250 FKEYMASK$="12347":INTEXT$=DAT$(F)
+2250 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 2260 GOSUB 10410                                                         'Input
 2270 IF ASCC<>ASCRET THEN 2320                                 'Carriage return
 2290   DAT$(F)=OUTTEXT$
@@ -177,44 +179,56 @@
 2870 PRINT FNCUR$(5,23)"des zu verändernden Stammsatzes ein,"
 2880 PRINT FNCUR$(6,21)"und beenden Sie die Eingabe mit RETURN."
 2890 PRINT FNCUR$(8,37)"=>..."
+2899 BADINPUT=0
 2900 Z=8:S=39:LNG=3:TYP=2:MUSS=1
-2901 FKEYMASK$="1234":INTEXT$=""
-2910 GOSUB 10410                                                         'INPUT
+2901 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
+2910 GOSUB 10411                                                         'Input
 2920 IF FKEY=1 THEN GOSUB 16750:GOTO 2820                               'F-Keys
 2930 IF FKEY=2 THEN 1980
-2940 IF FKEY=3 THEN GOSUB 11044:GOTO 1780                         'Clear DAT$()
-2950 IF FKEY=4 THEN GOSUB 12940
-2960 IF CKEY<>0 OR FKEY<>0 THEN GOTO 2900                               'Errors
-2970 IF LEN(OUTTEXT$)<1 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12510:GOTO 2900 ELSE MITGLIED=VAL(OUTTEXT$) 'Nachricht
-2980 IF MITGLIED=0 THEN MITGLIED=MTGLMAX+2
-2990 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510:PRINT HIGHOFF$;FNCUR$(8,39);"...";DELHIGH$:OUTTEXT$="":GOTO 2910 'Nachricht 'TODO DELHIGH$ necessary?
-3000 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
-3010 FOR K=4 TO 8:PRINT FNCUR$(K,1);DELLINE$:NEXT:PRINT FNCUR$(21,1);DELLINE$
+2940 IF FKEY=3 THEN 1780
+2950 IF FKEY=4 THEN GOSUB 12940:GOSUB 12690:GOTO 2910
+2960 '
+2970 M=VAL(OUTTEXT$)
+2971 IF M>=1 AND M<=MTGLMAX THEN 3000
+2972   N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12510       'Nachricht
+2973   BADINPUT=1
+2974   INTEXT$=OUTTEXT$                                                    '???
+2975   GOTO 2900
+3000 MTGLZAHL=VAL(OUTTEXT$)
 3020 GOSUB 11660                                                   'Daten lesen
-3030 PRINT HIGHOFF$;FNCUR$(3,30);"Mitgliedsnummer";FNCUR$(5,41);"Beruf:"
-3040 GOSUB 11270                                         'LW replace with 11556
-3050 GOSUB 11490
-3060 PRINT FNCUR$(3,46);MTGLZAHL
-3070 FKEYS$="<F7>=Speichern":GOSUB 12690             'F-Tastenleiste einblenden
+3021 '
+3030 GOSUB 12580                                                   'Basis Maske
+3038 FKEYS$="<F7>=Speichern":GOSUB 12690             'F-Tastenleiste einblenden
+3039 PRINT FNCUR$(3,31);"Mitgliedsnummer";HIGHON$;MTGLZAHL;HIGHOFF$
+3040 GOSUB 11556                                 'Felder und Feldwerte ausgeben
 3071 F=1
-3080 S=FECOL(F)+XOFF:Z=FEROW(F):N$="":GOSUB 12510                    'Nachricht
-3090 LNG=FELNG(F):TYP=FETYP(F)
-3100 GOSUB 10410                                                         'INPUT
-3110 IF FKEY=1 THEN GOSUB 16820:GOTO 3030                   'Hilfe-Text  F-Keys
-3120 IF FKEY=2 THEN GOSUB 13140: GOTO 2820                     'Eing.-Mtgl.-Nr.
-3130 IF FKEY=3 THEN GOSUB 13140:GOSUB 11044: GOTO 1780              'Mvw-Menü 'Clear DAT$() 12610
-3140 IF FKEY=4 THEN GOSUB 12940:PRINT HIGHOFF$;FNCUR$(24,1);"<F7>=Speichern";FNCUR$(1,1);HIGHON$:GOTO 3100
-3150 IF FKEY=7 THEN 3220                                       'Daten Speichern
-3160 IF CKEY=CKEYUP THEN PRINT FNCUR$(Z,S);DAT$(F);STRING$(LNG-LEN(DAT$(F)),"."):IF F>1  THEN F=F-1:GOTO 3080  ELSE F=26:GOTO 3080 'Cursor CKEY
-3170 IF CKEY=CKEYDN THEN PRINT FNCUR$(Z,S);DAT$(F);STRING$(LNG-LEN(DAT$(F)),"."):IF F<27 THEN F=F+1:GOTO 3080  ELSE F= 1:GOTO 3080 'Cursor runter
-3180 IF ASCC=13 AND LEN(OUTTEXT$)<1 AND FEMUSS(F) THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12510:GOTO 3100 'Nachricht
-3190 IF ASCC=13 THEN DAT$(F)=OUTTEXT$:PRINT HIGHON$;FNCUR$(Z,S);DAT$(F);STRING$(LNG-LEN(DAT$(F)),".")                    'Return
-3200 IF ASCC=13 THEN IF F<FELDMAX THEN F=F+1:GOTO 3080 ELSE F=1:GOTO 3080
-3210 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12510:FOR KK=1 TO 25000:NEXT:GOTO 3080 'Nachricht
-3220 GOSUB 11770                                               'Daten speichern
-3230 Q$="Wollen Sie noch einen weiteren Datensatz ändern?":GOSUB 11900 'Ja/Nein-Frage
-3240 IF JA=1 THEN 2820
-3250 GOTO 1980                                                    'Zum STS-Menü
+3080 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F):MUSS=FEMUSS(F)
+3090 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
+3100 GOSUB 10410                                                         'Input
+3101 IF ASCC<>ASCRET THEN 3110
+3102   DAT$(F)=OUTTEXT$
+3103   F=F+1:IF F>FELDMAX THEN F=1
+3104   GOTO 3080
+3110 IF CKEY=0 THEN 3120
+3111   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")
+3112   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
+3113   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
+3114   GOTO 3080
+3120 IF FKEY=1 THEN GOSUB 16820:GOTO 3030
+3121 IF FKEY=2 THEN GOSUB 3160:GOTO 2820               'Eingabe Mitgliedsnummer
+3130 IF FKEY=3 THEN GOSUB 3160:GOTO 1780                              'Mvw-Menü
+3140 IF FKEY=7 THEN GOSUB 3220:GOTO 3080
+3141 GOSUB 12973                             'F4-> Rückkehr ins Hauptmenü Frage
+3142 IF JA=0 THEN GOSUB 12690:GOTO 3080                      'F-Keys einblenden
+3143 GOSUB 3160                                                  'Exit "Ändern'
+3144 GOTO 17480                                                   'Programmende
+3151 '
+3160 Q$="Wollen Sie die Daten speichern?":GOSUB 11900            'Ja/Nein-Frage
+3161 IF JA=0 THEN RETURN
+3220 N$="Stammsatz wird abgespeichert...":GOSUB 12519 'Nachricht und F-Keys löschen
+3221 GOSUB 11770                                               'Daten speichern
+3222 GOSUB 12533                                             'Nachricht löschen      
+3223 RETURN
 3260 '
 3270 ' *** Stammsatz löschen von 04********** *********************************
 3280 '
@@ -614,12 +628,13 @@
 10380 ' IN: INTEXT$
 10390 ' IN: FKEYMASK$
 10391 ' IN: MUSS
+10392 ' IN: CKEYMASK$
 10400 '
-10410 P=LEN(INTEXT$)
+10410 BADINPUT=0
+10411 P=LEN(INTEXT$)
 10420 PRINT FNCUR$(Z,S);HIGHON$;INTEXT$;HIGHOFF$;STRING$(LNG-P,".")
 10440 OUTTEXT$=INTEXT$
 10450 PRINT CURON$;
-10451 BADINPUT=0
 10460 CKEY=0:FKEY=0
 10470 PRINT FNCUR$(Z,S+P);
 10480 A$=INPUT$(1):ASCC=ASC(A$)
@@ -639,11 +654,11 @@
 10610   GOTO 10470
 10620 IF ASCC=ASCESC THEN 10410                                         'Escape
 10630 IF ASCC=ASCRET THEN 10725
-10640 IF ASCC=ASCCUP THEN CKEY=CKEYUP:GOTO 10725
-10650 IF ASCC=ASCCDN THEN CKEY=CKEYDN:GOTO 10725
+10640 IF ASCC=ASCCUP THEN CKEY=CKEYUP:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10725
+10650 IF ASCC=ASCCDN THEN CKEY=CKEYDN:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10725
 10660 IF VNFLAG=0 THEN 10690
-10670   IF ASCC=ASCCLT THEN CKEY=CKEYLT:GOTO 10725 
-10680   IF ASCC=ASCCRT THEN CKEY=CKEYRT:GOTO 10725 
+10670   IF ASCC=ASCCLT THEN CKEY=CKEYLT:IF INSTR(CKEYMASK$,STR$(CKEY+ASC0))>0 THEN 10725 
+10680   IF ASCC=ASCCRT THEN CKEY=CKEYRT:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10725 
 10690 IF ASCC<ASCF1 OR ASCC>ASCF9 THEN 10700                            'F-Keys
 10691   FKEY=ASCC-ASCF1+1
 10692   IF INSTR(FKEYMASK$,CHR$(FKEY+ASC1-1))>0 THEN 10730
@@ -759,20 +774,43 @@
 11640 ' *** Einlesen der Felddaten von Disk ***********************************
 11650 '
 11660 GET #2,MTGLZAHL
-11670 FOR LL=1 TO FELDMAX:DAT$(LL)="":NEXT
-11680 HLANG=1
-11690 FOR K=1 TO 14:LNG=FELNG(K):DAT$(K)=MID$(DD1$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
-11700 HLANG=1
-11710 FOR K=15 TO 27:LNG=FELNG(K):DAT$(K)=MID$(DD2$,HLANG,LNG):HLANG=LNG+HLANG:NEXT
+11670 GOSUB 11044                                                 'Clear DAT$()
+11680 I=1
+11690 FOR K=1 TO 14
+11691   LNG=FELNG(K)
+11692   TMP$=MID$(DD1$,I,LNG):GOSUB 11722:DAT$(K)=TMP$
+11693   I=LNG+I
+11694 NEXT
+11700 I=1
+11710 FOR K=15 TO FELDMAX
+11711   LNG=FELNG(K)
+11612   TMP$=MID$(DD2$,I,LNG):GOSUB 11722:DAT$(K)=TMP$
+11713   I=LNG+I
+11714 NEXT
 11720 RETURN
+11721 '
+11722 FOR KK=LEN(TMP$) TO 1 STEP -1
+11733   IF MID$(TMP$,KK,1)<>" " THEN 11745
+11744 NEXT KK
+11745 TMP$=LEFT$(TMP$,KK)
+11746 RETURN
 11730 '
 11740 ' *** Speichern der Felddaten auf Disk **********************************
 11750 '
 11760 ' IN: MTGLZAHL
-11770 FOR K=1 TO 27:LNG=FELNG(K):DAT$(K)=DAT$(K)+SPACE$(LNG-LEN(DAT$(K))):NEXT
-11780 HH$=""
-11790 FOR K=1 TO 14:HH$=HH$+DAT$(K):NEXT:LSET DD1$=HH$
-11800 HH$="":FOR K=15 TO 27:HH$=HH$+DAT$(K):NEXT:LSET DD2$=HH$:HH$=""
+11770 TMP$=""
+11790 FOR K=1 TO 14
+11791   LNG=FELNG(K)
+11792   TMP$=TMP$+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
+11793 NEXT K
+11794 LSET DD1$=TMP$
+11800 TMP$=""
+11801 FOR K=15 TO FELDMAX
+11802   LNG=FELNG(K)
+11803   TMP$=TMP$+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
+11804 NEXT K
+11805 LSET DD2$=TMP$
+11806 TMP$=""
 11820 PUT #2,MTGLZAHL
 11840 RETURN
 11850 '
@@ -902,7 +940,6 @@
 12920 ' *** Rückkehr ins Hauptmenü? (Original) *********************** REVIEWED
 12930 '
 12940 GOSUB 12973                                 'Rückkehr ins Hauptmenü Frage
-12941 IF JA AND MT$="STAMMSATZ ÄNDERN" THEN GOSUB 13140                    '???
 12942 IF JA=1 THEN 17480                                          'Programmende
 12944 GOSUB 12690                                    'F-Tastenleiste einblenden
 12945 RETURN
@@ -920,12 +957,6 @@
 13010 GOSUB 11910                                           'skip string concat
 13020 IF JA=0 THEN 13000
 13030 RETURN
-13110 '
-13120 ' *** UPRO FÜR ÄNDERN-EXIT **********************************************
-13130 '
-13140 Q$="Wollen Sie die Daten speichern?":GOSUB 11900           'Ja/Nein-Frage
-13150 IF JA THEN GOSUB 11770
-13160 RETURN
 13170 '
 13180 ' **** VN - Subroutines, permitting one page handling *******************
 13190 ' ****         by 04********** 21*******              *******************
