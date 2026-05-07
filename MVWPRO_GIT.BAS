@@ -72,6 +72,7 @@
 1710 XOFF=14             'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 1720 '
 1730 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
+1731 ' TIP: Use semicolons with PRINT carefully -> display driver bug
 1740 '
 1750 ON ERROR GOTO 17890                                 'Enable error trapping
 1760 '
@@ -278,7 +279,7 @@
 3770 IF JA=0 THEN 3840
 3780   DAT$(5)="ausgetreten"
 3790   PRINT FNCUR$(FEROW(5),FECOL(5)+XOFF);HIGHON$;DAT$(5);HIGHOFF$;
-3800   PRINT STRING$(FELNG(5)-LEN(DAT$(5)),".")                   'NO semicolon
+3800   PRINT STRING$(FELNG(5)-LEN(DAT$(5)),".")
 3810   N$="Stammsatz wird gespeichert...":GOSUB 12970 'Nachricht und F-Keys löschen
 3820   GOSUB 12110                                             'Daten speichern
 3830   GOSUB 13030                                           'Nachricht löschen
@@ -538,7 +539,7 @@
 6370 PRINT FNCUR$(5,24);"Name:"
 6380 MSK$="Von:  .  .   Bis:  .  .   Amt:"
 6390 FOR KK=7 TO 19 
-6400   PRINT FNCUR$(KK,2);MSK$;TAB(43);MSK$                    'LW NO semicolon
+6400   PRINT FNCUR$(KK,2);MSK$;TAB(43);MSK$
 6410 NEXT
 6420 GOSUB 15290                                                 'Ausgabe Daten
 6430 LNG=2-(HP=7)*6                                    'BEGIN OF THE INPUT-LOOP
@@ -689,7 +690,7 @@
 10220 PRINT ESC$;"42";CHR$(33);CHR$(ASCESC);                  'Key 33 "Escape".
 10230 RETURN
 10240 '
-10250 ' *** Delay *************************************************************
+10250 ' *** Delay ***
 10260 '
 10270 ' IN: DELAY
 10280 FOR DD=0 TO DELAY:NEXT DD
@@ -719,13 +720,13 @@
 10520 ON TYP GOSUB 12400,12470,12530,12590                          'Type check
 10530 IF VALID=0 THEN 10590
 10540   IF P>=LNG THEN 10500                                   'Valid character
-10550   PRINT HIGHON$;A$;HIGHOFF$                              'LW NO semicolon
+10550   PRINT HIGHON$;A$;HIGHOFF$
 10560   OUTTEXT$=OUTTEXT$+A$
 10570   P=P+1
 10580   GOTO 10490
 10590 IF ASCC<>ASCBSP THEN 10650
 10600   IF P<1 THEN 10500                                            'Backspace
-10610   PRINT DEL$                                             'LW NO semicolon
+10610   PRINT DEL$
 10620   P=P-1
 10630   OUTTEXT$=LEFT$(OUTTEXT$,P)
 10640   GOTO 10490
@@ -748,20 +749,20 @@
 10810   BADINPUT=1 
 10820   GOTO 10490
 10830 IF CKEY<>0 THEN GOSUB 10890                     'Block cursor auto-repeat
-10840 PRINT CUROFF$                                            'LW NO semicolon
+10840 PRINT CUROFF$
 10850 RETURN 
 10860 '
-10870 ' *** Block cursor auto-repeat ********************************* REVIEWED
+10870 ' *** Block cursor auto-repeat OK
 10880 '
 10890 A$=INKEY$:IF A$>=CHR$(ASCCUP) AND A$<=CHR$(ASCCRT) THEN 10890
 10900 RETURN
 10910 '
-10920 ' *** Debounce keyboard **************************************** REVIEWED
+10920 ' *** Debounce keyboard OK
 10930 '
 10940 FOR K=1 TO 30:A$=INKEY$:NEXT K
 10950 RETURN
 10960 '
-10970 ' *** Einlesen Stammdatenfelder-Definition ********************* REVIEWED
+10970 ' *** Einlesen Stammdatenfelder-Definition OK
 10980 '
 10990 OPEN "I",#1,"B:FELD.DAT"                        
 11000   INPUT #1,TMPFELDMAX                                             'ignore
@@ -777,7 +778,7 @@
 11100 CLOSE #1
 11110 RETURN
 11120 '
-11130 ' *** Clear DAT$() ********************************************* REVIEWED
+11130 ' *** Clear DAT$() OK
 11140 '
 11150 FOR K=1 TO FELDMAX:DAT$(K)="":NEXT K
 11160 RETURN
@@ -787,7 +788,7 @@
 11200 FOR K=1 TO FELDMAX:SUCH$(K)="":NEXT K
 11210 RETURN
 11220 '
-11230 ' *** Lesen MTGLMAX ******************************************** REVIEWED
+11230 ' *** Lesen MTGLMAX OK
 11240 '
 11250 ' OUT: MTGLMAX
 11260 OPEN "I",#1,"B:MTGLZAHL.DAT"
@@ -796,7 +797,7 @@
 11290 CLOSE #1
 11300 RETURN
 11310 '
-11320 ' *** Schreiben MTGLMAX **************************************** REVIEWED
+11320 ' *** Schreiben MTGLMAX OK
 11330 '
 11340 ' IN: MTGLMAX
 11350 OPEN "O",#1,"B:MTGLZAHL.DAT"
@@ -804,7 +805,7 @@
 11370 CLOSE #1
 11380 RETURN
 11390 '
-11400 ' *** Maske Feldnamen und Eingabefelder (Pünktchen) ausgeben
+11400 ' *** Maske Feldnamen und Feldplatzhalter ausgeben
 11410 '
 11420 ' IN: FELDMAX
 11430 ' IN: MTGLZAHL
@@ -838,11 +839,11 @@
 11710   PRINT FNCUR$(Z,S);FENAM$(K)
 11720   S=S+XOFF
 11730   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
-11740   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")               'LW NO semicolon
+11740   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")
 11750 NEXT K
 11760 RETURN
 11770 '
-11780 ' *** FIELDen der Stammsatz-Datei ****************************** REVIEWED
+11780 ' *** FIELDen der Stammsatz-Datei OK
 11790 '
 11800 OPEN "R",#2,"B:MV.DAT",462
 11810 FIELD #2,236 AS DD1$,225 AS DD2$
@@ -891,7 +892,7 @@
 12240 PUT #2,MTGLZAHL
 12250 RETURN
 12260 '
-12270 ' *** Ja/Nein-Frage und F-Tastenleiste löschen ***************** REVIEWED
+12270 ' *** Ja/Nein-Frage und F-Tastenleiste löschen OK
 12280 '
 12290 ' IN:  Q$ - Frage
 12300 ' OUT: JA - (1=yes, 0=no)
@@ -902,43 +903,43 @@
 12350 IF ANSWER$="N" OR ANSWER$="n" THEN JA=0:RETURN
 12360 GOTO 12330
 12370 '
-12380 ' *** Testbereich 1 (Alpha) *********************************************
+12380 ' *** Testbereich 1 (Alpha) ***
 12390 '
 12400 VALID=0
 12410 IF ASCC>57 AND ASCC<127 THEN VALID=1:GOTO 12430
 12420 IF ASCC>31 AND ASCC<48 THEN VALID=1
 12430 RETURN
 12440 '
-12450 ' *** Testbereich 2 (Numerisch) *****************************************
+12450 ' *** Testbereich 2 (Numerisch) ***
 12460 '
 12470 VALID=0
 12480 IF ASCC>47 AND ASCC<58 THEN VALID=1
 12490 RETURN
 12500 '
-12510 ' *** Testbereich 3 (Alphanumerisch) ************************************
+12510 ' *** Testbereich 3 (Alphanumerisch) ***
 12520 '
 12530 VALID=0
 12540 IF ASCC>31 AND ASCC<127 THEN VALID=1
 12550 RETURN
 12560 '
-12570 ' *** Testbereich 4 (Numerisch + "/" und ".") ***************************
+12570 ' *** Testbereich 4 (Numerisch + "/" und ".") ***
 12580 '
 12590 VALID=0
 12600 IF ASCC>45 AND ASCC<58 THEN VALID=1
 12610 RETURN
 12620 '
-12630 ' *** DATUMS-TEST (bei VN und M-Liste drucken) **************************
+12630 ' *** DATUMS-TEST (bei VN und M-Liste drucken) ***
 12640 '
-12650 IF VAL(TEST$)=0 OR VAL(TEST$)>31 THEN JA=0                           'Tag
+12650 IF VAL(TEST$)=0 OR VAL(TEST$)>31 THEN JA=0
 12660 RETURN
 12670 '
-12680 IF VAL(TEST$)=0 OR VAL(TEST$)>12 THEN JA=0                         'Monat
+12680 IF VAL(TEST$)=0 OR VAL(TEST$)>12 THEN JA=0
 12690 RETURN
 12700 '
-12710 IF VAL(TEST$)=0 THEN JA=0                                           'Jahr
+12710 IF VAL(TEST$)=0 THEN JA=0
 12720 RETURN
 12730 '
-12740 ' *** Voreinstellungen im ERFASSEN (Defaults) ******************* REVIWED
+12740 ' *** Voreinstellungen im ERFASSEN (Defaults) OK
 12750 '
 12760 DAT$(5)="10***"
 12770 DAT$(7)=""11**""
@@ -950,7 +951,7 @@
 12830 DAT$(25)="Nein"
 12840 RETURN
 12850 '
-12860 ' *** Nachricht anzeigen *************************************** REVIEWED
+12860 ' *** Nachricht anzeigen OK
 12870 '
 12880 ' IN: N$ - Nachricht
 12890 PRINT FNCUR$(21,1);DELLINE$;
@@ -958,19 +959,19 @@
 12910 PRINT                              'LW workaround quirk in display driver
 12920 RETURN
 12930 '
-12940 ' *** Nachricht anzeigen und F-Tastenleiste ausblenden ********* REVIEWED
+12940 ' *** Nachricht anzeigen und F-Tastenleiste ausblenden OK
 12950 '
 12960 ' IN: N$ - Nachricht
 12970 GOSUB 12890                                                    'Nachricht
 12980 GOSUB 13470                                                'Delete F-Keys
 12990 RETURN
 13000 '
-13010 ' *** Nachricht löschen **************************************** REVIEWED
+13010 ' *** Nachricht löschen OK
 13020 '
 13030 N$="":GOSUB 12890                                      'Nachricht löschen
 13040 RETURN
 13050 '
-13060 ' *** Bildschirmmaske - Basis ********************************** REVIEWED
+13060 ' *** Bildschirmmaske - Basis OK
 13070 '
 13080 ' IN: MT$ - Menu title
 13090 ' IN: MI$ - Menu ID
@@ -982,11 +983,11 @@
 13150 PRINT STRICH$             'quirk in display driver places this in line 22
 13160 RETURN
 13170 '
-13180 ' *** F-Tastenleiste einblenden ******************************** REVIEWED
+13180 ' *** F-Tastenleiste einblenden OK
 13190 '
 13200 ' IN: FKEYS$ - Additional function key labels 
 13210 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü";
-13220 IF FKEYS$<>"" THEN PRINT " ";FKEYS$ ELSE PRINT           'LW NO semicolon
+13220 IF FKEYS$<>"" THEN PRINT " ";FKEYS$ ELSE PRINT
 13230 RETURN
 13240 '
 13250 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
@@ -995,10 +996,10 @@
 13280 PRINT HOME$
 13290 RETURN
 13300 '
-13310 ' *** Eingabe bei Menübildern ********************************** REVIEWED
+13310 ' *** Eingabe bei Menübildern OK
 13320 '
-13330 ' IN:  NKEYMAX - max valid numeric key (1, 2, 3, ...)
-13340 ' IN:  FKEYMAX - max valid function key (1, 2, 3, ...)
+13330 ' IN:  NKEYMAX - max valid numeric key (1,2,3,...)
+13340 ' IN:  FKEYMAX - max valid function key (1,2,3,...)
 13350 ' OUT: FKEY - number of pressed function key or 0
 13360 ' OUT: NKEY - number of pressed numeric key or 0
 13370 NKEY=0:FKEY=0
@@ -1009,27 +1010,27 @@
 13420 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 12890 'Nachricht
 13430 GOTO 13390
 13440 '
-13450 ' *** F-Tastenleiste ausblenden ******************************** REVIEWED
+13450 ' *** F-Tastenleiste ausblenden OK
 13460 '
 13470 PRINT FNCUR$(23,1);DELLINE$
 13480 PRINT FNCUR$(24,1);DELLINE$;
 13490 RETURN
 13500 '
-13510 ' *** Rückkehr ins Hauptmenü? (Original) *********************** REVIEWED
+13510 ' *** Rückkehr ins Hauptmenü? (Original) OK
 13520 '
 13530 GOSUB 13600                                 'Rückkehr ins Hauptmenü Frage
 13540 IF JA=1 THEN 18020                                          'Programmende
 13550 GOSUB 13210                                    'F-Tastenleiste einblenden
 13560 RETURN
 13570 '
-13580 ' *** Rückkehr ins Hauptmenü Frage (einfach) ******************* REVIEWED
+13580 ' *** Rückkehr ins Hauptmenü Frage (einfach) OK
 13590 '
 13600 ' OUT: JA (1=true, 0=false)
 13610 Q$="Wollen Sie wirklich ins Hauptmenü?":GOSUB 12310        'Ja/Nein-Frage
 13620 N$="":GOSUB 12890                                      'Nachricht löschen
 13630 RETURN
 13640 '
-13650 ' *** Rückkehr aus Hilfe-Text? ********************************* REVIEWED
+13650 ' *** Rückkehr aus Hilfe-Text? OK
 13660 '
 13670 N$="Zurück? (J=Ja)":GOSUB 12890                                'Nachricht
 13680 GOSUB 12320                                           'skip string concat
@@ -1049,7 +1050,7 @@
 13820 FIELD #5,240 AS DDD1$,240 AS DDD2$,80 AS DDD3$
 13830 RETURN
 13840 '
-13850 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
+13850 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ***
 13860 '
 13870 ' IN: MTGLZAHL
 13880 GET #3,1                            'letzte Seitennummer einlesen dann +1
@@ -1066,7 +1067,7 @@
 13990 PUT #4,TMPOINT
 14000 RETURN
 14010 '
-14020 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
+14020 ' *** ERSTE SEITE FINDEN & LESEN ***
 14030 '
 14040 ' IN: MTGLZAHL
 14050 GET #3,MTGLZAHL+1                                            'Index_Datei
@@ -1076,7 +1077,7 @@
 14090 GET #4,CPOINT                                              'Pointer lesen
 14100 RETURN
 14110 '
-14120 ' **** SEITE RÜCKWÄRTS **************************************************
+14120 ' *** SEITE RÜCKWÄRTS ***
 14130 '
 14140 TMPOINT=VAL(POINT1$)
 14150 IF TMPOINT<>0 THEN 14190
@@ -1092,7 +1093,7 @@
 14250 DELAY=100:GOSUB 10280                                              'Delay
 14260 RETURN
 14270 '
-14280 ' **** SEITE VORWÄRTS  **************************************************
+14280 ' *** SEITE VORWÄRTS ***
 14290 '
 14300 TMPOINT=VAL(POINT2$)
 14310 IF TMPOINT=0 THEN 14380
@@ -1120,7 +1121,7 @@
 14530 PRINT HOME$;" "
 14540 RETURN
 14550 '
-14560 ' **** ERSTE SEITE EINES MITGLIEDS ANLEGEN ******************************
+14560 ' *** ERSTE SEITE EINES MITGLIEDS ANLEGEN ***
 14570 '
 14580 GET #3,1
 14590 LSET POINT0$=STR$(VAL(POINT0$)+1)                                  'NDX+1
@@ -1136,7 +1137,7 @@
 14690 PUT #5,VAL(POINT0$)
 14700 RETURN
 14710 '
-14720 ' **** ALLGEMEIN EINE NEUE SEITE ANLEGEN ********************************
+14720 ' *** ALLGEMEIN EINE NEUE SEITE ANLEGEN ***
 14730 '
 14740 GET #3,1                                                           'NDX+1
 14750 LSET POINT0$=STR$(VAL(POINT0$)+1)
@@ -1157,7 +1158,7 @@
 14900 NEXT
 14910 RETURN
 14920 '
-14930 ' **** SEITE SPEICHERN **************************************************
+14930 ' *** SEITE SPEICHERN ***
 14940 '
 14950 DATEN$=""
 14960 FOR II=1 TO 12
@@ -1175,7 +1176,7 @@
 15080 PUT #5,CPOINT
 15090 RETURN
 15100 '
-15110 ' **** HACK ! (ZERSTÜCKELN DER DATEN-STRINGS) ***************************
+15110 ' *** HACK ! (ZERSTÜCKELN DER DATEN-STRINGS) ***
 15120 '
 15130 FOR II=1 TO 12
 15140   DAT$(II)=MID$(DDD1$,(II-1)*20+1,20)
@@ -1188,7 +1189,7 @@
 15210 NEXT 
 15220 RETURN
 15230 '
-15240 ' **** UPRO DATENAUSGABE VN  ********************************************
+15240 ' *** UPRO DATENAUSGABE VN ***
 15250 '
 15260 ' IN: MTGLZAHL
 15270 ' IN: NAMM$
@@ -1212,7 +1213,7 @@
 15450 PRINT HIGHOFF$
 15460 RETURN
 15470 '
-15480 ' *** Verwendungsnachweis drucken ***************************************
+15480 ' *** Verwendungsnachweis drucken ***
 15490 '
 15500 ' IN: BLATT
 15510 ' IN: MITGLZAHL
@@ -1236,7 +1237,7 @@
 15690 LPRINT
 15700 LPRINT STRICH$
 15710 RETURN
-15720                                           'Format: VVVVVV BBBBBB AAAAAAAA
+15720 ' Format: VVVVVV BBBBBB AAAAAAAA
 15730 VON$=LEFT$(DAT$(KK),2)+"."+MID$(DAT$(KK),3,2)+"."+MID$(DAT$(KK),5,2)
 15740 BIS$=MID$(DAT$(KK),7,2)+"."+MID$(DAT$(KK),9,2)+"."+MID$(DAT$(KK),11,2)
 15750 AMT$=RIGHT$(DAT$(KK),8)
@@ -1451,7 +1452,7 @@
 17840 GOSUB 13670                                      'Rückkehr aus Hilfe-Text
 17850 RETURN
 17860 '
-17870 ' *** Programmfehler ******************************************* REVIEWED
+17870 ' *** Programmfehler OK
 17880 '
 17890 LIND$=SPACE$(15)
 17900 GOSUB 13100                                                  'Basis Maske
@@ -1464,7 +1465,7 @@
 17970 PRINT LIND$;"- Drücken Sie am Rechner den Knopf hinten rechts."
 17980 PRINT LIND$;"19**************************"
 17990 '
-18000 ' *** Programmende ********************************************* REVIEWED
+18000 ' *** Programmende OK
 18010 '
 18020 PRINT FNCUR$(22,1);HIGHOFF$;CURON$;
 18030 RESET
