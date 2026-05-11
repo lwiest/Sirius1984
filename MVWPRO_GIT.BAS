@@ -396,7 +396,7 @@
 4831 PRINT FNCUR$(3,46);HIGHON$;STR$(MTGLZAHL);HIGHOFF$
 4832 '
 5220 FKEMAX=7:NKEYMAX=0:GOSUB 13370      'Menü-Eingabe 'TODO Nachricht löschen?
-5221 ON FKEY GOTO 4880,5320,1960,5340,5370,5430,5460
+5221 ON FKEY GOTO 5223,5337,1960,5339,5342,5421,5460
 5222 ' *** <F1> Hilfe
 5223 GOSUB 18220
 5224 GOTO 5220 
@@ -412,8 +412,7 @@
 5345   GOTO 5435
 5346 'Suche rückwärts nach Maske       
 5347 TMP=MTGLZAHL
-5348 MTGLZAHL=MTGLZAHL-1
-5349 GOSUB ****                                   'Suche nach Maske IN:MTGLZAHL
+5349 GOSUB 7302                                     'prev match IN/OUT:MTGLZAHL
 5350 IF MTGLZAHL<>-1 THEN 5435
 5351   MTGLZAHL=TMP
 5352 N$="Erster Suchtreffer":GOSUB 12890                             'Nachricht       
@@ -425,8 +424,7 @@
 5425   GOTO 5435
 5426 'Suche vorwärts nach Maske    
 5427 TMP=MTGLZAHL
-5428 MTGLZAHL=MTGLZAHL+1
-5429 GOSUB ****                                   'Suche nach Maske IN:MTGLZAHL
+5429 GOSUB 7310                                     'next match IN/OUT:MTGLZAHL
 5430 IF MTGLZAHL<>-1 THEN 5435
 5431   MTGLZAHL=TMP
 5432 N$="Letzter Suchtreffer":GOSUB 12890                            'Nachricht       
@@ -632,15 +630,15 @@
 7208   SEARCH=BYNUMS                          'Drucken komplette Mitgliedsliste
 7209   NUMSUCH1=1
 7210   NUMSUCH2=MTGLMAX
-7220   GOSUB 15786                              '"Drucker eingeschaltet?"-Frage
-7221   IF JA=0 THEN 6980
-7211   GOTO 7222
-7212 DRUCKFLAG=1
-7213 GOTO 3891                                  'Stammsatz suchen (und drucken)
-7214 ' ---> Reentry <----------------------------------------------------------
-7215 ' IN: SEARCH (BYNUMS, BYMASK)
-7216 ' IN: NUMSUCH1, NUMSUCH2
-7217 ' IN: SUCH$()
+7211   GOSUB 15786                              '"Drucker eingeschaltet?"-Frage
+7212   IF JA=0 THEN 6980
+7213   GOTO 7222
+7214 DRUCKFLAG=1
+7215 GOTO 3891                                  'Stammsatz suchen (und drucken)
+7216 ' ---> Reentry <----------------------------------------------------------
+7217 ' IN: SEARCH (BYNUMS, BYMASK)
+7218 ' IN: NUMSUCH1, NUMSUCH2
+7219 ' IN: SUCH$()
 7220 GOSUB 15786                                '"Drucker eingeschaltet?"-Frage
 7221 IF JA=0 THEN 7252
 7222 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 12890 'Nachricht
@@ -692,28 +690,26 @@
 7284 IF MTGLZAHL<=MTGLMAX THEN 7270
 7285 MTGLZAHL=-1                                         'No more matches found
 7286 RETURN
-7290 '
-7291 ' *** Next match 
-7292 '
-7293 ' IN: MTGLZAHL OUT: MTGLZAHL or -1 if not found
-7294 MTGLZAHL=MTGLZAHL+1
-7295 IF MTGLZAHL>MTGLMAX THEN 7309
-7296 GOSUB 7320
-7297 IF NOT ISMATCH THEN 7294 
-7298 RETURN
 7299 '
 7300 ' *** Prev match 
-7301 '
-7302 ' IN: MTGLZAHL OUT: MTGLZAHL or -1 if not found
-7303 MTGLZAHL=MTGLZAHL-1
-7304 IF MTGLZAHL<1 THEN 7309
-7305 GOSUB 7320
-7306 IF NOT ISMATCH THEN 7303 
-7307 RETURN
-7308 '
-7309 MTGLZAHL=-1
-7310 RETURN
-7311 '
+7301 ' IN: MTGLZAHL OUT: MTGLZAHL or -1 if not found
+7302 MTGLZAHL=MTGLZAHL-1
+7303 IF MTGLZAHL<1 THEN 7316
+7304 GOSUB 7320
+7305 IF NOT ISMATCH THEN 7302 
+7306 RETURN
+7307 '
+7308 ' *** Next match 
+7309 ' IN: MTGLZAHL OUT: MTGLZAHL or -1 if not found
+7310 MTGLZAHL=MTGLZAHL+1
+7311 IF MTGLZAHL>MTGLMAX THEN 7316
+7312 GOSUB 7320
+7313 IF NOT ISMATCH THEN 7310 
+7314 RETURN
+7315 '
+7316 MTGLZAHL=-1
+7317 RETURN
+7318 '
 7320 GOSUB 11860                                                   'Daten lesen
 7321 FOR K=1 TO FELDMAX                                      'Daten durchsuchen
 7322   IF LEFT$(SUCH$(K),1)<>"*" THEN 7325
