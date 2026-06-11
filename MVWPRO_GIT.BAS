@@ -115,7 +115,6 @@
 2140 GOSUB 10960                              'Stammsatzfelder-Definition lesen
 2150 GOSUB 11830                                   'Fielden der Stammsatz-Datei
 2160 GOSUB 13800                       'Fielden der Verwendungsnachweis-Dateien
-2170 GOSUB 17230                                'Fielden der Hilfe-Text-Dateien
 2180 GOSUB 13060                                             'Nachricht löschen
 2190 '
 2200 ' ################# Mitgliederverwaltungsmenü (MVW-Menü) #################
@@ -1537,31 +1536,29 @@
 17170 '
 17180 ' ### HILFE-TEXT ########################################################
 17190 '
-17200 '
-17210 ' *** Fielden der Hilfe-Text-Dateien ************************************
-17220 '
-17230 OPEN "R",#6,"HELP.NDX",4
-17240 FIELD #6,2 AS FL$,2 AS LL$
-17250 OPEN "R",#7,"HELP.DAT",2+2+60
-17260 FIELD #7,2 AS IN$,2 AS LN$,60 AS LI$
-17270 RETURN
 17280 '
 17290 ' *** Hilfe-Text-Seite anzeigen *****************************************
 17300 '
 17310 ' IN: HELPID
 17320 SAVEMT$=MT$:MT$="HILFE":GOSUB 13130:MT$=SAVEMT$              'Basis-Maske
 17330 PRINT HOME$
-17340 GET #6,HELPID
-17350 FIRSTLINE=CVI(FL$)
-17360 LASTLINE=CVI(LL$)
-17370 FOR K=FIRSTLINE TO LASTLINE
-17380   GET #7,K
-17390   INI=CVI(IN$)
-17400	LNI=CVI(LN$)
-17410   PRINT SPC(INI);LEFT$(LI$,LNI)
-17420 NEXT K
-17430 GOSUB 13700                                      'Rückkehr aus Hilfe-Text
-17440 RETURN
+17331 OPEN "R",#1,"HELP.NDX",4
+17332   FIELD #1,2 AS XFIRSTLINE$,2 AS XLASTLINE$
+17333   GET #1,HELPID
+17334   FIRSTLINE=CVI(XFIRSTLINE$)
+17335   LASTLINE=CVI(XLASTLINE$)
+17336 CLOSE #1
+17337 OPEN "R",#1,"HELP.DAT",2+2+60
+17338   FIELD #1,2 AS XINDENT$,2 AS XLENGTH$,60 AS XLINE$
+17339   FOR K=FIRSTLINE TO LASTLINE
+17340     GET #1,K
+17341     INDENT=CVI(XINDENT$)
+17342     LENGTH=CVI(XLENGTH$)
+17343     PRINT SPC(INDENT);LEFT$(XLINE$,LENGTH)
+17344   NEXT K
+17345 CLOSE #1
+17446 GOSUB 13700                                      'Rückkehr aus Hilfe-Text
+17447 RETURN
 17450 '
 17460 ' *** Programmfehler ******************************************* REVIEWED
 17470 '
