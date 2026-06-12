@@ -1,6 +1,6 @@
 1000 ' RELEASE 01***** Neubearbeitung durch 04**********
 1010 '
-1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:7
+1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:6
 1030 '
 1040 ' *** Initialisierung, Dimensionierung ***********************************
 1050 '
@@ -63,6 +63,10 @@
 1620 ASCF9=249
 1630 ASCF9=249
 1640 '
+1641 HELPIDMAX=23
+1642 DIM HELPFIRSTLINE(HELPIDMAX)
+1643 DIM HELPLASTLINE(HELPIDMAX)
+1644 '
 1650 G0100000=1                                           'Mitgliederverwaltung
 1660 G0110000=2                                                'Stammsatzpflege
 1670 G0110100=3                                              'Stammsatz anlegen
@@ -115,6 +119,7 @@
 2140 GOSUB 10960                              'Stammsatzfelder-Definition lesen
 2150 GOSUB 11830                                   'Fielden der Stammsatz-Datei
 2160 GOSUB 13800                       'Fielden der Verwendungsnachweis-Dateien
+2170 GOSUB 17230      'Fielden der Hilfe-Text-Dateien, lesen der Zeilenbereiche
 2180 GOSUB 13060                                             'Nachricht löschen
 2190 '
 2200 ' ################# Mitgliederverwaltungsmenü (MVW-Menü) #################
@@ -446,7 +451,8 @@
 5460   SEARCH=BYMASK                                                      '<F5>
 5470   IF DRUCKFLAG THEN 8410 ELSE 5580           'Suchen oder Suchen & Drucken
 5480 IF CKEY=0 THEN 5530                              'Cursortasten verarbeiten
-5490   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(F);HIGHOFF$;STRING$(LNG-LEN(SUCH$(F)),".")
+5490   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(F);HIGHOFF$;
+5491   PRINT STRING$(LNG-LEN(SUCH$(F)),".")
 5500   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
 5510   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
 5520   GOTO 5350
@@ -1536,29 +1542,37 @@
 17170 '
 17180 ' ### HILFE-TEXT ########################################################
 17190 '
+17200 '
+17210 ' *** Fielden der Hilfe-Text-Dateien ************************************
+17220 '
+17230 OPEN "R",#6,"HELP.NDX",4
+17231   FIELD #6,2 AS XFIRSTLINE$,2 AS XLASTLINE$
+17232   FOR K=1 TO HELPIDMAX
+17233     GET #6,K
+17234     HELPFIRSTLINE(K)=CVI(XFIRSTLINE$)
+17235     HELPLASTLINE(K)=CVI(XLASTLINE$)
+17236   NEXT K
+17237 CLOSE #6
+17238 '
+17250 OPEN "R",#6,"HELP.DAT",2+2+60
+17260 FIELD #6,2 AS XINDENT$,2 AS XLENGTH$,60 AS XLINE$
+17270 RETURN
 17280 '
 17290 ' *** Hilfe-Text-Seite anzeigen *****************************************
 17300 '
 17310 ' IN: HELPID
 17320 SAVEMT$=MT$:MT$="HILFE":GOSUB 13130:MT$=SAVEMT$              'Basis-Maske
 17330 PRINT HOME$
-17331 OPEN "R",#1,"HELP.NDX",4
-17332   FIELD #1,2 AS XFIRSTLINE$,2 AS XLASTLINE$
-17333   GET #1,HELPID
-17334   FIRSTLINE=CVI(XFIRSTLINE$)
-17335   LASTLINE=CVI(XLASTLINE$)
-17336 CLOSE #1
-17337 OPEN "R",#1,"HELP.DAT",2+2+60
-17338   FIELD #1,2 AS XINDENT$,2 AS XLENGTH$,60 AS XLINE$
-17339   FOR K=FIRSTLINE TO LASTLINE
-17340     GET #1,K
-17341     INDENT=CVI(XINDENT$)
-17342     LENGTH=CVI(XLENGTH$)
-17343     PRINT SPC(INDENT);LEFT$(XLINE$,LENGTH)
-17344   NEXT K
-17345 CLOSE #1
-17446 GOSUB 13700                                      'Rückkehr aus Hilfe-Text
-17447 RETURN
+17361 FIRSTLINE=HELPFIRSTLINE(HELPID)
+17362 LASTLINE=HELPLASTLINE(HELPID)
+17370 FOR K=FIRSTLINE TO LASTLINE
+17380   GET #6,K
+17390   INDENT=CVI(XINDENT$)
+17400	LENGTH=CVI(XLENGTH$)
+17410   PRINT SPC(INDENT);LEFT$(XLINE$,LENGTH)
+17420 NEXT K
+17430 GOSUB 13700                                      'Rückkehr aus Hilfe-Text
+17440 RETURN
 17450 '
 17460 ' *** Programmfehler ******************************************* REVIEWED
 17470 '
@@ -1568,8 +1582,8 @@
 17510 PRINT I$;"Ein Programmfehler ist aufgetreten."
 17520 PRINT   
 17530 PRINT I$;"- Notieren Sie folgende Fehlerinformation:"
-17540 PRINT I$;"    ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
-17550 PRINT I$;"    ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
+17540 PRINT I$;"  ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
+17550 PRINT I$;"  ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
 17560 PRINT I$;"- Drücken Sie am Rechner den Knopf hinten rechts."
 17570 PRINT I$;"19**************************"
 17580 '
@@ -1578,4 +1592,4 @@
 17610 PRINT FNCUR$(22,1);HIGHOFF$;CURON$;
 17620 RESET
 17630 'LW RUN "DISKMENU.EXE"
-17640 END                                                           '1799 lines
+17640 END                                                           '1595 lines
