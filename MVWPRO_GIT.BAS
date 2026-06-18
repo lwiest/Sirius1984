@@ -82,14 +82,13 @@
 1810 G0120001=13                                       'Verwendungsnachweis (I)
 1820 G0120002=14                                      'Verwendungsnachweis (II)
 1830 G0130000=15                                        'Mitgliedsliste drucken
-1840 G0130101=16                                          'Suchen & Drucken (I)
-1850 G0130110=17                                 'Suchen & Drucken nach Nummern
-1860 G0130120=18                                   'Suchen & Drucken nach Maske
-1870 G0130102=19                           'Suchen & Drucken (II) Keine Treffer
-1880 G0130103=20                               'Suchen & Drucken (III) Blättern
-1890 G0130104=21                                   'Suchen & Drucken (IB) Datum
-1900 G0130200=22                                           'Komplettdruck Datum
-1910 G0130300=23                                            'Datenblatt drucken
+1840 G0130101=16                                    'Suchen & Drucken (I) Datum
+1850 G0130102=17                                         'Suchen & Drucken (II)
+1860 G0130110=18                                 'Suchen & Drucken nach Nummern
+1870 G0130120=19                                   'Suchen & Drucken nach Maske
+1880 G0130103=20                           'Suchen & Drucken (II) Keine Treffer
+1900 G0130200=21                                           'Komplettdruck Datum
+1910 G0130300=22                                            'Datenblatt drucken
 1920 '
 1930 ' Weitere Variablen
 1940 ' -----------------
@@ -359,7 +358,7 @@
 4570 FKEYMAX=4:NKEYMAX=2:GOSUB 13400                              'Menü-Eingabe
 4580 IF NKEY THEN ON NKEY GOTO 4680,5280
 4590 IF FKEY<>1 THEN 4630 
-4600   HELPID=G0110501:IF ISDRUCK THEN HELPID=G0130101
+4600   HELPID=G0110501:IF ISDRUCK THEN HELPID=G0130102
 4610   GOSUB 17390                                                  'Hilfe-Text
 4620   GOTO 4500
 4630 IF FKEY=2 THEN IF ISDRUCK THEN 7650 ELSE 2420
@@ -388,7 +387,7 @@
 4860 Z=NUMSUCHROW(F):S=67:LNG=3:TYP=2:ISMUSS=-1
 4870 S=66:IF ISDRUCK THEN S=73
 4880 GOSUB 10380                                                'Feld-Eingabe+1
-4890 IF FKEY<>1 THEN 4930                                 'F-Tasten vrearbeiten
+4890 IF FKEY<>1 THEN 4930                                 'F-Tasten verarbeiten
 4900   HELPID=G0110510:IF ISDRUCK THEN HELPID=G0130110
 4910   GOSUB 17390                                                  'Hilfe-Text
 4920   GOTO 4700                                    'TODO: Werte gehen verloren
@@ -471,13 +470,14 @@
 5690 GOTO 5840
 5700 '
 5710 MTGLZAHL=0                               'Initialisierung Suche nach Maske
+5711 N$="Vergleiche Stammsatz";MTGLZAHL+1;"...":GOSUB 12920          'Nachricht
 5720 GOSUB 6530                        'Nächsten Treffer suchen IN/OUT:MTGLZAHL
 5730 IF MTGLZAHL<>-1 THEN 5840
 5740   N$="Kein Suchtreffer. Mit <F2> neue Suche.":GOSUB 12920       'Nachricht
 5750   FKEYS$="":GOSUB 13240                               'F-Tasten einblenden
 5760   FKEYMASK$="1234":NKEYMASK$="":GOSUB 13400                  'Menü-Eingabe
 5770   IF FKEY<>1 THEN 5810                               'F-Tasten verarbeiten
-5780     HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130102 
+5780     HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130103 
 5790     GOSUB 17390                                                'Hilfe-Text
 5800     GOTO 5290
 5810   IF FKEY=2 THEN 5290
@@ -485,11 +485,11 @@
 5830   IF FKEY=4 THEN GOSUB 13560:GOTO 5760               'Zum Hauptmenü?-Frage
 5840 GOSUB 6280                                 'Suchtreffer lesen und anzeigen
 5850 '
-5860 FKEMAX=7:NKEYMAX=0:GOSUB 13400                               'Menü-Eingabe
+5860 FKEYMAX=7:NKEYMAX=0:GOSUB 13400                               'Menü-Eingabe
 5870 ON FKEY GOTO 5900,5950,2270,5980,6010,6140,6350
 5880 '
 5890 ' *** <F1> Hilfe
-5900 HELPID=G0110503:IF ISDRUCK THEN HELPID=G0130103 
+5900 HELPID=G0110503
 5910 GOSUB 17390                                                    'Hilfe-Text
 5920 GOTO 5600 'TODO <F6><F6><F1> -> wieder beim 3 Treffer? 'TODO: Werte gehen verloren
 5930 '
@@ -502,7 +502,7 @@
 6000 ' *** <F5> Suchen rückwärts
 6010 IF SEARCH=BYMASK THEN 6050
 6020   MTGLZAHL=MTGLZAHL-1                        'Suchen rückwärts nach Nummer
-6030   IF MTGLZAHL<NUMSUCH1 THEN 6100
+6030   IF MTGLZAHL<NUMSUCH1 THEN MTGLZAHL=NUMSUCH1:GOTO 6100
 6040     GOSUB 6280:GOTO 5860                   'Suchtreffer lesen und anzeigen
 6050 TMP=MTGLZAHL                                  'Suchen rückwärts nach Maske
 6060 GOSUB 6450                      'Vorherigen Treffer suchen IN/OUT:MTGLZAHL
@@ -515,7 +515,7 @@
 6130 ' *** <F6> Suchen vorwärts
 6140 IF SEARCH=BYMASK THEN 6190
 6150   MTGLZAHL=MTGLZAHL+1                         'Suchen vorwärts nach Nummer
-6160   IF MTGLZAHL>NUMSUCH2 THEN 6240
+6160   IF MTGLZAHL>NUMSUCH2 THEN MTGLZAHL=NUMSUCH2:GOTO 6240
 6170     GOSUB 6280:GOTO 5860                   'Suchtreffer lesen und anzeigen
 6180 '
 6190 TMP=MTGLZAHL                                    'Suche vorwärts nach Maske
@@ -528,9 +528,9 @@
 6260 '
 6270 ' *** Suchtreffer lesen und anzeigen
 6280 GOSUB 13060                                             'Nachricht löschen
-6290 GOSUB 11900                                               'Stammsatz lesen
-6300 GOSUB 11540                                            'Feldwerte ausgeben
-6310 GOSUB 11790                                      'Mitgliedsnummer ausgeben
+6290 GOSUB 11790                                      'Mitgliedsnummer ausgeben
+6300 GOSUB 11900                                               'Stammsatz lesen
+6310 GOSUB 11540                                            'Feldwerte ausgeben
 6320 RETURN
 6330 '
 6340 ' *** <F7> Adressaufkleber drucken
@@ -690,7 +690,8 @@
 7880 Z=7:S=38:LNG=8:TYP=5:ISMUSS=-1
 7890 GOSUB 10380                                                'Feld-Eingabe+1
 7900 IF FKEY<>1 THEN 7940       'F-Tasten verarbeiten 'TODO: Wert geht verloren
-7910   IF NKEY=1 THEN HELPID=G0130104 ELSE HELPID=G0130200
+7910   IF NKEY=1 THEN HELPID=G0130101
+7911   IF NKEY=2 THEN HELPID=G0130200
 7920   GOSUB 17390                                                  'Hilfe-Text
 7930   GOTO 7790
 7940 IF FKEY=2 THEN 7650
@@ -971,7 +972,8 @@
 11550 FOR K=1 TO FELDMAX
 11560   Z=FEROW(K)
 11570   S=FECOL(K)+XOFF
-11580   PRINT FNCUR$(Z,S);DAT$(K)
+11580   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;                    'LW Hack
+11581   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")                       'LW Hack         
 11590 NEXT K
 11600 PRINT HIGHOFF$
 11610 RETURN
@@ -1138,7 +1140,7 @@
 13220 '
 13230 ' IN: FKEYS$ - Zusätzliche F-Tasten 
 13240 PRINT FNCUR$(23,1);"<F1>=Hilfe <F2>=Zurück <F3>=Anfang <F4>=Hauptmenü";
-13250 IF FKEYS$<>"" THEN PRINT " ";FKEYS$ ELSE PRINT           
+13250 IF FKEYS$<>"" THEN PRINT " ";FKEYS$;HOME$ ELSE PRINT             'LW Hack           
 13260 RETURN
 13270 '
 13280 ' *** restliche funktionstasten bei Verw.-nachweis ausgeben
@@ -1467,8 +1469,7 @@
 16510 '
 16520 ' *** Stammsatz drucken (Bildschirmformat)
 16530 '
-16540 RETURN                                         '*** TMP Print Disable ***
-16550 XCOL1=8
+16540 XCOL1=8
 16560 XCOL2=43
 16570 LPRINT STRICH$
 16580 LPRINT
@@ -1478,7 +1479,7 @@
 16620 FOR K=1 TO 7:READ A,B
 16630   IF A<>0 THEN LPRINT TAB(XCOL1);FENAM$(A);DAT$(A);
 16640   IF B<>0 THEN LPRINT TAB(XCOL2);FENAM$(B);DAT$(B);
-16650   PRINT
+16650   LPRINT
 16660 NEXT K
 16670 DATA 1,0,2,15,3,16,4,0,5,17,6,18,0,19
 16680 FOR K=7 TO 14
@@ -1536,7 +1537,7 @@
 17200 '
 17210 ' *** Fielden der Hilfe-Text-Dateien ************************************
 17220 '
-17230 OPEN "R",#6,"HELP.NDX",4
+17230 OPEN "R",#6,"MVWHELP.NDX",4
 17240   FIELD #6,2 AS XFIRSTLINE$,2 AS XLASTLINE$
 17250   FOR K=1 TO HELPIDMAX
 17260     GET #6,K
@@ -1545,7 +1546,7 @@
 17290   NEXT K
 17300 CLOSE #6
 17310 '
-17320 OPEN "R",#6,"HELP.DAT",2+2+60
+17320 OPEN "R",#6,"MVWHELP.DAT",2+2+60
 17330 FIELD #6,2 AS XINDENT$,2 AS XLENGTH$,60 AS XLINE$
 17340 RETURN
 17350 '
@@ -1565,7 +1566,7 @@
 17490 GOSUB 13700                                      'Rückkehr aus Hilfe-Text
 17500 RETURN
 17510 '
-17520 ' *** Programmfehler ******************************************* REVIEWED
+17520 ' *** Programmfehler ****************************************************
 17530 '
 17540 I$=SPACE$(15)
 17550 GOSUB 13130                                                  'Basis-Maske
@@ -1578,7 +1579,7 @@
 17620 PRINT I$;"- Drücken Sie am Rechner den Knopf hinten rechts."
 17630 PRINT I$;"19**************************"
 17640 '
-17650 ' *** Programmende ********************************************* REVIEWED
+17650 ' *** Programmende ******************************************************
 17660 '
 17670 PRINT FNCUR$(22,1);HIGHOFF$;CURON$;
 17680 RESET
