@@ -30,6 +30,7 @@
 1290 DEL$   =BSP$+"."+BSP$                                              'Delete
 1300 ESC$   =CHR$(27)                                'Einleitung Escape-Sequenz
 1310 STRICH$=STRING$(79,"-")                                            'Strich
+1311 PUNKTE$=STRING$(30,".")                                            'Punkte
 1320 '
 1330 CLS$    =ESC$+"E"                                      'Bildschirm löschen
 1340 INVON$  =ESC$+"p"                                              'Invers ein
@@ -287,7 +288,7 @@
 3870 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 3880 IF M>=1 AND M<=MTGLMAX THEN 3920
 3890   N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12920       'Nachricht
-3900   ISBADINPUT=1
+3900   ISBADINPUT=-1
 3910   GOTO 3800
 3920 MTGLZAHL=M
 3930 N$="Stammsatz wird gelesen...":GOSUB 13000 'Nachricht. F-Tasten ausblenden
@@ -329,7 +330,7 @@
 4290 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 4300   IF M>=1 AND M<=MTGLMAX THEN 4340
 4310   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 12920         'Nachricht
-4320   ISBADINPUT=1
+4320   ISBADINPUT=-1
 4330   GOTO 4220
 4340 MTGLZAHL=M
 4350 N$="Stammsatz wird gelesen...":GOSUB 13000 'Nachricht. F-Tasten ausblenden
@@ -419,7 +420,7 @@
 5180 GOTO 4850
 5190 '
 5200 ' *** Eingabefehler-Behandlung
-5210 ISBADINPUT=1
+5210 ISBADINPUT=-1
 5220 FKEYMASK$="1234"
 5230 GOSUB 13500                                           'F-Tasten ausblenden
 5240 FKEYS$="":GOSUB 13240                                 'F-Tasten einblenden
@@ -434,7 +435,7 @@
 5330 GOSUB 13240                                           'F-Tasten einblenden
 5340 GOSUB 11420                        'Feldnamen und Feldplatzhalter ausgeben
 5350 F=1
-5360 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=3
+5360 Z=FEROW(F):S=FECOL(F)+XOFF:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEMUSS(F)
 5370 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=""
 5380 GOSUB 10370                                                  'Feld-Eingabe
 5390 IF FKEY<>1 THEN 5430                                 'F-Tasten verarbeiten
@@ -470,7 +471,6 @@
 5690 GOTO 5840
 5700 '
 5710 MTGLZAHL=0                               'Initialisierung Suche nach Maske
-5711 N$="Vergleiche Stammsatz";MTGLZAHL+1;"...":GOSUB 12920          'Nachricht
 5720 GOSUB 6530                        'Nächsten Treffer suchen IN/OUT:MTGLZAHL
 5730 IF MTGLZAHL<>-1 THEN 5840
 5740   N$="Kein Suchtreffer. Mit <F2> neue Suche.":GOSUB 12920       'Nachricht
@@ -528,18 +528,18 @@
 6260 '
 6270 ' *** Suchtreffer lesen und anzeigen
 6280 GOSUB 13060                                             'Nachricht löschen
-6290 GOSUB 11790                                      'Mitgliedsnummer ausgeben
-6300 GOSUB 11900                                               'Stammsatz lesen
-6310 GOSUB 11540                                            'Feldwerte ausgeben
+6290 GOSUB 11900                                               'Stammsatz lesen
+6300 GOSUB 11790                                      'Mitgliedsnummer ausgeben
+6310 GOSUB 11540                        'Feldwerte und Feldplatzhalter ausgeben
 6320 RETURN
 6330 '
 6340 ' *** <F7> Adressaufkleber drucken
 6350 GOSUB 15850                                         'Drucker bereit?-Frage
-6360 IF NOT ISJA THEN 6410                          'TODO: F-Tasten einblenden?
+6360 IF NOT ISJA THEN 6400
 6370   N$="Adressaufkleber wird gedruckt...":GOSUB 12920             'Nachricht
 6380   GOSUB 16360                                     'Adressaufkleber drucken
 6390   GOSUB 13060                                           'Nachricht löschen
-6400   GOSUB 13240                                         'F-Tasten einblenden
+6400 GOSUB 13240                                           'F-Tasten einblenden
 6410 GOTO 5860                                                    'Neue Eingabe
 6420 '
 6430 ' *** Vorherigen Treffer suchen
@@ -562,7 +562,8 @@
 6600 RETURN
 6610 '
 6620 ' *** Treffer?
-6630 GOSUB 11900                                               'Stammsatz lesen
+6630 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 12920 'LW 'Nachricht
+6631 GOSUB 11900                                               'Stammsatz lesen
 6640 FOR K=1 TO FELDMAX
 6650   IF LEFT$(SUCH$(K),1)<>"*" THEN 6680
 6660     IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-1))>0 THEN 6730
@@ -573,7 +574,7 @@
 6710   IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-I))=I+1 THEN 6730
 6720   GOTO 6770
 6730 NEXT K
-6740 ISMATCH=1
+6740 ISMATCH=-1
 6750 RETURN
 6760 '
 6770 ISMATCH=0
@@ -727,7 +728,7 @@
 8240 GOTO 8270
 8250 '
 8260 N$="Ungültiges Datum. Bitte korrigieren.":GOSUB 12920           'Nachricht
-8270 ISBADINPUT=1
+8270 ISBADINPUT=-1
 8280 GOTO 7880
 8290 '
 8300 IF NKEY=2 THEN 8420
@@ -797,7 +798,7 @@
 8940 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 8950 IF M>=1 AND M<=MTGLMAX THEN 8990
 8960   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 12920         'Nachricht
-8970   ISBADINPUT=1
+8970   ISBADINPUT=-1
 8980   GOTO 8870
 8990 MTGLZAHL=M
 9000 GOSUB 15850                                         'Drucker bereit?-Frage
@@ -888,12 +889,12 @@
 10710   FKEY=ASCC-ASCF1+1
 10720   IF INSTR(FKEYMASK$,CHR$(FKEY+ASC0))>0 THEN 10820
 10730 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12920         'Nachricht
-10740 ISBADINPUT=1
+10740 ISBADINPUT=-1
 10750 GOTO 10440
 10760 '
 10770 IF NOT ISMUSS OR LEN(OUTTEXT$)>0 THEN 10810           'RETURN verarbeiten
 10780   N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12920
-10790   ISBADINPUT=1 
+10790   ISBADINPUT=-1 
 10800   GOTO 10440
 10810 IF CKEY<>0 THEN GOSUB 10870       'Cursortasten Auto-Wiederholung sperren
 10820 PRINT CUROFF$
@@ -965,17 +966,15 @@
 11480 NEXT K
 11490 RETURN
 11500 '
-11510 ' *** Maske Feldwerte ausgeben ******************************************
+11510 ' *** Maske Feldwerte und Feldplatzhalter ausgeben **********************
 11520 '
 11530 ' IN: FELDMAX
-11540 PRINT HIGHON$
-11550 FOR K=1 TO FELDMAX
+11540 FOR K=1 TO FELDMAX
 11560   Z=FEROW(K)
 11570   S=FECOL(K)+XOFF
-11580   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;                    'LW Hack
-11581   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")                       'LW Hack         
+11580   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
+11581   PRINT LEFT$(PUNKTE$,FELNG(K)-LEN(DAT$(K)))         
 11590 NEXT K
-11600 PRINT HIGHOFF$
 11610 RETURN
 11620 '
 11630 ' *** Maske Feldnamen, Feldwerte und Feldplatzhalter ausgeben ***********
