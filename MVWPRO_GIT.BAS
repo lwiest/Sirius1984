@@ -6,6 +6,9 @@
 1050 '
 1060 DEFINT A-Z
 1070 '
+1071 TRUE=-1
+1072 FALSE=0
+1073 '
 1080 FELDMAX = 27                                       'Anzahl Stammsatzfelder
 1090 DIM FENAM$(FELDMAX)                                       'Name des Feldes
 1100 DIM FEMUSS(FELDMAX)                             'Muss-Feld (-1=Ja, 0=Nein)
@@ -210,9 +213,9 @@
 3090 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
 3100 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 3110 PRINT FNCUR$(9,38)"=>..."
-3120 ISBADINPUT=0
+3120 ISBADINPUT=FALSE
 3130 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
-3140 Z=9:S=40:LNG=3:TYP=2:ISMUSS=-1
+3140 Z=9:S=40:LNG=3:TYP=2:ISMUSS=TRUE
 3150 GOSUB 10380                                                'Feld-Eingabe+1
 3160 IF FKEY=1 THEN HELPID=G0110201:GOSUB 17390:GOTO 3050 'Hilfe-Text 'TODO: Wert geht verloren
 3170 IF FKEY=2 THEN 2420
@@ -222,7 +225,7 @@
 3210 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 3220 IF M>=1 AND M<=MTGLMAX THEN 3260
 3230   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 12920         'Nachricht
-3240   ISBADINPUT=-1
+3240   ISBADINPUT=TRUE
 3250   GOTO 3140
 3260 MTGLZAHL=M
 3270 N$="Stammsatz wird gelesen...":GOSUB 13000 'Nachricht. F-Tasten ausblenden
@@ -276,9 +279,9 @@
 3750 PRINT FNCUR$(7,15);"(Dabei wird nur der Status des Mitglieds verändert.)"
 3760 PRINT FNCUR$(8,23);"Beenden Sie die Eingabe mit RETURN."
 3770 PRINT FNCUR$(10,38);"=>..."
-3780 ISBADINPUT=0
+3780 ISBADINPUT=FALSE
 3790 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
-3800 Z=10:S=40:LNG=3:TYP=2:ISMUSS=-1
+3800 Z=10:S=40:LNG=3:TYP=2:ISMUSS=TRUE
 3810 GOSUB 10380                                                'Feld-Eingabe+1
 3820 IF FKEY=1 THEN HELPID=G0110300:GOSUB 17390:GOTO 3700 'Hilfe-Text 'TODO: Wert geht verloren
 3830 IF FKEY=2 THEN 2420
@@ -288,7 +291,7 @@
 3870 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 3880 IF M>=1 AND M<=MTGLMAX THEN 3920
 3890   N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 12920       'Nachricht
-3900   ISBADINPUT=-1
+3900   ISBADINPUT=TRUE
 3910   GOTO 3800
 3920 MTGLZAHL=M
 3930 N$="Stammsatz wird gelesen...":GOSUB 13000 'Nachricht. F-Tasten ausblenden
@@ -318,9 +321,9 @@
 4170 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
 4180 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 4190 PRINT FNCUR$(9,38);"=>..."
-4200 ISBADINPUT=0
+4200 ISBADINPUT=FALSE
 4210 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
-4220 Z=9:S=40:LNG=3:TYP=2:ISMUSS=-1
+4220 Z=9:S=40:LNG=3:TYP=2:ISMUSS=TRUE
 4230 GOSUB 10380                                                'Feld-Eingabe+1
 4240 IF FKEY=1 THEN HELPID=G0110400:GOSUB 17390:GOTO 4130 'Hilfe-Text 'TODO: Wert geht verloren
 4250 IF FKEY=2 THEN 2420
@@ -330,7 +333,7 @@
 4290 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 4300   IF M>=1 AND M<=MTGLMAX THEN 4340
 4310   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 12920         'Nachricht
-4320   ISBADINPUT=-1
+4320   ISBADINPUT=TRUE
 4330   GOTO 4220
 4340 MTGLZAHL=M
 4350 N$="Stammsatz wird gelesen...":GOSUB 13000 'Nachricht. F-Tasten ausblenden
@@ -347,7 +350,7 @@
 4460 '
 4470 ' *** Stammsatz suchen (und drucken) von 05*************** ***************
 4480 '
-4490 ISDRUCK=0
+4490 ISDRUCK=FALSE
 4500 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN"
 4510 MI$="G-011050":IF ISDRUCK THEN MI$="G-013010"
 4520 GOSUB 13130                                                   'Basis-Maske
@@ -383,9 +386,9 @@
 4810 PRINT FNCUR$(6,TMP2);HIGHON$;NUMSUCH$(2);HIGHOFF$
 4820 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
 4830 F=1
-4840 ISBADINPUT=0
+4840 ISBADINPUT=FALSE
 4850 FKEYMASK$="12345":CKEYMASK$="":INTEXT$=NUMSUCH$(F)
-4860 Z=NUMSUCHROW(F):S=67:LNG=3:TYP=2:ISMUSS=-1
+4860 Z=NUMSUCHROW(F):S=67:LNG=3:TYP=2:ISMUSS=TRUE
 4870 S=66:IF ISDRUCK THEN S=73
 4880 GOSUB 10380                                                'Feld-Eingabe+1
 4890 IF FKEY<>1 THEN 4930                                 'F-Tasten verarbeiten
@@ -420,7 +423,7 @@
 5180 GOTO 4850
 5190 '
 5200 ' *** Eingabefehler-Behandlung
-5210 ISBADINPUT=-1
+5210 ISBADINPUT=TRUE
 5220 FKEYMASK$="1234"
 5230 GOSUB 13500                                           'F-Tasten ausblenden
 5240 FKEYS$="":GOSUB 13240                                 'F-Tasten einblenden
@@ -574,16 +577,16 @@
 6710   IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-I))=I+1 THEN 6730
 6720   GOTO 6770
 6730 NEXT K
-6740 ISMATCH=-1
+6740 ISMATCH=TRUE
 6750 RETURN
 6760 '
-6770 ISMATCH=0
+6770 ISMATCH=FALSE
 6780 RETURN
 6790 '
 6800 ' ######################### Verwendungsnachweis ##########################
 6810 '
 6820 GOSUB 11240                                                 'MTGLMAX lesen
-6830 VNFLAG=-1
+6830 VNFLAG=TRUE
 6840 '
 6850 ' Verwendungsnachweis-Menü ***********************************************
 6860 '
@@ -600,7 +603,7 @@
 6970 Z=8:S=39:LNG=3:TYP=2
 6980 GOSUB 10370                                                  'Feld-Eingabe
 6990 IF FKEY=1 THEN HELPID=G0120001:GOSUB 17390:GOTO 6870           'Hilfe-Text
-7000 IF FKEY=2 OR FKEY=3 THEN GOSUB 11130:VNFLAG=0:GOTO 2270     'DAT$() leeren
+7000 IF FKEY=2 OR FKEY=3 THEN GOSUB 11130:VNFLAG=FALSE:GOTO 2270     'DAT$() leeren
 7010 IF FKEY=4 THEN GOSUB 13560                           'Zum Hauptmenü?-Frage
 7020 IF FKEY>4 THEN 6970
 7030 IF CKEY<>0 THEN 6970
@@ -646,17 +649,17 @@
 7430 IF HP<7 THEN IF ASCC=ASCRET THEN OUTTEXT$=STRING$(2-LEN(OUTTEXT$),"0")+OUTTEXT$   '+NULLEN
 7440 IF CKEY<>0 OR ASCC=ASCRET THEN PRINT FNCUR$(Z,S);OUTTEXT$
 7450 IF ASCC=ASCRET THEN IF HP<7 THEN MID$(DAT$(VP),-1+2*HP,2)=OUTTEXT$ ELSE DAT$(VP)=LEFT$(DAT$(VP),12)+OUTTEXT$+SPACE$(8-LEN(OUTTEXT$))
-7460 IF ASCC=ASCRET AND HP<7 THEN ISJA=-1:TEST$=OUTTEXT$:ON HP GOSUB 12680,12710,12740,12680,12710,12740:IF NOT ISJA THEN N$="Ungültiges Datum":GOSUB 12920:GOTO 7420 'Datums-Check 'Nachricht
+7460 IF ASCC=ASCRET AND HP<7 THEN ISJA=TRUE:TEST$=OUTTEXT$:ON HP GOSUB 12680,12710,12740,12680,12710,12740:IF NOT ISJA THEN N$="Ungültiges Datum":GOSUB 12920:GOTO 7420 'Datums-Check 'Nachricht
 7470 IF ASCC=ASCRET THEN IF HP=7 THEN HP=1:VP=VP-(VP<26)-(VP=26)*(-25):GOTO 7370 ELSE HP=HP+1:GOTO 7370     'NEUE SCREEN-POSITION
 7480 IF CKEY<>0 THEN TEST$=MID$(DAT$(VP),-(HP<7)*2*HP-1-(HP=7)*14,-(HP<7)*2-(HP=7)*8):PRINT FNCUR$(Z,S);TEST$
-7490 IF CKEY<>0 THEN IF HP<7 AND NOT TEST$="  " THEN ISJA=-1:ON HP GOSUB 12680,12710,12740,12680,12710,12740:IF NOT ISJA THEN N$="Ungültiges Datum":GOSUB 12920:GOTO 7420 'Nachricht
+7490 IF CKEY<>0 THEN IF HP<7 AND NOT TEST$="  " THEN ISJA=TRUE:ON HP GOSUB 12680,12710,12740,12680,12710,12740:IF NOT ISJA THEN N$="Ungültiges Datum":GOSUB 12920:GOTO 7420 'Nachricht
 7500 IF CKEY=CKEYDN THEN VP=VP-(VP<26)-(VP=26)*(-25):GOTO 7370
 7510 IF CKEY=CKEYUP THEN VP=VP+(VP>1)-(VP=1)*25     :GOTO 7370
 7520 IF CKEY=CKEYRT THEN HP=HP-(HP<7)-(HP=7)*(-6)   :GOTO 7370
 7530 IF CKEY=CKEYLT THEN HP=HP+(HP>1)+(HP=1)*(-6)   :GOTO 7370
 7540 IF FKEY=1 THEN HELPID=G0120002:GOSUB 17390:GOTO 7230           'Hilfe-Text
 7550 IF FKEY=2 THEN 6870                                       'ZU MTGL-EINGABE
-7560 IF FKEY=3 THEN VNFLAG=0:GOSUB 11130:GOTO 2270               'DAT$() leeren
+7560 IF FKEY=3 THEN VNFLAG=FALSE:GOSUB 11130:GOTO 2270               'DAT$() leeren
 7570 IF FKEY=4 THEN GOSUB 13560:GOSUB 13300:GOTO 7420     'Zum Hauptmenü?-Frage
 7580 IF FKEY=5 THEN GOSUB 14170:GOTO 7370
 7590 IF FKEY=6 THEN GOSUB 14310:GOTO 7370
@@ -686,9 +689,9 @@
 7830 PRINT FNCUR$(4,22);"Bitte geben Sie das heutige Datum ein."
 7840 PRINT FNCUR$(5,23);"Beenden Sie die Eingabe mit RETURN."
 7850 PRINT FNCUR$(7,36);"=>........"
-7860 ISBADINPUT=0
+7860 ISBADINPUT=FALSE
 7870 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
-7880 Z=7:S=38:LNG=8:TYP=5:ISMUSS=-1
+7880 Z=7:S=38:LNG=8:TYP=5:ISMUSS=TRUE
 7890 GOSUB 10380                                                'Feld-Eingabe+1
 7900 IF FKEY<>1 THEN 7940       'F-Tasten verarbeiten 'TODO: Wert geht verloren
 7910   IF NKEY=1 THEN HELPID=G0130101
@@ -728,13 +731,13 @@
 8240 GOTO 8270
 8250 '
 8260 N$="Ungültiges Datum. Bitte korrigieren.":GOSUB 12920           'Nachricht
-8270 ISBADINPUT=-1
+8270 ISBADINPUT=TRUE
 8280 GOTO 7880
 8290 '
 8300 IF NKEY=2 THEN 8420
 8310 '
 8320 ' *** Suchen nach Nummern und Maske
-8330 ISDRUCK=-1
+8330 ISDRUCK=TRUE
 8340 GOTO 4500                                  'Stammsatz suchen (und drucken)
 8350 ' *** Rückkehr aus "Stammsatz suchen"
 8360 ' IN: SEARCH (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
@@ -786,9 +789,9 @@
 8820 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
 8830 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 8840 PRINT FNCUR$(10,38)"=>..."
-8850 ISBADINPUT=0
+8850 ISBADINPUT=FALSE
 8860 FKEYMASK$="1234":CKEYMASK$="":INTEXT$=""
-8870 Z=10:S=40:LNG=3:TYP=2:ISMUSS=-1
+8870 Z=10:S=40:LNG=3:TYP=2:ISMUSS=TRUE
 8880 GOSUB 10380                                                'Feld-Eingabe+1
 8890 IF FKEY=1 THEN HELPID=G0130300:GOSUB 17390:GOTO 8780 'Hilfe-Text 'TODO: Wert geht verloren
 8900 IF FKEY=2 THEN 7650
@@ -798,7 +801,7 @@
 8940 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 8950 IF M>=1 AND M<=MTGLMAX THEN 8990
 8960   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 12920         'Nachricht
-8970   ISBADINPUT=-1
+8970   ISBADINPUT=TRUE
 8980   GOTO 8870
 8990 MTGLZAHL=M
 9000 GOSUB 15850                                         'Drucker bereit?-Frage
@@ -852,7 +855,7 @@
 10340 ' IN: CKEYMASK$
 10350 ' IN: VNFLAG
 10360 '
-10370 ISBADINPUT=0
+10370 ISBADINPUT=FALSE
 10380 IF ISBADINPUT THEN INTEXT$=OUTTEXT$
 10390 P=LEN(INTEXT$)
 10400 PRINT FNCUR$(Z,S);HIGHON$;INTEXT$;HIGHOFF$;STRING$(LNG-P,".")
@@ -864,7 +867,7 @@
 10460 IF NOT ISBADINPUT THEN 10500
 10470   GOSUB 13060                                          'Nachricht löschen
 10480   PRINT FNCUR$(Z,S+P);
-10490   ISBADINPUT=0
+10490   ISBADINPUT=FALSE
 10500 ON TYP GOSUB 12420,12480,12530,12580,12630                    'Typ prüfen
 10510 IF NOT ISVALID THEN 10570
 10520   IF P>=LNG THEN 10450                                  'Gültiges Zeichen
@@ -882,19 +885,19 @@
 10640 IF ASCC=ASCRET THEN 10770                             'RETURN verarbeiten
 10650 IF ASCC=ASCCUP THEN CKEY=CKEYUP:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10770
 10660 IF ASCC=ASCCDN THEN CKEY=CKEYDN:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10770
-10670 IF VNFLAG=0 THEN 10700
+10670 IF VNFLAG=FALSE THEN 10700
 10680   IF ASCC=ASCCLT THEN CKEY=CKEYLT:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10770 
 10690   IF ASCC=ASCCRT THEN CKEY=CKEYRT:IF INSTR(CKEYMASK$,CHR$(CKEY+ASC0))>0 THEN 10770 
 10700 IF ASCC<ASCF1 OR ASCC>ASCF9 THEN 10730              'F-Tasten verarbeiten
 10710   FKEY=ASCC-ASCF1+1
 10720   IF INSTR(FKEYMASK$,CHR$(FKEY+ASC0))>0 THEN 10820
 10730 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 12920         'Nachricht
-10740 ISBADINPUT=-1
+10740 ISBADINPUT=TRUE
 10750 GOTO 10440
 10760 '
 10770 IF NOT ISMUSS OR LEN(OUTTEXT$)>0 THEN 10810           'RETURN verarbeiten
 10780   N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 12920
-10790   ISBADINPUT=-1 
+10790   ISBADINPUT=TRUE 
 10800   GOTO 10440
 10810 IF CKEY<>0 THEN GOSUB 10870       'Cursortasten Auto-Wiederholung sperren
 10820 PRINT CUROFF$
@@ -917,7 +920,7 @@
 10990   FOR K=1 TO FELDMAX
 11000     INPUT #1,F$
 11010     FENAM$(K)=LEFT$(F$,14)
-11020     FEMUSS(K)=MID$(F$,13,1)="="                          '(-1=Ja, 0=Nein)
+11020     IF MID$(F$,13,1)="=" THEN FEMUSS(K)=TRUE ELSE FEMUSS(K)=FALSE                           
 11030     FECOL(K)=VAL(MID$(F$,15,2))
 11040     FEROW(K)=VAL(MID$(F$,17,2))
 11050     FELNG(K)=VAL(MID$(F$,19,2))
@@ -1050,45 +1053,45 @@
 12330 N$=Q$+" (J=Ja/N=Nein)":GOSUB 12920                             'Nachricht
 12340 GOSUB 13500                                          'F-Tasten ausblenden
 12350 ANSWER$=INPUT$(1)
-12360 IF ANSWER$="J" OR ANSWER$="j" THEN ISJA=-1:RETURN
-12370 IF ANSWER$="N" OR ANSWER$="n" THEN ISJA=0:RETURN
+12360 IF ANSWER$="J" OR ANSWER$="j" THEN ISJA=TRUE:RETURN
+12370 IF ANSWER$="N" OR ANSWER$="n" THEN ISJA=FALSE:RETURN
 12380 GOTO 12350
 12390 '
 12400 ' *** Testbereich 1 (Alpha) *********************************************
 12410 '
-12420 ISVALID=0
-12430 IF (ASCC>57 AND ASCC<127) OR (ASCC>31 AND ASCC<48) THEN ISVALID=-1
+12420 ISVALID=FALSE
+12430 IF (ASCC>57 AND ASCC<127) OR (ASCC>31 AND ASCC<48) THEN ISVALID=TRUE
 12440 RETURN
 12450 '
 12460 ' *** Testbereich 2 (Numerisch) *****************************************
 12470 '
-12480 ISVALID=0: IF ASCC>47 AND ASCC<58 THEN ISVALID=-1
+12480 ISVALID=FALSE: IF ASCC>47 AND ASCC<58 THEN ISVALID=TRUE
 12490 RETURN
 12500 '
 12510 ' *** Testbereich 3 (Alphanumerisch) ************************************
 12520 '
-12530 ISVALID=0: IF ASCC>31 AND ASCC<127 THEN ISVALID=-1
+12530 ISVALID=FALSE: IF ASCC>31 AND ASCC<127 THEN ISVALID=TRUE
 12540 RETURN
 12550 '
 12560 ' *** Testbereich 4 (Numerisch + "/" und ".") ***************************
 12570 '
-12580 ISVALID=0: IF ASCC>45 AND ASCC<58 THEN ISVALID=-1
+12580 ISVALID=FALSE: IF ASCC>45 AND ASCC<58 THEN ISVALID=TRUE
 12590 RETURN
 12600 '
 12610 ' *** Testbereich 5 (Numerisch + und ".") *******************************
 12620 '
-12630 ISVALID=0: IF (ASCC>=48 AND ASCC<=57) OR ASCC=46 THEN ISVALID=-1
+12630 ISVALID=FALSE: IF (ASCC>=48 AND ASCC<=57) OR ASCC=46 THEN ISVALID=TRUE
 12640 RETURN
 12650 '
 12660 ' *** DATUMS-TEST (bei VN und M-Liste drucken) **************************
 12670 '
-12680 IF VAL(TEST$)=0 OR VAL(TEST$)>31 THEN ISJA=0                         'Tag
+12680 IF VAL(TEST$)=0 OR VAL(TEST$)>31 THEN ISJA=FALSE                         'Tag
 12690 RETURN
 12700 '
-12710 IF VAL(TEST$)=0 OR VAL(TEST$)>12 THEN ISJA=0                       'Monat
+12710 IF VAL(TEST$)=0 OR VAL(TEST$)>12 THEN ISJA=FALSE                       'Monat
 12720 RETURN
 12730 '
-12740 IF VAL(TEST$)=0 THEN ISJA=0                                         'Jahr
+12740 IF VAL(TEST$)=0 THEN ISJA=FALSE                                        'Jahr
 12750 RETURN
 12760 '
 12770 ' *** Voreinstellungen zuweisen in "Stammsatz anlegen" ******************
@@ -1406,7 +1409,7 @@
 15890 ' *** Druck abbrechen?-Frage ********************************************
 15900 '
 15910 ' OUT: ISJA (-1=Ja, 0=Nein)
-15920 ISJA=0 
+15920 ISJA=FALSE 
 15930 IF INKEY$="" THEN 15970
 15940 Q$="Drucken abbrechen?":GOSUB 12330                        'Ja/Nein-Frage
 15950 IF ISJA THEN 15970
