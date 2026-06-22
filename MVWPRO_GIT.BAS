@@ -568,14 +568,16 @@
 6630 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 12920 'LW 'Nachricht
 6631 GOSUB 11900                                               'Stammsatz lesen
 6640 FOR K=1 TO FELDMAX
-6650   IF LEFT$(SUCH$(K),1)<>"*" THEN 6680
+6650   IF LEFT$(SUCH$(K),1)<>"*" THEN 6671
 6660     IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-1))>0 THEN 6730
 6670     GOTO 6770
-6680   I=1
-6690   IF MID$(SUCH$(K),I,1)="?" THEN I=I+1:GOTO 6690
-6700   I=I-1
-6710   IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-I))=I+1 THEN 6730
-6720   GOTO 6770
+6671   IF LEFT$(SUCH$(K),1)<>"?" THEN 6721
+6680     I=1
+6690     IF MID$(SUCH$(K),I,1)="?" THEN I=I+1:GOTO 6690
+6700     I=I-1
+6710     IF INSTR(DAT$(K),RIGHT$(SUCH$(K),LEN(SUCH$(K))-I))=I+1 THEN 6730
+6720     GOTO 6770
+6721   IF LEN(SUCH$(K))>0 AND SUCH$(K)<>DAT$(K) THEN 6770 
 6730 NEXT K
 6740 ISMATCH=TRUE
 6750 RETURN
@@ -1001,8 +1003,8 @@
 11810 '
 11820 ' *** FIELDen der Stammsatz-Datei *************************************** 
 11830 '
-11840 OPEN "R",#2,"B:MV.DAT",462
-11850 FIELD #2,236 AS XSTAMMSATZ1$,225 AS XSTAMMSATZ2$
+11840 OPEN "R",#2,"B:MV.DAT",462+27
+11850 FIELD #2,236+14 AS XSTAMMSATZ1$,225+13 AS XSTAMMSATZ2$           'LW Hack
 11860 RETURN
 11870 '
 11880 ' *** Stammsatz von Disk lesen ******************************************
@@ -1010,23 +1012,21 @@
 11900 GET #2,MTGLZAHL
 11910 P=1
 11920 FOR K=1 TO 14
-11930   LNG=FELNG(K)
-11940   TMP$=MID$(XSTAMMSATZ1$,P,LNG):GOSUB 12050:DAT$(K)=TMP$
+11930   LNG=FELNG(K)+1                                                 'LW Hack
+11940   A$=MID$(XSTAMMSATZ1$,P,LNG)                                    'LW Hack
+11941   L=ASC(LEFT$(A$,1))                                             'LW Hack
+11942   DAT$(K)=MID$(A$,2,L)                                           'LW Hack
 11950   P=P+LNG
-11960 NEXT
+11960 NEXT K
 11970 P=1
 11980 FOR K=15 TO FELDMAX
-11990   LNG=FELNG(K)
-12000   TMP$=MID$(XSTAMMSATZ2$,P,LNG):GOSUB 12050:DAT$(K)=TMP$
+11990   LNG=FELNG(K)+1                                                 'LW Hack
+11991   A$=MID$(XSTAMMSATZ2$,P,LNG)                                    'LW Hack
+11992   L=ASC(LEFT$(A$,1))                                             'LW Hack
+11993   DAT$(K)=MID$(A$,2,L)                                           'LW Hack
 12010   P=P+LNG
-12020 NEXT
+12020 NEXT K
 12030 RETURN
-12040 '
-12050 FOR KK=LEN(TMP$) TO 1 STEP -1
-12060   IF MID$(TMP$,KK,1)<>" " THEN 12080
-12070 NEXT KK
-12080 TMP$=LEFT$(TMP$,KK)
-12090 RETURN
 12100 '
 12110 ' *** Stammsatz auf Disk speichern **************************************
 12120 '
@@ -1034,13 +1034,15 @@
 12140 TMP$=""
 12150 FOR K=1 TO 14
 12160   LNG=FELNG(K)
-12170   TMP$=TMP$+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
+12161   LNG2=LEN(DAT$(K))
+12170   TMP$=TMP$+CHR$(LNG2)+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))           'LW Hack
 12180 NEXT K
 12190 LSET XSTAMMSATZ1$=TMP$
 12200 TMP$=""
 12210 FOR K=15 TO FELDMAX
 12220   LNG=FELNG(K)
-12230   TMP$=TMP$+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
+12221   LNG2=LEN(DAT$(K))
+12230   TMP$=TMP$+CHR$(LNG2)+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))           'LW Hack
 12240 NEXT K
 12250 LSET XSTAMMSATZ2$=TMP$
 12260 PUT #2,MTGLZAHL
