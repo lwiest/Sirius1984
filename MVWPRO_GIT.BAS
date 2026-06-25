@@ -463,8 +463,8 @@
 5580 '
 5590 ' *** Suche
 5600 GOSUB 13130                                                   'Basis-Maske
-5610 FKEYS$="<F5>=Suchen rückwärts <F6>=Suchen vorwärts <F7>=Adressaufkleber" 
-5620 GOSUB 13240                                           'F-Tasten einblenden
+5610 'LW FKEYS$="<F5>=Suchen rückwärts <F6>=Suchen vorwärts <F7>=Adressaufkleber" 
+5620 'LW GOSUB 13240                                           'F-Tasten einblenden
 5630 PRINT FNCUR$(3,31);"Mitgliedsnummer"
 5640 GOSUB 11420                        'Feldnamen und Feldplatzhalter ausgeben
 5650 '
@@ -488,7 +488,9 @@
 5830   IF FKEY=4 THEN GOSUB 13560:GOTO 5760               'Zum Hauptmenü?-Frage
 5840 GOSUB 6280                                 'Suchtreffer lesen und anzeigen
 5850 '
-5860 FKEYMAX=7:NKEYMAX=0:GOSUB 13400                               'Menü-Eingabe
+5860 FKEYS$="<F5>=Suchen rückwärts <F6>=Suchen vorwärts <F7>=Adressaufkleber" 
+5861 GOSUB 13240                                           'F-Tasten einblenden
+5862 FKEYMAX=7:NKEYMAX=0:GOSUB 13400                               'Menü-Eingabe
 5870 ON FKEY GOTO 5900,5950,2270,5980,6010,6140,6350
 5880 '
 5890 ' *** <F1> Hilfe
@@ -503,7 +505,8 @@
 5980 GOSUB 13560:GOTO 5860                                'Zum Hauptmenü?-Frage
 5990 '
 6000 ' *** <F5> Suchen rückwärts
-6010 IF SEARCH=BYMASK THEN 6050
+6010 GOSUB 13500                                           'F-Tasten ausblenden
+6011 IF SEARCH=BYMASK THEN 6050
 6020   MTGLZAHL=MTGLZAHL-1                        'Suchen rückwärts nach Nummer
 6030   IF MTGLZAHL<NUMSUCH1 THEN MTGLZAHL=NUMSUCH1:GOTO 6100
 6040     GOSUB 6280:GOTO 5860                   'Suchtreffer lesen und anzeigen
@@ -516,7 +519,8 @@
 6110 GOTO 5860
 6120 '
 6130 ' *** <F6> Suchen vorwärts
-6140 IF SEARCH=BYMASK THEN 6190
+6140 GOSUB 13500                                           'F-Tasten ausblenden
+6141 IF SEARCH=BYMASK THEN 6190
 6150   MTGLZAHL=MTGLZAHL+1                         'Suchen vorwärts nach Nummer
 6160   IF MTGLZAHL>NUMSUCH2 THEN MTGLZAHL=NUMSUCH2:GOTO 6240
 6170     GOSUB 6280:GOTO 5860                   'Suchtreffer lesen und anzeigen
@@ -917,20 +921,47 @@
 10940 '
 10950 ' *** Stammsatzfelde-Definitionen lesen ********************************* 
 10960 '
-10970 OPEN "I",#1,"B:FELD.DAT"                        
-10980   INPUT #1,DUMMY
-10990   FOR K=1 TO FELDMAX
-11000     INPUT #1,F$
-11010     FENAM$(K)=LEFT$(F$,14)
-11020     IF MID$(F$,13,1)="=" THEN FEMUSS(K)=TRUE ELSE FEMUSS(K)=FALSE                           
-11030     FECOL(K)=VAL(MID$(F$,15,2))
-11040     FEROW(K)=VAL(MID$(F$,17,2))
-11050     FELNG(K)=VAL(MID$(F$,19,2))
-11060     FETYP(K)=VAL(RIGHT$(F$,1)) 
-11070   NEXT K
-11080 CLOSE #1
-11090 RETURN
-11100 '
+10970 RESTORE 10982
+10971 FOR K=1 TO FELDMAX
+10972   READ NAMEN$,SPALTE,ZEILE,LAENGE,TYP
+10973   FENAM$(K)=NAMEN$
+10974   IF MID$(NAMEN$,13,1)="=" THEN FEMUSS(K)=TRUE ELSE FEMUSS(K)=FALSE                           
+10975   FECOL(K)=SPALTE
+10976   FEROW(K)=ZEILE
+10977   FELNG(K)=LAENGE
+10978   FETYP(K)=TYP 
+10979 NEXT K
+10980 RETURN
+10981 '
+10982 DATA "Nachname:     ",08,05,17,1
+10983 DATA "Vorname:      ",08,06,17,1
+10984 DATA "Feld 3:       ",08,07,17,1
+10985 DATA "Feld 4:       ",08,08,17,1
+10986 DATA "Status:       ",08,09,17,1
+10987 DATA "Amt:          ",08,10,17,3
+10988 DATA "Anrede:       ",08,12,17,1
+10989 DATA "Feld 8:       ",08,13,17,1
+10990 DATA "Feld 9:       ",08,14,17,1
+10991 DATA "Straße Hausnr:",08,15,17,3
+10992 DATA "Postleitzahl: ",08,16,17,2
+10993 DATA "Ort:          ",08,17,17,1
+10994 DATA "Telefonnummer:",08,18,17,3
+10995 DATA "Feld 14:      ",08,19,15,1
+10996 '
+10997 DATA "Beruf:        ",43,06,17,1
+10998 DATA "Feld 16:      ",43,07,17,1
+10999 DATA "Feld 17:      ",43,09,17,1
+11000 DATA "Feld 18:      ",43,10,17,1
+11001 DATA "Feld 19:      ",43,11,17,1
+11002 DATA "Feld 20:      ",43,12,17,1
+11003 DATA "Feld 21:      ",43,13,17,1
+11004 DATA "Feld 22:      ",43,14,17,1
+11005 DATA "Feld 23:      ",43,15,17,1
+11006 DATA "Feld 24:      ",43,16,17,1
+11007 DATA "Feld 25:      ",43,17,17,1
+11008 DATA "Feld 26:      ",43,18,17,1
+11009 DATA "Feld 27:      ",43,19,21,1
+11010 '
 11110 ' *** DAT$() leeren *****************************************************
 11120 '
 11130 FOR K=1 TO FELDMAX:DAT$(K)="":NEXT K
