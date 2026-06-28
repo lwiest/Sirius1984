@@ -11,7 +11,7 @@
 1100 '
 1110 FELDMAX=27                                         'Anzahl Stammsatzfelder
 1120 DIM FENAM$(FELDMAX)                                       'Name des Feldes
-1130 DIM FEMUSS(FELDMAX)                               'Muss-Feld (TRUE, FALSE)
+1130 DIM FEISMUSS(FELDMAX)                               'Muss-Feld (TRUE, FALSE)
 1140 DIM FEROW(FELDMAX)                           'Zeile des Feldnamens (1..25)
 1150 DIM FECOL(FELDMAX)                          'Spalte des Feldnamens (1..80)
 1160 DIM FELNG(FELDMAX)                                       'Länge des Feldes
@@ -165,7 +165,7 @@
 2640 FKEYS$="<F7>=Speichern":GOSUB 13570                   'F-Tasten einblenden
 2650 GOSUB 12170                                      'Mitgliedsnummer ausgeben
 2660 GOSUB 11910             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
-2670 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEMUSS(F)
+2670 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
 2680 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 2690 GOSUB 10360                                                  'Feld-Eingabe
 2700 '
@@ -237,7 +237,7 @@
 3360 GOSUB 12170                                      'Mitgliedsnummer ausgeben
 3370 GOSUB 11910             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
 3380 F=1
-3390 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEMUSS(F)
+3390 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
 3400 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 3410 GOSUB 10360                                                  'Feld-Eingabe
 3420 '
@@ -423,7 +423,7 @@
 5220 GOSUB 13570                                           'F-Tasten einblenden
 5230 GOTO 4900
 5240 '
-5250 ' *** Eingabefehler-Behandlung
+5250 ' *** SUB Eingabefehler-Behandlung
 5260 ISBADINPUT=TRUE
 5270 FKEYMASK$="1234"
 5280 GOSUB 13830                                           'F-Tasten ausblenden
@@ -439,7 +439,7 @@
 5380 GOSUB 13570                                           'F-Tasten einblenden
 5390 GOSUB 12040         'Feldnamen, Suchfeldwerte und Feldplatzhalter ausgeben
 5400 F=1
-5410 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEMUSS(F)
+5410 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
 5420 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=SUCH$(F)
 5430 GOSUB 10360                                                  'Feld-Eingabe
 5440 IF FKEY<>1 THEN 5480                                 'F-Tasten verarbeiten
@@ -463,14 +463,12 @@
 5620 GOTO 5410
 5630 '
 5640 ' *** Suche
-5650 'LW GOSUB 13130                                               'Basis-Maske
-5660 'LW FKEYS$="<F5>=Suchen rückwärts <F6>=Suchen vorwärts <F7>=Adressaufkleber" 
-5670 'LW GOSUB 13240                                       'F-Tasten einblenden
-5680 'LW PRINT FNCUR$(3,31);"Mitgliedsnummer"
-5690 'LW GOSUB 11420                    'Feldnamen und Feldplatzhalter ausgeben
-5700 IF SEARCH=BYNUMS THEN GOSUB 13460:GOSUB 11680  'Basis-Maske 'Feldnamen und Feldplatzhalter ausgeben
-5710 '
-5720 IF SEARCH=BYNUMS THEN MTGLZAHL=NUMSUCH1:GOTO 5870 'Init Suche nach Nummern
+5650 IF SEARCH=BYMASK THEN 5740
+5651   GOSUB 13460                                                 'Basis-Maske
+5652   GOSUB 11390                                                'Leere DAT$() 
+5653   GOSUB 11910           'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+5654   MTGLZAHL=NUMSUCH1                               'Init Suche nach Nummern
+5655   GOTO 5870
 5730 '
 5740 GOSUB 13830                                           'F-Tasten ausblenden
 5750 MTGLZAHL=0                                          'Init Suche nach Maske
@@ -480,10 +478,13 @@
 5790   FKEYS$="":GOSUB 13570                               'F-Tasten einblenden
 5800   FKEYMASK$="1234":NKEYMASK$="":GOSUB 13730                  'Menü-Eingabe
 5810   ON FKEY GOTO 5820,5340,2290,5850
-5820   HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130103 
+5820   HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130103          'F1 verarbeiten 
 5830   GOSUB 17700                                                  'Hilfe-Text
-5840   GOTO 5340
-5850   GOSUB 13890:GOTO 5800                              'Zum Hauptmenü?-Frage
+5831   GOSUB 13460                                                 'Basis-Maske
+5833   GOSUB 12040       'Feldnamen, Suchfeldwerte mit Feldplatzhalter ausgeben
+5840   GOTO 5780
+5841 '
+5850   GOSUB 13890:GOTO 5780              'F4 verarbeiten 'Zum Hauptmenü?-Frage
 5860 '
 5870 GOSUB 6460                                 'Suchtreffer lesen und anzeigen
 5880 '
@@ -494,14 +495,17 @@
 5930 '
 5940 ' *** <F1> Hilfe
 5950 HELPID=G0110503:GOSUB 17700                                    'Hilfe-Text
-5960 GOTO 5650 'BUG <F6><F6><F1> -> wieder beim 3 Treffer? 'TODO: Werte gehen verloren
+5951 GOSUB 13460                                                   'Basis-Maske
+5952 GOSUB 12170                                      'Mitgliedsnummer ausgeben
+5953 GOSUB 11910             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+5954 GOTO 5890
 5970 '
 5980 ' *** <F2> Zurück
-5990 IF SEARCH=BYNUMS THEN 4730 ELSE 5340           'TODO: Werte gehen verloren
+5990 IF SEARCH=BYNUMS THEN 4740 ELSE 5340           'TODO: Werte gehen verloren
 6000 '
 6010 ' *** <F4> Hauptmenü
 6020 GOSUB 13890                                          'Zum Hauptmenü?-Frage
-6030 GOTO 5890
+6030 GOTO 5910
 6040 '
 6050 ' *** <F5> Suchen rückwärts
 6060 GOSUB 13830                                           'F-Tasten ausblenden
@@ -552,11 +556,10 @@
 6510 '
 6520 ' *** <F7> Adressaufkleber drucken
 6530 GOSUB 16180                                         'Drucker bereit?-Frage
-6540 IF NOT ISJA THEN 6580
+6540 IF NOT ISJA THEN 6590
 6550   N$="Adressaufkleber wird gedruckt...":GOSUB 13250             'Nachricht
 6560   GOSUB 16690                                     'Adressaufkleber drucken
 6570   GOSUB 13390                                           'Nachricht löschen
-6580 GOSUB 13570                                           'F-Tasten einblenden
 6590 GOTO 5890                                                    'Neue Eingabe
 6600 '
 6610 ' *** SUB Vorherigen Treffer suchen
@@ -590,9 +593,9 @@
 6890     IF INSTR(DAT$(K),RIGHT$(S$,LEN(S$)-1))>0 THEN 6980
 6900     GOTO 7020
 6910   IF F$<>"?" THEN 6970
-6920 'TODO: A sequence of question marks (?)
 6930     P=2
 6940     IF MID$(S$,P,1)="?" THEN P=P+1:GOTO 6940
+6941     IF P=LEN(DAT$(K))+1 THEN 6980         
 6950     IF INSTR(DAT$(K),RIGHT$(S$,LEN(S$)-P+1))=P THEN 6980
 6960     GOTO 7020
 6970   IF S$<>DAT$(K) THEN 7020 
@@ -657,7 +660,7 @@
 7560 PRINT FNCUR$(5,24);"Name:"
 7570 MSK$="Von:  .  .   Bis:  .  .   Amt:"
 7580 FOR KK=7 TO 19 
-7590   PRINT FNCUR$(KK,2);MSK$;TAB(43);MSK$                    'LW NO semicolon
+7590   PRINT FNCUR$(KK,2);MSK$;TAB(43);MSK$
 7600 NEXT
 7610 GOSUB 15620                                                 'Ausgabe Daten
 7620 LNG=2-(HP=7)*6                                    'BEGIN OF THE INPUT-LOOP
@@ -761,14 +764,14 @@
 8600 ' *** Rückkehr aus "Stammsatz suchen"
 8610 ' IN: SEARCH (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
 8620 GOSUB 16180                                         'Drucker bereit?-Frage
-8630 IF NOT ISJA THEN 9010 'LW with BYNUMS forces an uncessesary screen refresh an SUCH$() is empty
+8630 IF NOT ISJA THEN 9010                                 'LW too much refresh
 8640 GOTO 8730
 8650 '
 8660 ' *** Komplette Mitgliedsliste drucken
 8670 SEARCH=BYNUMS
 8680 NUMSUCH1=1:NUMSUCH2=MTGLMAX
 8690 GOSUB 16180                                         'Drucker bereit?-Frage
-8700 IF NOT ISJA THEN 8030
+8700 IF NOT ISJA THEN 8030                                 'LW too much refresh
 8710 '
 8720 ' *** Drucken
 8730 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13250 'Nachricht
@@ -799,7 +802,7 @@
 8980 ' *** Suchen zuende
 8990 GOSUB 13390                                             'Nachricht löschen
 9000 IF NKEY=2 THEN 7900                                 'TODO: Very hackish...
-9010 IF SEARCH=BYNUMS THEN 4730 ELSE 5330                'TODO: Very hackish...
+9010 IF SEARCH=BYNUMS THEN 4740 ELSE 5340                'TODO: Very hackish...
 9020 '
 9030 ' *** Datenblatt drucken *************************************************
 9040 '
@@ -939,7 +942,7 @@
 10970 FOR K=1 TO FELDMAX
 10980   READ NAMEN$,SPALTE,ZEILE,LAENGE,TYP
 10990   FENAM$(K)=NAMEN$
-11000   IF MID$(NAMEN$,13,1)="=" THEN FEMUSS(K)=TRUE ELSE FEMUSS(K)=FALSE                           
+11000   IF MID$(NAMEN$,13,1)="=" THEN FEISMUSS(K)=TRUE ELSE FEISMUSS(K)=FALSE                           
 11010   FECOL(K)=SPALTE
 11020   FEROW(K)=ZEILE
 11030   FELNG(K)=LAENGE
@@ -1002,19 +1005,6 @@
 11600   PRINT #1,STR$(MTGLMAX)
 11610 CLOSE #1
 11620 RETURN
-11630 '
-11640 ' *** Maske Feldnamen und Feldplatzhalter ausgeben **********************
-11650 '
-11660 ' IN: FELDMAX
-11670 ' IN: MTGLZAHL
-11680 FOR K=1 TO FELDMAX
-11690   Z=FEROW(K)
-11700   S=FECOL(K)
-11710   PRINT FNCUR$(Z,S);FENAM$(K)
-11720   S=S+COLSEP
-11730   PRINT FNCUR$(Z,S);STRING$(FELNG(K),".")
-11740 NEXT K
-11750 RETURN
 11760 '
 11770 ' *** Maske Feldwerte mit Feldplatzhalter ausgeben **********************
 11780 '
