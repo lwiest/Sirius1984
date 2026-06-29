@@ -132,9 +132,9 @@
 2310 PRINT FNCUR$(4,28);"1 - Stammsatzpflege"
 2320 PRINT FNCUR$(6,28);"2 - Verwendungsnachweis"
 2330 PRINT FNCUR$(8,28);"3 - Mitgliedsliste drucken"
-2340 FKEYMAX=4:NKEYMAX=3:GOSUB 13730                              'Menü-Eingabe
-2350 IF FKEY THEN ON FKEY GOTO 2370,2380,2290,2380
-2360 ON NKEY GOTO 2440,7070,7900
+2340 NKEYMAX=3:FKEYMAX=4:GOSUB 13730                              'Menü-Eingabe
+2350 IF NKEY THEN ON NKEY GOTO 2440,7070,7900
+2360 ON FKEY GOTO 2370,2380,2290,2380
 2370 HELPID=G0100000:GOSUB 17700:GOTO 2290                          'Hilfe-Text
 2380 GOSUB 13890:GOTO 2340                                'Zum Hauptmenü?-Frage
 2390 '
@@ -149,9 +149,9 @@
 2480 PRINT FNCUR$(8,30);"3 - Stammsatz löschen"
 2490 PRINT FNCUR$(10,30);"4 - Stammsatz drucken"
 2500 PRINT FNCUR$(12,30);"5 - Stammsatz suchen"
-2510 FKEYMAX=4:NKEYMAX=5:GOSUB 13730                              'Menü-Eingabe
-2520 IF FKEY THEN ON FKEY GOTO 2540,2290,2290,2550
-2530 ON NKEY GOTO 2590,3080,3740,4170,4530
+2510 NKEYMAX=5:FKEYMAX=4:GOSUB 13730                              'Menü-Eingabe
+2520 IF NKEY THEN ON NKEY GOTO 2590,3080,3740,4170,4530
+2510 ON FKEY GOTO 2540,2290,2290,2550
 2540 HELPID=G0110000:GOSUB 17700:GOTO 2440                          'Hilfe-Text
 2550 GOSUB 13890:GOTO 2510                                'Zum Hauptmenü?-Frage
 2560 '
@@ -188,14 +188,14 @@
 2870   GOTO 18000                                                 'Programmende
 2880 IF FKEY=7 THEN GOSUB 2980:GOTO 2590            'Exit "Stammsatz anlegen" 2
 2890 '
-2900 ' *** Exit "Stammsatz anlegen"
+2900 ' *** SUB Exit "Stammsatz anlegen"
 2910 GOSUB 10910                                           'Tastatur entprellen
 2920 Q$="Wollen Sie vorher den Stammsatz speichern?":GOSUB 12710 'Ja/Nein-Frage
 2930 IF ISJA THEN 2980
 2940   MTGLZAHL=MTGLZAHL-1
 2950   GOTO 3030
 2960 '                                                            
-2970 ' *** Exit "Stammsatz anlegen" 2
+2970 ' *** SUB Exit "Stammsatz anlegen" 2
 2980 N$="Stammsatz wird gespeichert...":GOSUB 13330 'Nachricht. F-Tasten ausblenden
 2990 GOSUB 12500                                           'Stammsatz speichern
 3000 GOSUB 14240                       'Erste Verwendungsnachweis-Seite anlegen
@@ -260,11 +260,11 @@
 3590   GOTO 18000                                                 'Programmende
 3600 IF FKEY=7 THEN GOSUB 3670:GOTO 3080             'Exit "Stammsatz ändern" 2
 3610 '
-3620 ' *** Exit "Stammsatz ändern"
+3620 ' *** SUB Exit "Stammsatz ändern"
 3630 Q$="Wollen Sie vorher den Stammsatz speichern?":GOSUB 12710 'Ja/Nein-Frage
 3640 IF NOT ISJA THEN RETURN
 3650 '
-3660 ' *** Exit "Stammsatz ändern" 2
+3660 ' *** SUB Exit "Stammsatz ändern" 2
 3670 N$="Stammsatz wird gespeichert...":GOSUB 13330 'Nachricht. F-Tasten ausblenden
 3680 GOSUB 12500                                           'Stammsatz speichern
 3690 GOSUB 13390                                             'Nachricht löschen
@@ -297,7 +297,6 @@
 3960 MTGLZAHL=M
 3970 N$="Stammsatz wird gelesen...":GOSUB 13330 'Nachricht. F-Tasten ausblenden
 3980 GOSUB 12280                                               'Stammsatz lesen
-3990 GOSUB 13390                                             'Nachricht löschen
 4000 '
 4010 GOSUB 13460                                                   'Basis-Maske
 4020 GOSUB 12170                                      'Mitgliedsnummer ausgeben
@@ -352,7 +351,7 @@
 4510 ' *** Stammsatz suchen (und drucken) von 05*************** ***************
 4520 '
 4530 ISDRUCK=FALSE
-4540 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN"
+4540 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN" 'TOTO Einsprung Suchen & Drucken
 4550 MI$="G-011050":IF ISDRUCK THEN MI$="G-013010"
 4560 GOSUB 13460                                                   'Basis-Maske
 4570 FKEYS$="":GOSUB 13570                                 'F-Tasten einblenden
@@ -360,18 +359,18 @@
 4590 TMP1=29:IF ISDRUCK THEN TMP1=24
 4600 PRINT FNCUR$(4,TMP1)"1 - ";TMP$;" nach Nummern"
 4610 PRINT FNCUR$(6,TMP1)"2 - ";TMP$;" nach Maske"
-4620 FKEYMAX=4:NKEYMAX=2:GOSUB 13730                              'Menü-Eingabe
+4620 NKEYMAX=2:FKEYMAX=4:GOSUB 13730                              'Menü-Eingabe
 4630 IF NKEY THEN ON NKEY GOTO 4730,5330
 4640 IF FKEY<>1 THEN 4680 
 4650   HELPID=G0110501:IF ISDRUCK THEN HELPID=G0130102
 4660   GOSUB 17700                                                  'Hilfe-Text
 4670   GOTO 4540
-4680 IF FKEY=2 THEN IF ISDRUCK THEN 7900 ELSE 2440
+4680 IF FKEY=2 THEN IF ISDRUCK THEN 7900 ELSE 2440    'Absprung F2 Suchen & Drucken oder Suchen
 4690 IF FKEY=3 THEN 2290
 4700 IF FKEY=4 THEN GOSUB 13890:GOTO 4620                 'Zum Hauptmenü?-Frage
 4710 '
 4720 ' *** Suchen nach Nummern
-4730 TMP$=STR$(1):NUMSUCH$(1)=MID$(TMP$,2,99)
+4730 TMP$=STR$(1):NUMSUCH$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
 4740 TMP$=STR$(MTGLMAX):NUMSUCH$(2)=MID$(TMP$,2,99)
 4750 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
 4760 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
@@ -403,7 +402,7 @@
 5020   SEARCH=BYNUMS
 5030   NUMSUCH1=VAL(NUMSUCH$(1))
 5040   NUMSUCH2=VAL(NUMSUCH$(2))
-5050   IF ISDRUCK THEN 8620 ELSE 5650             'Suchen & Drucken oder Suchen
+5050   IF ISDRUCK THEN 8620 ELSE 5650    'Absprung Suchen & Drucken oder Suchen
 5060 '
 5070 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 5080 IF M>=1 AND M<=MTGLMAX THEN 5120
@@ -432,7 +431,7 @@
 5310 '
 5320 ' *** Suchen nach Maske
 5330 GOSUB 11440                                                'SUCH$() leeren
-5340 MT$="STAMMSATZ SUCHEN NACH MASKE":MI$="G-011052"
+5340 MT$="STAMMSATZ SUCHEN NACH MASKE":MI$="G-011052" 'Einsprung nach Ende Suchen & Drucken
 5350 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH MASKE":MI$="G-013012"
 5360 GOSUB 13460                                                   'Basis-Maske
 5370 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken" 
@@ -490,7 +489,7 @@
 5880 '
 5890 FKEYS$="<F5>=Suchen rückwärts <F6>=Suchen vorwärts <F7>=Adressaufkleber" 
 5900 GOSUB 13570                                           'F-Tasten einblenden
-5910 FKEYMAX=7:NKEYMAX=0:GOSUB 13730                              'Menü-Eingabe
+5910 NKEYMAX=0:FKEYMAX=7:GOSUB 13730                              'Menü-Eingabe
 5920 ON FKEY GOTO 5950,5990,2290,6020,6060,6260,6530
 5930 '
 5940 ' *** <F1> Hilfe
@@ -696,7 +695,7 @@
 7920 PRINT FNCUR$(4,30);"1 - Suchen & Drucken"
 7930 PRINT FNCUR$(6,30);"2 - Komplett drucken"
 7940 PRINT FNCUR$(8,30);"3 - Datenblatt drucken"
-7950 FKEYMAX=4:NKEYMAX=3:GOSUB 13730                              'Menü-Eingabe
+7950 NKEYMAX=3:FKEYMAX=4:GOSUB 13730                              'Menü-Eingabe
 7960 IF NKEY THEN ON NKEY GOTO 8030,8030,9050
 7970 ON FKEY GOTO 7980,2290,2290,7990
 7980 HELPID=G0130000:GOSUB 17700:GOTO 7900                          'Hilfe-Text
@@ -764,14 +763,16 @@
 8600 ' *** Rückkehr aus "Stammsatz suchen"
 8610 ' IN: SEARCH (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
 8620 GOSUB 16180                                         'Drucker bereit?-Frage
-8630 IF NOT ISJA THEN 9010                                 'LW too much refresh
-8640 GOTO 8730
+8630 IF ISJA THEN 8730
+8631 GOSUB 13570                                           'F-Tasten einblenden
+8640 IF SEARCH=BYNUMS THEN 4930 ELSE 5430 
 8650 '
 8660 ' *** Komplette Mitgliedsliste drucken
 8670 SEARCH=BYNUMS
+8671 ISCOMPLETE=TRUE
 8680 NUMSUCH1=1:NUMSUCH2=MTGLMAX
 8690 GOSUB 16180                                         'Drucker bereit?-Frage
-8700 IF NOT ISJA THEN 8030                                 'LW too much refresh
+8700 IF NOT ISJA THEN 8130
 8710 '
 8720 ' *** Drucken
 8730 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13250 'Nachricht
@@ -801,8 +802,8 @@
 8970 '
 8980 ' *** Suchen zuende
 8990 GOSUB 13390                                             'Nachricht löschen
-9000 IF NKEY=2 THEN 7900                                 'TODO: Very hackish...
-9010 IF SEARCH=BYNUMS THEN 4740 ELSE 5340                'TODO: Very hackish...
+9000 IF ISCOMPLETE THEN ISCOMPLETE=FALSE:GOTO 7900         'TODO: Very hackish...
+9010 IF SEARCH=BYNUMS THEN 4730 ELSE 5340                'TODO: Very hackish...
 9020 '
 9030 ' *** Datenblatt drucken *************************************************
 9040 '
