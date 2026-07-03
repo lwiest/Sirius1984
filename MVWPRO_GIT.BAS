@@ -351,7 +351,7 @@
 4500 ' *** Stammsatz suchen (und drucken) von 05*************** ***************
 4510 '
 4520 ISDRUCK=FALSE
-4530 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN" 'TOTO Einsprung Suchen & Drucken
+4530 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN" 'TODO Einsprung Suchen & Drucken
 4540 MI$="G-011050":IF ISDRUCK THEN MI$="G-013010"
 4550 GOSUB 13690                                                   'Basis-Maske
 4560 FKEYS$="":GOSUB 13800                                 'F-Tasten einblenden
