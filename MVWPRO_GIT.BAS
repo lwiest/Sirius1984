@@ -1263,17 +1263,17 @@
 14450 '
 14460 ' IN: MTGLZAHL
 14470 GET #3,1                               'letzte Seitennummer lesen dann +1
-14480 TMPOINT=VAL(POINT0$)+1
+14480 TMPPOINT=VAL(POINT0$)+1
 14490 LSET DDD1$=""                                    'leeren Record speichern
 14500 LSET DDD2$=""
 14510 LSET DDD3$=""
-14520 PUT #5,TMPOINT
-14530 LSET POINT0$=STR$(TMPOINT)             'letzte Seitennummer neu speichern
+14520 PUT #5,TMPPOINT
+14530 LSET POINT0$=STR$(TMPPOINT)             'letzte Seitennummer neu speichern
 14540 PUT #3,1
 14550 PUT #3,MTGLZAHL+1
 14560 LSET POINT1$="0000"
 14570 LSET POINT2$="0000"
-14580 PUT #4,TMPOINT
+14580 PUT #4,TMPPOINT
 14590 RETURN
 14600 '
 14610 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
@@ -1288,11 +1288,11 @@
 14700 '
 14710 ' **** SEITE RÜCKWÄRTS **************************************************
 14720 '
-14730 TMPOINT=VAL(POINT1$)
-14740 IF TMPOINT<>0 THEN 14770
+14730 TMPPOINT=VAL(POINT1$)
+14740 IF TMPPOINT<>0 THEN 14770
 14750 N$="Erste Seite":GOSUB 13480                                   'Nachricht
 14760 RETURN
-14770 CPOINT=TMPOINT
+14770 CPOINT=TMPPOINT
 14780 BLATT=BLATT-1
 14790 GET #5,CPOINT:GOSUB 15690   
 14800 GET #4,CPOINT:GOSUB 15850                             'Neue Pointer lesen
@@ -1302,9 +1302,9 @@
 14840 '
 14850 ' **** SEITE VORWÄRTS  **************************************************
 14860 '
-14870 TMPOINT=VAL(POINT2$)
-14880 IF TMPOINT=0 THEN 14950
-14890 CPOINT=TMPOINT
+14870 TMPPOINT=VAL(POINT2$)
+14880 IF TMPPOINT=0 THEN 14950
+14890 CPOINT=TMPPOINT
 14900 BLATT=BLATT+1
 14910 GET #5,CPOINT:GOSUB 15690
 14920 GET #4,CPOINT:GOSUB 15850
@@ -1347,12 +1347,12 @@
 15290 '
 15300 GET #3,1                                                           'NDX+1
 15310 LSET POINT0$=STR$(VAL(POINT0$)+1)
-15320 PUT #3,1:TMPOINT$=POINT0$    'Vektoren der bisher letzten Seite verbiegen
+15320 PUT #3,1:TMPPOINT$=POINT0$    'Vektoren der bisher letzten Seite verbiegen
 15330 LSET POINT2$=POINT0$                                'Verbiege Vektoren...
 15340 PUT #4,CPOINT                                         '...der alten Seite
 15350 LSET POINT1$=STR$(CPOINT)                             '...der neuen Seite
 15360 LSET POINT2$="0000"                                                '.. ""
-15370 CPOINT=VAL(TMPOINT$)                                       'Nr neue Seite
+15370 CPOINT=VAL(TMPPOINT$)                                       'Nr neue Seite
 15380 PUT #4,CPOINT
 15390 LSET DDD1$=""                                           'Write empty page
 15400 LSET DDD2$=""
