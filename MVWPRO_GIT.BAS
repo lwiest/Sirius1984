@@ -1279,7 +1279,7 @@
 14610 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
 14620 '
 14630 ' IN: MTGLZAHL
-14640 GET #3,MTGLZAHL+1                                            'Index_Datei
+14640 GET #3,MTGLZAHL+1                                            'Index-Datei
 14650 CPOINT=VAL(POINT0$)
 14660 GET #5,CPOINT:GOSUB 15690                                    'Daten lesen
 14670 BLATT=1
