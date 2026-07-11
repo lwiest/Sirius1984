@@ -617,11 +617,11 @@
 7160 FKEYS$="":GOSUB 13800                                 'F-Tasten einblenden
 7170 PRINT CURON$;
 7180 PRINT HIGHOFF$;
-7190 PRINT FNCUR$(4,20)"   Bitte geben Sie die Mitgliedsnummer"
-7200 PRINT FNCUR$(5,20)"des zu ändernden Verwendungsnachweises ein"
+7190 PRINT FNCUR$(4,23);"Bitte geben Sie die Mitgliedsnummer"
+7200 PRINT FNCUR$(5,20);"des zu ändernden Verwendungsnachweises ein"
 7210 'LW PRINT FNCUR$(6,23);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
-7220 PRINT FNCUR$(6,20)" und beenden Sie die Eingabe mit RETURN."
-7230 PRINT FNCUR$(8,38)"=>..."
+7220 PRINT FNCUR$(6,20);" und beenden Sie die Eingabe mit RETURN."
+7230 PRINT FNCUR$(8,38);"=>..."
 7240 Z=8:S=39:LNG=3:TYP=2
 7250 GOSUB 10360                                                  'Feld-Eingabe
 7260 IF FKEY=1 THEN HELPID=G0120001:GOSUB 17930:GOTO 7140           'Hilfe-Text
