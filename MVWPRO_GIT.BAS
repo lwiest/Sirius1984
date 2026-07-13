@@ -9,16 +9,16 @@
 1080 TRUE=-1
 1090 FALSE=0
 1100 '
-1110 FELDMAX=27                                         'Anzahl Stammsatzfelder
-1120 DIM FENAM$(FELDMAX)                                       'Name des Feldes
-1130 DIM FEISMUSS(FELDMAX)                             'Muss-Feld (TRUE, FALSE)
-1140 DIM FEROW(FELDMAX)                           'Zeile des Feldnamens (1..25)
-1150 DIM FECOL(FELDMAX)                          'Spalte des Feldnamens (1..80)
-1160 DIM FELNG(FELDMAX)                                       'Länge des Feldes
-1170 DIM FETYP(FELDMAX)                                         'Typ des Feldes
+1110 FIELDMAX=27                                         'Anzahl Stammsatzfelder
+1120 DIM FENAM$(FIELDMAX)                                       'Name des Feldes
+1130 DIM FEISMUSS(FIELDMAX)                             'Muss-Feld (TRUE, FALSE)
+1140 DIM FEROW(FIELDMAX)                           'Zeile des Feldnamens (1..25)
+1150 DIM FECOL(FIELDMAX)                          'Spalte des Feldnamens (1..80)
+1160 DIM FELNG(FIELDMAX)                                       'Länge des Feldes
+1170 DIM FETYP(FIELDMAX)                                         'Typ des Feldes
 1180 '
-1190 DIM DAT$(FELDMAX)                                      'Stammsatzfelddaten
-1200 DIM SUCH$(FELDMAX)                                     'Stammsatzsuchdaten
+1190 DIM DAT$(FIELDMAX)                                      'Stammsatzfelddaten
+1200 DIM SUCH$(FIELDMAX)                                     'Stammsatzsuchdaten
 1210 '
 1220 NUMSUCHMAX=2
 1230 DIM NUMSUCH$(NUMSUCHMAX)
@@ -95,7 +95,7 @@
 1940 '
 1950 ' Weitere Variablen
 1960 ' -----------------
-1970 ' F        - Feldindex 1..27 (FELDMAX)
+1970 ' F        - Feldindex 1..27 (FIELDMAX)
 1980 ' I$       - Lokale Texteinrückung
 1990 ' K        - Schleifenindex
 2000 ' MTGLMAX  - Höchste auf Disk gespeicherte Mitgliedsnummer
@@ -171,12 +171,12 @@
 2700 '
 2710 IF ASCC<>ASCRET THEN 2750                              'RETURN verarbeiten
 2720   DAT$(F)=OUTTEXT$
-2730   F=F+1:IF F>FELDMAX THEN F=1
+2730   F=F+1:IF F>FIELDMAX THEN F=1
 2740   GOTO 2670
 2750 IF CKEY=0 THEN 2800                              'Cursortasten verarbeiten
 2760   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")
-2770   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
-2780   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
+2770   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FIELDMAX
+2780   IF CKEY=CKEYDN THEN F=F+1:IF F>FIELDMAX THEN F=1
 2790   GOTO 2670
 2800 IF FKEY=1 THEN HELPID=G0110100:GOSUB 17930:GOTO 2630           'Hilfe-Text
 2810 IF FKEY=2 THEN GOSUB 2910:GOTO 2440              'Exit "Stammsatz anlegen"
@@ -243,12 +243,12 @@
 3420 '
 3430 IF ASCC<>ASCRET THEN 3470                              'RETURN verarbeiten
 3440   DAT$(F)=OUTTEXT$
-3450   F=F+1:IF F>FELDMAX THEN F=1
+3450   F=F+1:IF F>FIELDMAX THEN F=1
 3460   GOTO 3390
 3470 IF CKEY=0 THEN 3520                              'Cursortasten verarbeiten
 3480   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")
-3490   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
-3500   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
+3490   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FIELDMAX
+3500   IF CKEY=CKEYDN THEN F=F+1:IF F>FIELDMAX THEN F=1
 3510   GOTO 3390
 3520 IF FKEY=1 THEN HELPID=G0110202:GOSUB 17930:GOTO 3340           'Hilfe-Text
 3530 IF FKEY=2 THEN GOSUB 3630:GOTO 3080               'Exit "Stammsatz ändern"
@@ -454,11 +454,11 @@
 5530 IF CKEY=0 THEN 5590                              'Cursortasten verarbeiten
 5540   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(F);HIGHOFF$;
 5550   PRINT STRING$(LNG-LEN(SUCH$(F)),".")
-5560   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FELDMAX
-5570   IF CKEY=CKEYDN THEN F=F+1:IF F>FELDMAX THEN F=1
+5560   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FIELDMAX
+5570   IF CKEY=CKEYDN THEN F=F+1:IF F>FIELDMAX THEN F=1
 5580   GOTO 5400
 5590 SUCH$(F)=OUTTEXT$                                      'RETURN verarbeiten
-5600 F=F+1:IF F>FELDMAX THEN F=1
+5600 F=F+1:IF F>FIELDMAX THEN F=1
 5610 GOTO 5400
 5620 '
 5630 ' *** Suche
@@ -583,7 +583,7 @@
 6820 ' *** SUB Treffer?
 6830 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 13480      'Nachricht
 6840 GOSUB 12150                                               'Stammsatz lesen
-6850 FOR K=1 TO FELDMAX
+6850 FOR K=1 TO FIELDMAX
 6860   S$=SUCH$(K)
 6870   IF LEN(S$)=0 THEN 7000
 6880   F$=LEFT$(S$,1)
@@ -912,7 +912,7 @@
 10940 ' *** Stammsatzfelde-Definitionen lesen ********************************* 
 10950 '
 10960 RESTORE 11080
-10970 FOR K=1 TO FELDMAX
+10970 FOR K=1 TO FIELDMAX
 10980   READ NAMEN$,SPALTE,ZEILE,LAENGE,TYP
 10990   FENAM$(K)=NAMEN$
 11000   IF MID$(NAMEN$,13,1)="=" THEN FEISMUSS(K)=TRUE ELSE FEISMUSS(K)=FALSE                           
@@ -954,12 +954,12 @@
 11360 '
 11370 ' *** DAT$() leeren *****************************************************
 11380 '
-11390 FOR K=1 TO FELDMAX:DAT$(K)="":NEXT K
+11390 FOR K=1 TO FIELDMAX:DAT$(K)="":NEXT K
 11400 RETURN
 11410 '
 11420 ' *** SUCH$() leeren ****************************************************
 11430 '
-11440 FOR K=1 TO FELDMAX:SUCH$(K)="":NEXT K
+11440 FOR K=1 TO FIELDMAX:SUCH$(K)="":NEXT K
 11450 RETURN
 11460 '
 11470 ' *** MTGLMAX lesen ***************************************************** 
@@ -981,8 +981,8 @@
 11630 '
 11640 ' *** Maske Feldwerte mit Feldplatzhalter ausgeben **********************
 11650 '
-11660 ' IN: FELDMAX
-11670 FOR K=1 TO FELDMAX
+11660 ' IN: FIELDMAX
+11670 FOR K=1 TO FIELDMAX
 11680   Z=FEROW(K)
 11690   S=FECOL(K)+COLSEP
 11700   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
@@ -992,8 +992,8 @@
 11740 '
 11750 ' *** Maske Feldnamen, Feldwerte mit Feldplatzhalter ausgeben ***********
 11760 '
-11770 ' IN: FELDMAX
-11780 FOR K=1 TO FELDMAX
+11770 ' IN: FIELDMAX
+11780 FOR K=1 TO FIELDMAX
 11790   Z=FEROW(K)
 11800   S=FECOL(K)
 11810   PRINT FNCUR$(Z,S);FENAM$(K)
@@ -1005,8 +1005,8 @@
 11870 '
 11880 ' *** Maske Feldnamen, Suchfeldwerte mit Feldplatzhalter ausgeben *******
 11890 '
-11900 ' IN: FELDMAX
-11910 FOR K=1 TO FELDMAX
+11900 ' IN: FIELDMAX
+11910 FOR K=1 TO FIELDMAX
 11920   Z=FEROW(K)
 11930   S=FECOL(K)
 11940   PRINT FNCUR$(Z,S);FENAM$(K)
@@ -1040,7 +1040,7 @@
 12220   P=P+LNG
 12230 NEXT K
 12240 P=1
-12250 FOR K=15 TO FELDMAX
+12250 FOR K=15 TO FIELDMAX
 12260   LNG=FELNG(K)+1
 12270   TMP$=MID$(XSTAMMSATZ2$,P,LNG)
 12280   L=ASC(LEFT$(TMP$,1))
@@ -1060,7 +1060,7 @@
 12420 NEXT K
 12430 LSET XSTAMMSATZ1$=TMP$
 12440 TMP$=""
-12450 FOR K=15 TO FELDMAX
+12450 FOR K=15 TO FIELDMAX
 12460   LNG=FELNG(K)
 12470   L=LEN(DAT$(K))
 12480   TMP$=TMP$+CHR$(L)+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
