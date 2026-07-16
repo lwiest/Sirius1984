@@ -10,12 +10,12 @@
 1090 FALSE=0
 1100 '
 1110 FIELDMAX=27                                         'Anzahl Stammsatzfelder
-1120 DIM FENAM$(FIELDMAX)                                       'Name des Feldes
-1130 DIM FEISMUSS(FIELDMAX)                             'Muss-Feld (TRUE, FALSE)
-1140 DIM FEROW(FIELDMAX)                           'Zeile des Feldnamens (1..25)
-1150 DIM FECOL(FIELDMAX)                          'Spalte des Feldnamens (1..80)
-1160 DIM FELNG(FIELDMAX)                                       'Länge des Feldes
-1170 DIM FETYP(FIELDMAX)                                         'Typ des Feldes
+1120 DIM FIELDNAM$(FIELDMAX)                                       'Name des Feldes
+1130 DIM FIELDISMAND(FIELDMAX)                             'Muss-Feld (TRUE, FALSE)
+1140 DIM FIELDROW(FIELDMAX)                           'Zeile des Feldnamens (1..25)
+1150 DIM FIELDCOL(FIELDMAX)                          'Spalte des Feldnamens (1..80)
+1160 DIM FIELDLNG(FIELDMAX)                                       'Länge des Feldes
+1170 DIM FIELDTYP(FIELDMAX)                                         'Typ des Feldes
 1180 '
 1190 DIM DAT$(FIELDMAX)                                      'Stammsatzfelddaten
 1200 DIM SUCH$(FIELDMAX)                                     'Stammsatzsuchdaten
@@ -165,7 +165,7 @@
 2640 FKEYS$="<F7>=Speichern":GOSUB 13800                   'F-Tasten einblenden
 2650 GOSUB 12040                                      'Mitgliedsnummer ausgeben
 2660 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
-2670 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
+2670 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 2680 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 2690 GOSUB 10360                                                  'Feld-Eingabe
 2700 '
@@ -237,7 +237,7 @@
 3360 GOSUB 12040                                      'Mitgliedsnummer ausgeben
 3370 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
 3380 F=1
-3390 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
+3390 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 3400 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 3410 GOSUB 10360                                                  'Feld-Eingabe
 3420 '
@@ -305,7 +305,7 @@
 4040 IF NOT ISJA THEN 4120
 4050   F=5
 4060   DAT$(F)="ausgetreten"
-4070   Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F)
+4070   Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F)
 4080   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")               
 4090   N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
 4100   GOSUB 12370                                         'Stammsatz speichern
@@ -438,7 +438,7 @@
 5370 GOSUB 13800                                           'F-Tasten einblenden
 5380 GOSUB 11910         'Feldnamen, Suchfeldwerte und Feldplatzhalter ausgeben
 5390 F=1
-5400 Z=FEROW(F):S=FECOL(F)+COLSEP:LNG=FELNG(F):TYP=FETYP(F):ISMUSS=FEISMUSS(F)
+5400 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 5410 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=SUCH$(F)
 5420 GOSUB 10360                                                  'Feld-Eingabe
 5430 IF FKEY<>1 THEN 5470                                 'F-Tasten verarbeiten
@@ -914,12 +914,12 @@
 10960 RESTORE 11080
 10970 FOR K=1 TO FIELDMAX
 10980   READ NAMEN$,SPALTE,ZEILE,LAENGE,TYP
-10990   FENAM$(K)=NAMEN$
-11000   IF MID$(NAMEN$,13,1)="=" THEN FEISMUSS(K)=TRUE ELSE FEISMUSS(K)=FALSE                           
-11010   FECOL(K)=SPALTE
-11020   FEROW(K)=ZEILE
-11030   FELNG(K)=LAENGE
-11040   FETYP(K)=TYP 
+10990   FIELDNAM$(K)=NAMEN$
+11000   IF MID$(NAMEN$,13,1)="=" THEN FIELDISMAND(K)=TRUE ELSE FIELDISMAND(K)=FALSE                           
+11010   FIELDCOL(K)=SPALTE
+11020   FIELDROW(K)=ZEILE
+11030   FIELDLNG(K)=LAENGE
+11040   FIELDTYP(K)=TYP 
 11050 NEXT K
 11060 RETURN
 11070 '
@@ -983,10 +983,10 @@
 11650 '
 11660 ' IN: FIELDMAX
 11670 FOR K=1 TO FIELDMAX
-11680   Z=FEROW(K)
-11690   S=FECOL(K)+COLSEP
+11680   Z=FIELDROW(K)
+11690   S=FIELDCOL(K)+COLSEP
 11700   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
-11710   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")
+11710   PRINT STRING$(FIELDLNG(K)-LEN(DAT$(K)),".")
 11720 NEXT K
 11730 RETURN
 11740 '
@@ -994,12 +994,12 @@
 11760 '
 11770 ' IN: FIELDMAX
 11780 FOR K=1 TO FIELDMAX
-11790   Z=FEROW(K)
-11800   S=FECOL(K)
-11810   PRINT FNCUR$(Z,S);FENAM$(K)
+11790   Z=FIELDROW(K)
+11800   S=FIELDCOL(K)
+11810   PRINT FNCUR$(Z,S);FIELDNAM$(K)
 11820   S=S+COLSEP
 11830   PRINT FNCUR$(Z,S);HIGHON$;DAT$(K);HIGHOFF$;
-11840   PRINT STRING$(FELNG(K)-LEN(DAT$(K)),".")               
+11840   PRINT STRING$(FIELDLNG(K)-LEN(DAT$(K)),".")               
 11850 NEXT K
 11860 RETURN
 11870 '
@@ -1007,12 +1007,12 @@
 11890 '
 11900 ' IN: FIELDMAX
 11910 FOR K=1 TO FIELDMAX
-11920   Z=FEROW(K)
-11930   S=FECOL(K)
-11940   PRINT FNCUR$(Z,S);FENAM$(K)
+11920   Z=FIELDROW(K)
+11930   S=FIELDCOL(K)
+11940   PRINT FNCUR$(Z,S);FIELDNAM$(K)
 11950   S=S+COLSEP
 11960   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(K);HIGHOFF$;
-11970   PRINT STRING$(FELNG(K)-LEN(SUCH$(K)),".")               
+11970   PRINT STRING$(FIELDLNG(K)-LEN(SUCH$(K)),".")               
 11980 NEXT K
 11990 RETURN
 12000 '
@@ -1033,7 +1033,7 @@
 12150 GET #2,MTGLZAHL                                             'LW Compress?
 12160 P=1
 12170 FOR K=1 TO 14
-12180   LNG=FELNG(K)+1
+12180   LNG=FIELDLNG(K)+1
 12190   TMP$=MID$(XSTAMMSATZ1$,P,LNG)
 12200   L=ASC(LEFT$(TMP$,1))
 12210   DAT$(K)=MID$(TMP$,2,L)
@@ -1041,7 +1041,7 @@
 12230 NEXT K
 12240 P=1
 12250 FOR K=15 TO FIELDMAX
-12260   LNG=FELNG(K)+1
+12260   LNG=FIELDLNG(K)+1
 12270   TMP$=MID$(XSTAMMSATZ2$,P,LNG)
 12280   L=ASC(LEFT$(TMP$,1))
 12290   DAT$(K)=MID$(TMP$,2,L)
@@ -1054,14 +1054,14 @@
 12360 ' IN: MTGLZAHL
 12370 TMP$=""                                                     'LW Compress?
 12380 FOR K=1 TO 14
-12390   LNG=FELNG(K)
+12390   LNG=FIELDLNG(K)
 12400   L=LEN(DAT$(K))
 12410   TMP$=TMP$+CHR$(L)+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
 12420 NEXT K
 12430 LSET XSTAMMSATZ1$=TMP$
 12440 TMP$=""
 12450 FOR K=15 TO FIELDMAX
-12460   LNG=FELNG(K)
+12460   LNG=FIELDLNG(K)
 12470   L=LEN(DAT$(K))
 12480   TMP$=TMP$+CHR$(L)+DAT$(K)+SPACE$(LNG-LEN(DAT$(K)))
 12490 NEXT K
@@ -1534,14 +1534,14 @@
 17160 PRINT
 17170 RESTORE 17230
 17180 FOR K=1 TO 7:READ A,B
-17190   IF A<>0 THEN PRINT TAB(TMP1);FENAM$(A);DAT$(A);
-17200   IF B<>0 THEN PRINT TAB(TMP2);FENAM$(B);DAT$(B);
+17190   IF A<>0 THEN PRINT TAB(TMP1);FIELDNAM$(A);DAT$(A);
+17200   IF B<>0 THEN PRINT TAB(TMP2);FIELDNAM$(B);DAT$(B);
 17210   PRINT
 17220 NEXT K
 17230 DATA 1,0,2,15,3,16,4,0,5,17,6,18,0,19
 17240 FOR K=7 TO 14
-17250   PRINT TAB(TMP1);FENAM$(K);DAT$(K);
-17260   PRINT TAB(TMP2);FENAM$(K+13);DAT$(K+13);
+17250   PRINT TAB(TMP1);FIELDNAM$(K);DAT$(K);
+17260   PRINT TAB(TMP2);FIELDNAM$(K+13);DAT$(K+13);
 17270 NEXT K
 17280 PRINT
 17290 PRINT
