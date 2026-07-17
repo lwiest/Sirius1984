@@ -26,7 +26,7 @@
 1250 NUMSUCHROW(1)=4
 1260 NUMSUCHROW(2)=6
 1270 '
-1280 BYNUMS=1                                                 'Werte von SEARCH
+1280 BYNUMS=1                                                 'Werte von SEARCHMODE
 1290 BYMASK=2
 1300 '
 1310 BSP$   =CHR$(8)                                                 'Backspace
@@ -399,7 +399,7 @@
 4980 IF FKEY=3 THEN 2290
 4990 IF FKEY=4 THEN GOSUB 14120:GOTO 4920                 'Zum Hauptmenü?-Frage
 5000 IF FKEY<>5 THEN 5060
-5010   SEARCH=BYNUMS
+5010   SEARCHMODE=BYNUMS
 5020   NUMSUCH1=VAL(NUMSUCH$(1))
 5030   NUMSUCH2=VAL(NUMSUCH$(2))
 5040   IF ISDRUCK THEN 8360 ELSE 5640    'Absprung Suchen & Drucken oder Suchen
@@ -449,7 +449,7 @@
 5480 IF FKEY=3 THEN 2290
 5490 IF FKEY=4 THEN GOSUB 14120:GOTO 5420                 'Zum Hauptmenü?-Frage
 5500 IF FKEY<>5 THEN 5530 
-5510   SEARCH=BYMASK                                                      '<F5>
+5510   SEARCHMODE=BYMASK                                                      '<F5>
 5520   IF ISDRUCK THEN 8360 ELSE 5640             'Suchen oder Suchen & Drucken
 5530 IF CKEY=0 THEN 5590                              'Cursortasten verarbeiten
 5540   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(F);HIGHOFF$;
@@ -462,7 +462,7 @@
 5610 GOTO 5400
 5620 '
 5630 ' *** Suche
-5640 IF SEARCH=BYMASK THEN 5710
+5640 IF SEARCHMODE=BYMASK THEN 5710
 5650   GOSUB 13690                                                 'Basis-Maske
 5660   GOSUB 11390                                                'Leere DAT$()
 5670   GOSUB 11780           'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
@@ -500,7 +500,7 @@
 5990 GOTO 5890
 6000 '
 6010 ' *** <F2> Zurück
-6020 IF SEARCH=BYNUMS THEN 4730 ELSE 5330           'TODO: Werte gehen verloren
+6020 IF SEARCHMODE=BYNUMS THEN 4730 ELSE 5330           'TODO: Werte gehen verloren
 6030 '
 6040 ' *** <F4> Hauptmenü
 6050 GOSUB 14120                                          'Zum Hauptmenü?-Frage
@@ -508,7 +508,7 @@
 6070 '
 6080 ' *** <F5> Suchen rückwärts
 6090 GOSUB 14060                                           'F-Tasten ausblenden
-6100 IF SEARCH=BYMASK THEN 6170
+6100 IF SEARCHMODE=BYMASK THEN 6170
 6110 '
 6120 MTGLZAHL=MTGLZAHL-1                          'Suchen rückwärts nach Nummer
 6130 IF MTGLZAHL>=NUMSUCH1 THEN 6250 
@@ -528,7 +528,7 @@
 6270 '
 6280 ' *** <F6> Suchen vorwärts
 6290 GOSUB 14060                                           'F-Tasten ausblenden
-6300 IF SEARCH=BYMASK THEN 6370
+6300 IF SEARCHMODE=BYMASK THEN 6370
 6310 '
 6320 MTGLZAHL=MTGLZAHL+1                           'Suchen vorwärts nach Nummer
 6330 IF MTGLZAHL<=NUMSUCH2 THEN 6450
@@ -733,14 +733,14 @@
 8320 ' *** Suchen nach Nummern und Maske
 8330 GOTO 4530                                  'Stammsatz suchen (und drucken)
 8340 ' *** Rückkehr aus "Stammsatz suchen"
-8350 ' IN: SEARCH (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
+8350 ' IN: SEARCHMODE (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
 8360 GOSUB 16410                                         'Drucker bereit?-Frage
 8370 IF ISJA THEN 8490
 8380 GOSUB 13800                                           'F-Tasten einblenden
-8390 IF SEARCH=BYNUMS THEN 4920 ELSE 5420 
+8390 IF SEARCHMODE=BYNUMS THEN 4920 ELSE 5420 
 8400 '
 8410 ' *** Komplette Mitgliedsliste drucken
-8420 SEARCH=BYNUMS
+8420 SEARCHMODE=BYNUMS
 8430 ISCOMPLETE=TRUE
 8440 NUMSUCH1=1:NUMSUCH2=MTGLMAX
 8450 GOSUB 16410                                         'Drucker bereit?-Frage
@@ -749,7 +749,7 @@
 8480 ' *** Drucken
 8490 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13480 'Nachricht
 8500 GOSUB 16580                                 'Mitgliedsliste drucken (Kopf)
-8510 IF SEARCH=BYMASK THEN 8640
+8510 IF SEARCHMODE=BYMASK THEN 8640
 8520 '
 8530 ' *** Suchen nach Nummern
 8540 FOR MTGLZAHL=NUMSUCH1 TO NUMSUCH2
@@ -775,7 +775,7 @@
 8740 ' *** Suchen zuende
 8750 GOSUB 13620                                             'Nachricht löschen
 8760 IF ISCOMPLETE THEN ISCOMPLETE=FALSE:GOTO 7920       'TODO: Very hackish...
-8770 IF SEARCH=BYNUMS THEN 4720 ELSE 5330                'TODO: Very hackish...
+8770 IF SEARCHMODE=BYNUMS THEN 4720 ELSE 5330            'TODO: Very hackish...
 8780 '
 8790 ' *** Datenblatt drucken *************************************************
 8800 '
