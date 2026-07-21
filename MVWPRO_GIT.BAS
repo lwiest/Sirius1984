@@ -18,13 +18,13 @@
 1170 DIM FIELDTYP(FIELDMAX)                                         'Typ des Feldes
 1180 '
 1190 DIM DAT$(FIELDMAX)                                      'Stammsatzfelddaten
-1200 DIM SUCH$(FIELDMAX)                                     'Stammsatzsuchdaten
+1200 DIM SEARCH$(FIELDMAX)                                     'Stammsatzsuchdaten
 1210 '
-1220 NUMSUCHMAX=2
-1230 DIM NUMSUCH$(NUMSUCHMAX)
-1240 DIM NUMSUCHROW(NUMSUCHMAX)
-1250 NUMSUCHROW(1)=4
-1260 NUMSUCHROW(2)=6
+1220 NUMSEARCHMAX=2
+1230 DIM NUMSEARCH$(NUMSEARCHMAX)
+1240 DIM NUMSEARCHROW(NUMSEARCHMAX)
+1250 NUMSEARCHROW(1)=4
+1260 NUMSEARCHROW(2)=6
 1270 '
 1280 BYNUMS=1                                                 'Werte von SEARCHMODE
 1290 BYMASK=2
@@ -370,8 +370,8 @@
 4690 IF FKEY=4 THEN GOSUB 14120:GOTO 4610                 'Zum Hauptmenü?-Frage
 4700 '
 4710 ' *** Suchen nach Nummern
-4720 TMP$=STR$(1):NUMSUCH$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
-4730 TMP$=STR$(MTGLMAX):NUMSUCH$(2)=MID$(TMP$,2,99)
+4720 TMP$=STR$(1):NUMSEARCH$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
+4730 TMP$=STR$(MTGLMAX):NUMSEARCH$(2)=MID$(TMP$,2,99)
 4740 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
 4750 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
 4760 GOSUB 13690                                                   'Basis-Maske
@@ -382,13 +382,13 @@
 4810 TMP2=66:IF ISDRUCK THEN TMP2=73
 4820 PRINT FNCUR$(4,TMP1);"Ab welcher Mitgliedsnummer soll ";TMP$;" werden?     =>..."
 4830 PRINT FNCUR$(6,TMP1);"Bis zu welcher Mitgliedsnummer soll ";TMP$;" werden? =>..."
-4840 PRINT FNCUR$(4,TMP2);HIGHON$;NUMSUCH$(1);HIGHOFF$
-4850 PRINT FNCUR$(6,TMP2);HIGHON$;NUMSUCH$(2);HIGHOFF$
+4840 PRINT FNCUR$(4,TMP2);HIGHON$;NUMSEARCH$(1);HIGHOFF$
+4850 PRINT FNCUR$(6,TMP2);HIGHON$;NUMSEARCH$(2);HIGHOFF$
 4860 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MTGLMAX);"."
 4870 F=1
 4880 ISINPUTOK=TRUE
-4890 FKEYMASK$="12345":CKEYMASK$="":INTEXT$=NUMSUCH$(F)
-4900 Z=NUMSUCHROW(F):LNG=3:TYP=2:ISMUSS=TRUE
+4890 FKEYMASK$="12345":CKEYMASK$="":INTEXT$=NUMSEARCH$(F)
+4900 Z=NUMSEARCHROW(F):LNG=3:TYP=2:ISMUSS=TRUE
 4910 S=66:IF ISDRUCK THEN S=73
 4920 GOSUB 10370                                                'Feld-Eingabe+1
 4930 IF FKEY<>1 THEN 4970                                 'F-Tasten verarbeiten
@@ -400,8 +400,8 @@
 4990 IF FKEY=4 THEN GOSUB 14120:GOTO 4920                 'Zum Hauptmenü?-Frage
 5000 IF FKEY<>5 THEN 5060
 5010   SEARCHMODE=BYNUMS
-5020   NUMSUCH1=VAL(NUMSUCH$(1))
-5030   NUMSUCH2=VAL(NUMSUCH$(2))
+5020   NUMSUCH1=VAL(NUMSEARCH$(1))
+5030   NUMSUCH2=VAL(NUMSEARCH$(2))
 5040   IF ISDRUCK THEN 8360 ELSE 5640    'Absprung Suchen & Drucken oder Suchen
 5050 '
 5060 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
@@ -409,14 +409,14 @@
 5080   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
 5090   GOSUB 5250                                     'Eingabefehler-Behandlung
 5100   GOTO 4900
-5110 NUMSUCH$(F)=OUTTEXT$
-5120 NUMSUCH1=VAL(NUMSUCH$(1))
-5130 NUMSUCH2=VAL(NUMSUCH$(2))
+5110 NUMSEARCH$(F)=OUTTEXT$
+5120 NUMSUCH1=VAL(NUMSEARCH$(1))
+5130 NUMSUCH2=VAL(NUMSEARCH$(2))
 5140 IF NUMSUCH1<=NUMSUCH2 THEN 5180
 5150   N$="Ungültiger Bereich":GOSUB 13480                           'Nachricht
 5160   GOSUB 5250                                     'Eingabefehler-Behandlung
 5170   GOTO 4900
-5180 F=F+1:IF F>NUMSUCHMAX THEN F=1
+5180 F=F+1:IF F>NUMSEARCHMAX THEN F=1
 5190 GOSUB 14060                                           'F-Tasten ausblenden
 5200 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken" 
 5210 GOSUB 13800                                           'F-Tasten einblenden
@@ -430,7 +430,7 @@
 5290 RETURN
 5300 '
 5310 ' *** Suchen nach Maske
-5320 GOSUB 11440                                                'SUCH$() leeren
+5320 GOSUB 11440                                                'SEARCH$() leeren
 5330 MT$="STAMMSATZ SUCHEN NACH MASKE":MI$="G-011052" 'Einsprung nach Ende Suchen & Drucken
 5340 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH MASKE":MI$="G-013012"
 5350 GOSUB 13690                                                   'Basis-Maske
@@ -439,7 +439,7 @@
 5380 GOSUB 11910         'Feldnamen, Suchfeldwerte und Feldplatzhalter ausgeben
 5390 F=1
 5400 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
-5410 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=SUCH$(F)
+5410 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=SEARCH$(F)
 5420 GOSUB 10360                                                  'Feld-Eingabe
 5430 IF FKEY<>1 THEN 5470                                 'F-Tasten verarbeiten
 5440   HELPID=G0110520:IF ISDRUCK THEN HELPID=G0130120
@@ -452,12 +452,12 @@
 5510   SEARCHMODE=BYMASK                                                      '<F5>
 5520   IF ISDRUCK THEN 8360 ELSE 5640             'Suchen oder Suchen & Drucken
 5530 IF CKEY=0 THEN 5590                              'Cursortasten verarbeiten
-5540   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(F);HIGHOFF$;
-5550   PRINT STRING$(LNG-LEN(SUCH$(F)),".")
+5540   PRINT FNCUR$(Z,S);HIGHON$;SEARCH$(F);HIGHOFF$;
+5550   PRINT STRING$(LNG-LEN(SEARCH$(F)),".")
 5560   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FIELDMAX
 5570   IF CKEY=CKEYDN THEN F=F+1:IF F>FIELDMAX THEN F=1
 5580   GOTO 5400
-5590 SUCH$(F)=OUTTEXT$                                      'RETURN verarbeiten
+5590 SEARCH$(F)=OUTTEXT$                                      'RETURN verarbeiten
 5600 F=F+1:IF F>FIELDMAX THEN F=1
 5610 GOTO 5400
 5620 '
@@ -584,7 +584,7 @@
 6830 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 13480      'Nachricht
 6840 GOSUB 12150                                               'Stammsatz lesen
 6850 FOR K=1 TO FIELDMAX
-6860   S$=SUCH$(K)
+6860   S$=SEARCH$(K)
 6870   IF LEN(S$)=0 THEN 7000
 6880   F$=LEFT$(S$,1)
 6890   IF F$<>"*" THEN 6930
@@ -733,7 +733,7 @@
 8320 ' *** Suchen nach Nummern und Maske
 8330 GOTO 4530                                  'Stammsatz suchen (und drucken)
 8340 ' *** Rückkehr aus "Stammsatz suchen"
-8350 ' IN: SEARCHMODE (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SUCH$()
+8350 ' IN: SEARCHMODE (BYNUMS, BYMASK), NUMSUCH1, NUMSUCH2, SEARCH$()
 8360 GOSUB 16410                                         'Drucker bereit?-Frage
 8370 IF ISJA THEN 8490
 8380 GOSUB 13800                                           'F-Tasten einblenden
@@ -957,9 +957,9 @@
 11390 FOR K=1 TO FIELDMAX:DAT$(K)="":NEXT K
 11400 RETURN
 11410 '
-11420 ' *** SUCH$() leeren ****************************************************
+11420 ' *** SEARCH$() leeren ****************************************************
 11430 '
-11440 FOR K=1 TO FIELDMAX:SUCH$(K)="":NEXT K
+11440 FOR K=1 TO FIELDMAX:SEARCH$(K)="":NEXT K
 11450 RETURN
 11460 '
 11470 ' *** MTGLMAX lesen ***************************************************** 
@@ -1011,8 +1011,8 @@
 11930   S=FIELDCOL(K)
 11940   PRINT FNCUR$(Z,S);FIELDNAM$(K)
 11950   S=S+COLSEP
-11960   PRINT FNCUR$(Z,S);HIGHON$;SUCH$(K);HIGHOFF$;
-11970   PRINT STRING$(FIELDLNG(K)-LEN(SUCH$(K)),".")               
+11960   PRINT FNCUR$(Z,S);HIGHON$;SEARCH$(K);HIGHOFF$;
+11970   PRINT STRING$(FIELDLNG(K)-LEN(SEARCH$(K)),".")               
 11980 NEXT K
 11990 RETURN
 12000 '
