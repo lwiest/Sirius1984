@@ -32,7 +32,7 @@
 1310 BSP$   =CHR$(8)                                                 'Backspace
 1320 DEL$   =BSP$+"."+BSP$                                              'Delete
 1330 ESC$   =CHR$(27)                                                   'Escape
-1340 STRICH$=STRING$(79,"-")                                            'Strich
+1340 LINE$=STRING$(79,"-")                                            'Strich
 1350 '
 1360 CLS$    =ESC$+"E"                                      'Bildschirm löschen
 1370 INVON$  =ESC$+"p"                                              'Invers ein
@@ -1187,9 +1187,9 @@
 13690 PRINT CLS$;
 13700 PRINT "00**********************";
 13710 PRINT FNCUR$(1,(80-LEN(MT$))/2+1);MT$;FNCUR$(1,72);MI$
-13720 PRINT STRICH$
+13720 PRINT LINE$
 13730 PRINT FNCUR$(21,1);
-13740 PRINT STRICH$             'quirk in display driver places this in line 22
+13740 PRINT LINE$             'quirk in display driver places this in line 22
 13750 RETURN
 13760 '
 13770 ' *** F-Tasten einblenden ***********************************************
@@ -1430,7 +1430,7 @@
 16120 RETURN                                         '*** TMP Print Disable ***
 16130 I$=SPACE$(2)
 16140 '
-16150 PRINT STRICH$
+16150 PRINT LINE$
 16160 PRINT
 16170 PRINT I$;"Blatt:";BLATT
 16180 PRINT
@@ -1443,7 +1443,7 @@
 16250   PRINT " Von:";VON$;" Bis:";BIS$;" Amt:";AMT$
 16260 NEXT 
 16270 PRINT
-16280 PRINT STRICH$
+16280 PRINT LINE$
 16290 RETURN
 16300 'Format: VVVVVV BBBBBB AAAAAAAA
 16310 VON$=LEFT$(DAT$(KK),2)+"."+MID$(DAT$(KK),3,2)+"."+MID$(DAT$(KK),5,2)
@@ -1528,7 +1528,7 @@
 17100 TMP1=8
 17110 TMP2=43
 17120 '
-17130 PRINT STRICH$
+17130 PRINT LINE$
 17140 PRINT
 17150 PRINT TAB(31);"Mitgliedsnummer";MTGLZAHL
 17160 PRINT
@@ -1546,7 +1546,7 @@
 17280 PRINT
 17290 PRINT
 17300 PRINT
-17310 PRINT STRICH$
+17310 PRINT LINE$
 17320 RETURN
 17330 '
 17340 ' *** Mitgliedsvermerke drucken
