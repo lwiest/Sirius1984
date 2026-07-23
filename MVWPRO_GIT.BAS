@@ -2,7 +2,19 @@
 1010 '
 1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:6
 1030 '
-1040 ' *** Initialisierung, Dimensionierung ***********************************
+1031 '
+1032 ' Weitere Variablen
+1033 ' -----------------
+1034 ' F        - Feldindex 1..27 (FIELDMAX)
+1035 ' I$       - Lokale Texteinrückung
+1036 ' K        - Schleifenindex
+1037 ' MTGLMAX  - Höchste auf Disk gespeicherte Mitgliedsnummer
+1038 ' MTGLZAHL - Momentane Mitgliedsnummer
+1039 '
+1040 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
+1041 ' TIP: Use semicolons with PRINT carefully -> display driver bug
+1042 '
+1043 ' *** Initialisierung, Dimensionierung ***********************************
 1050 '
 1060 DEFINT A-Z
 1070 '
@@ -93,19 +105,8 @@
 1920 G0130200=21                                           'Komplettdruck Datum
 1930 G0130300=22                                            'Datenblatt drucken
 1940 '
-1950 ' Weitere Variablen
-1960 ' -----------------
-1970 ' F        - Feldindex 1..27 (FIELDMAX)
-1980 ' I$       - Lokale Texteinrückung
-1990 ' K        - Schleifenindex
-2000 ' MTGLMAX  - Höchste auf Disk gespeicherte Mitgliedsnummer
-2010 ' MTGLZAHL - Momentane Mitgliedsnummer
-2020 '
 2030 COLSEP=14           'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 2040 '
-2050 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
-2060 ' TIP: Use semicolons with PRINT carefully -> display driver bug
-2070 '
 2080 ON ERROR GOTO 18100                               'Programmfehler abfangen
 2090 '
 2100 GOSUB 10050    'Tasten deaktivieren, ASCII-Codes für Cursortasten vergeben
