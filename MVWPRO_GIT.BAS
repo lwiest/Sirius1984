@@ -118,7 +118,7 @@
 2160 Q$="Bitte Daten-Diskette in Laufwerk B einlegen. Bereit?":GOSUB 12580 'Ja/Nein-Frage
 2170 IF NOT ISYES THEN 18230                                       'Programmende
 2180 '
-2190 N$="Einen Moment bitte...":GOSUB 13480                          'Nachricht
+2190 N$="Einen Moment bitte...":GOSUB 13480                          'Nachricht anzeigen
 2200 GOSUB 11500                                                 'MTGLMAX lesen
 2210 GOSUB 10960                              'Stammsatzfeld-Definitionen lesen
 2220 GOSUB 12090                                   'Fielden der Stammsatz-Datei
@@ -225,7 +225,7 @@
 3230 '
 3240 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 3250 IF M>=1 AND M<=MTGLMAX THEN 3290
-3260   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
+3260   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht anzeigen
 3270   ISINPUTOK=FALSE
 3280   GOTO 3170
 3290 MTGLZAHL=M
@@ -292,7 +292,7 @@
 3900 '
 3910 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 3920 IF M>=1 AND M<=MTGLMAX THEN 3960
-3930   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
+3930   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht anzeigen
 3940   ISINPUTOK=FALSE
 3950   GOTO 3840
 3960 MTGLZAHL=M
@@ -333,7 +333,7 @@
 4310 '
 4320 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 4330   IF M>=1 AND M<=MTGLMAX THEN 4370
-4340   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
+4340   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht anzeigen
 4350   ISINPUTOK=FALSE
 4360   GOTO 4250
 4370 MTGLZAHL=M
@@ -407,14 +407,14 @@
 5050 '
 5060 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 5070 IF M>=1 AND M<=MTGLMAX THEN 5110
-5080   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
+5080   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht anzeigen
 5090   GOSUB 5250                                     'Eingabefehler-Behandlung
 5100   GOTO 4900
 5110 NUMSEARCH$(F)=OUTTEXT$
 5120 NUMSUCH1=VAL(NUMSEARCH$(1))
 5130 NUMSUCH2=VAL(NUMSEARCH$(2))
 5140 IF NUMSUCH1<=NUMSUCH2 THEN 5180
-5150   N$="Ungültiger Bereich":GOSUB 13480                           'Nachricht
+5150   N$="Ungültiger Bereich":GOSUB 13480                           'Nachricht anzeigen
 5160   GOSUB 5250                                     'Eingabefehler-Behandlung
 5170   GOTO 4900
 5180 F=F+1:IF F>NUMSEARCHMAX THEN F=1
@@ -474,7 +474,7 @@
 5720 MTGLZAHL=0                                          'Init Suche nach Maske
 5730 GOSUB 6730                                        'Nächsten Treffer suchen
 5740 IF MTGLZAHL<>-1 THEN 5870
-5750   N$="Kein Suchtreffer. Mit <F2> neue Suche.":GOSUB 13480       'Nachricht
+5750   N$="Kein Suchtreffer. Mit <F2> neue Suche.":GOSUB 13480       'Nachricht anzeigen
 5760   FKEYS$="":GOSUB 13800                               'F-Tasten einblenden
 5770   FKEYMASK$="1234":NKEYMASK$="":GOSUB 13960                  'Menü-Eingabe
 5780   ON FKEY GOTO 5790,5330,2290,5850
@@ -521,7 +521,7 @@
 6190 IF MTGLZAHL<>-1 THEN 6250
 6200 MTGLZAHL=TMP                                      'Keinen Treffer gefunden
 6210 '
-6220 N$="Suchbeginn erreicht":GOSUB 13480       'Suchbeginn erreicht 'Nachricht
+6220 N$="Suchbeginn erreicht":GOSUB 13480       'Suchbeginn erreicht 'Nachricht anzeigen
 6230 GOTO 5890
 6240 '
 6250 GOSUB 6490                                 'Suchtreffer lesen und anzeigen
@@ -541,7 +541,7 @@
 6390 IF MTGLZAHL<>-1 THEN 6450
 6400 MTGLZAHL=TMP                                      'Keinen Treffer gefunden
 6410 '
-6420 N$="Suchende erreicht":GOSUB 13480           'Suchende erreicht 'Nachricht
+6420 N$="Suchende erreicht":GOSUB 13480           'Suchende erreicht 'Nachricht anzeigen
 6430 GOTO 5890
 6440 '
 6450 GOSUB 6490                                 'Suchtreffer lesen und anzeigen
@@ -557,7 +557,7 @@
 6550 ' *** <F7> Adressaufkleber drucken
 6560 GOSUB 16410                                         'Drucker bereit?-Frage
 6570 IF NOT ISYES THEN 6610
-6580   N$="Adressaufkleber wird gedruckt...":GOSUB 13480             'Nachricht
+6580   N$="Adressaufkleber wird gedruckt...":GOSUB 13480             'Nachricht anzeigen
 6590   GOSUB 16920                                     'Adressaufkleber drucken
 6600   GOSUB 13620                                           'Nachricht löschen
 6610 GOTO 5890                                                    'Neue Eingabe
@@ -582,7 +582,7 @@
 6800 RETURN
 6810 '
 6820 ' *** SUB Treffer?
-6830 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 13480      'Nachricht
+6830 N$="Vergleiche Stammsatz"+STR$(MTGLZAHL)+"...":GOSUB 13480      'Nachricht anzeigen
 6840 GOSUB 12150                                               'Stammsatz lesen
 6850 FOR K=1 TO FIELDMAX
 6860   S$=SEARCH$(K)
@@ -630,8 +630,8 @@
 7280 IF FKEY=4 THEN GOSUB 14120                           'Zum Hauptmenü?-Frage
 7290 IF FKEY>4 THEN 7240
 7300 IF CKEY<>0 THEN 7240
-7310 IF LEN(OUTTEXT$)=0 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13480:GOTO 7230 ELSE MITGLIED=VAL(OUTTEXT$):IF MITGLIED=0 THEN 7250 'Nachricht
-7320 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13480:PRINT HOME$;HIGHOFF$:GOTO 7230 'Nachricht
+7310 IF LEN(OUTTEXT$)=0 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13480:GOTO 7230 ELSE MITGLIED=VAL(OUTTEXT$):IF MITGLIED=0 THEN 7250 'Nachricht anzeigen
+7320 IF MITGLIED>MTGLMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13480:PRINT HOME$;HIGHOFF$:GOTO 7230 'Nachricht anzeigen
 7330 MTGLZAHL=MITGLIED:MTGL$=STR$(MITGLIED)
 7340 '
 7350 ' *** Lesen des Mitgliedsnamens ******************************************
@@ -672,10 +672,10 @@
 7700 IF HP<7 THEN IF ASCC=ASCRET THEN OUTTEXT$=STRING$(2-LEN(OUTTEXT$),"0")+OUTTEXT$   '+NULLEN
 7710 IF CKEY<>0 OR ASCC=ASCRET THEN PRINT FNCUR$(Z,S);OUTTEXT$
 7720 IF ASCC=ASCRET THEN IF HP<7 THEN MID$(DAT$(VP),-1+2*HP,2)=OUTTEXT$ ELSE DAT$(VP)=LEFT$(DAT$(VP),12)+OUTTEXT$+SPACE$(8-LEN(OUTTEXT$))
-7730 IF ASCC=ASCRET AND HP<7 THEN ISYES=TRUE:TEST$=OUTTEXT$:ON HP GOSUB 12880,12910,12940,12880,12910,12940:IF NOT ISYES THEN N$="Ungültiges Datum":GOSUB 13480:GOTO 7690 'Datums-Check 'Nachricht
+7730 IF ASCC=ASCRET AND HP<7 THEN ISYES=TRUE:TEST$=OUTTEXT$:ON HP GOSUB 12880,12910,12940,12880,12910,12940:IF NOT ISYES THEN N$="Ungültiges Datum":GOSUB 13480:GOTO 7690 'Datums-Check 'Nachricht anzeigen
 7740 IF ASCC=ASCRET THEN IF HP=7 THEN HP=1:VP=VP-(VP<26)-(VP=26)*(-25):GOTO 7640 ELSE HP=HP+1:GOTO 7640     'NEUE SCREEN-POSITION
 7750 IF CKEY<>0 THEN TEST$=MID$(DAT$(VP),-(HP<7)*2*HP-1-(HP=7)*14,-(HP<7)*2-(HP=7)*8):PRINT FNCUR$(Z,S);TEST$
-7760 IF CKEY<>0 THEN IF HP<7 AND NOT TEST$="  " THEN ISYES=TRUE:ON HP GOSUB 12880,12910,12940,12880,12910,12940:IF NOT ISYES THEN N$="Ungültiges Datum":GOSUB 13480:GOTO 7690 'Nachricht
+7760 IF CKEY<>0 THEN IF HP<7 AND NOT TEST$="  " THEN ISYES=TRUE:ON HP GOSUB 12880,12910,12940,12880,12910,12940:IF NOT ISYES THEN N$="Ungültiges Datum":GOSUB 13480:GOTO 7690 'Nachricht anzeigen
 7770 IF CKEY=CKEYDN THEN VP=VP-(VP<26)-(VP=26)*(-25):GOTO 7640
 7780 IF CKEY=CKEYUP THEN VP=VP+(VP>1)-(VP=1)*25     :GOTO 7640
 7790 IF CKEY=CKEYRT THEN HP=HP-(HP<7)-(HP=7)*(-6)   :GOTO 7640
@@ -725,7 +725,7 @@
 8230 IF FKEY=4 THEN GOSUB 14120:GOTO 8150                 'Zum Hauptmenü?-Frage
 8240 '
 8250 D$=OUTTEXT$:GOSUB 13020                    'Test Datum 'RETURN verarbeiten
-8260 IF NOT ISINPUTOK THEN N$=DATUM$:GOSUB 13480:GOTO 8140           'Nachricht
+8260 IF NOT ISINPUTOK THEN N$=DATUM$:GOSUB 13480:GOTO 8140           'Nachricht anzeigen
 8270 PRINT FNCUR$(7,37);HIGHON$;DATUM$;HIGHOFF$
 8280 '
 8290 ISDRUCK=TRUE 
@@ -748,7 +748,7 @@
 8460 IF NOT ISYES THEN 8150
 8470 '
 8480 ' *** Drucken
-8490 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13480 'Nachricht
+8490 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13480 'Nachricht anzeigen
 8500 GOSUB 16580                                 'Mitgliedsliste drucken (Kopf)
 8510 IF SEARCHMODE=BYMASK THEN 8640
 8520 '
@@ -798,7 +798,7 @@
 8960 '
 8970 M=VAL(OUTTEXT$)                                        'RETURN verarbeiten
 8980 IF M>=1 AND M<=MTGLMAX THEN 9020
-8990   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht
+8990   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13480         'Nachricht anzeigen
 9000   ISINPUTOK=FALSE
 9010   GOTO 8900
 9020 MTGLZAHL=M
@@ -888,12 +888,12 @@
 10690 IF ASCC<ASCF1 OR ASCC>ASCF9 THEN 10720              'F-Tasten verarbeiten
 10700   FKEY=ASCC-ASCF1+1
 10710   IF INSTR(FKEYMASK$,CHR$(FKEY+ASC0))>0 THEN 10810
-10720 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 13480         'Nachricht
+10720 N$="Ungültige Eingabe - Bitte wiederholen":GOSUB 13480         'Nachricht anzeigen
 10730 ISINPUTOK=FALSE
 10740 GOTO 10430
 10750 '
 10760 IF NOT ISMUSS OR LEN(OUTTEXT$)>0 THEN 10800           'RETURN verarbeiten
-10770   N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13480
+10770   N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13480   'Nachricht anzeigen
 10780   ISINPUTOK=FALSE 
 10790   GOTO 10430
 10800 IF CKEY<>0 THEN GOSUB 10860       'Cursortasten Auto-Wiederholung sperren
@@ -1074,7 +1074,7 @@
 12550 '
 12560 ' IN:  Q$   - Frage
 12570 ' OUT: ISYES - (TRUE, FALSE)
-12580 N$=Q$+" (J=Ja/N=Nein)":GOSUB 13480                             'Nachricht
+12580 N$=Q$+" (J=Ja/N=Nein)":GOSUB 13480                             'Nachricht anzeigen
 12590 GOSUB 14060                                          'F-Tasten ausblenden
 12600 ANSWER$=INPUT$(1)
 12610 IF ANSWER$="J" OR ANSWER$="j" THEN ISYES=TRUE:RETURN
@@ -1172,13 +1172,13 @@
 13530 ' *** Nachricht anzeigen und F-Tasten ausblenden ************************ 
 13540 '
 13550 ' IN: N$ - Nachricht
-13560 GOSUB 13480                                                    'Nachricht
+13560 GOSUB 13480                                                    'Nachricht anzeigen
 13570 GOSUB 14060                                          'F-Tasten ausblenden
 13580 RETURN
 13590 '
 13600 ' *** Nachricht löschen *************************************************
 13610 '
-13620 N$="":GOSUB 13480                                              'Nachricht
+13620 N$="":GOSUB 13480                                              'Nachricht anzeigen
 13630 RETURN
 13640 '
 13650 ' *** Bildschirmmaske - Basis *******************************************
@@ -1217,7 +1217,7 @@
 13980 A$=INPUT$(1):ASCC=ASC(A$)
 13990 IF ASCC>=ASC1 AND ASCC<=ASC1+NKEYMAX-1 THEN NKEY=ASCC-ASC1+1:RETURN
 14000 IF ASCC>=ASCF1 AND ASCC<=ASCF1+FKEYMAX-1 THEN FKEY=ASCC-ASCF1+1:RETURN
-14010 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 13480 'Nachricht
+14010 N$="Sie haben eine falsche Taste gedrückt - Bitte neue Auswahl treffen.":GOSUB 13480 'Nachricht anzeigen
 14020 GOTO 13980
 14030 '
 14040 ' *** F-Tasten ausblenden ***********************************************
@@ -1242,7 +1242,7 @@
 14230 '
 14240 ' *** Rückkehr aus Hilfe-Text? ******************************************
 14250 '
-14260 N$="Zurück? (J=Ja)":GOSUB 13480                                'Nachricht
+14260 N$="Zurück? (J=Ja)":GOSUB 13480                                'Nachricht anzeigen
 14270 GOSUB 12590                             'Ja/Nein-Frage ohne String-Koncat
 14280 IF NOT ISYES THEN 14260
 14290 RETURN
@@ -1291,7 +1291,7 @@
 14720 '
 14730 TMPPOINT=VAL(POINT1$)
 14740 IF TMPPOINT<>0 THEN 14770
-14750 N$="Erste Seite":GOSUB 13480                                   'Nachricht
+14750 N$="Erste Seite":GOSUB 13480                                   'Nachricht anzeigen
 14760 RETURN
 14770 CPOINT=TMPPOINT
 14780 BLATT=BLATT-1
@@ -1313,7 +1313,7 @@
 14940 RETURN
 14950 N$="Letzte Seite"
 14960 IF INSTR(SPACE$(20),DAT$(26))=0 THEN 14990 
-14970 GOSUB 13480                                                    'Nachricht
+14970 GOSUB 13480                                                    'Nachricht anzeigen
 14980 RETURN
 14990 Q$="Letzte Seite - Neue Seite anlegen?":GOSUB 12580        'Ja/Nein-Frage
 15000 GOSUB 13620                                            'Nachricht löschen
@@ -1468,7 +1468,7 @@
 16490 IF INKEY$="" THEN 16530
 16500 Q$="Drucken abbrechen?":GOSUB 12580                        'Ja/Nein-Frage
 16510 IF ISYES THEN 16530
-16520 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13480 'Nachricht
+16520 N$="Mitgliedsliste wird gedruckt... Abbrechen mit Taste.":GOSUB 13480 'Nachricht anzeigen
 16530 RETURN
 16540 '
 16550 ' *** Mitgliedsliste drucken (Kopf) *************************************
