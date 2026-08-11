@@ -165,7 +165,7 @@
 2630 MT$="STAMMSATZ ANLEGEN":MI$="G-011010":GOSUB 13690            'Basis-Maske
 2640 FKEYS$="<F7>=Speichern":GOSUB 13800                   'F-Tasten einblenden
 2650 GOSUB 12040                                      'Mitgliedsnummer ausgeben
-2660 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+2660 GOSUB 11780             'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 2670 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 2680 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
 2690 GOSUB 10360                                                  'Feld-Eingabe
@@ -236,7 +236,7 @@
 3340 GOSUB 13690                                                   'Basis-Maske
 3350 FKEYS$="<F7>=Speichern":GOSUB 13800                   'F-Tasten einblenden
 3360 GOSUB 12040                                      'Mitgliedsnummer ausgeben
-3370 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+3370 GOSUB 11780             'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 3380 F=1
 3390 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 3400 FKEYMASK$="12347":CKEYMASK$="12":INTEXT$=DAT$(F)
@@ -301,7 +301,7 @@
 3990 '
 4000 GOSUB 13690                                                   'Basis-Maske
 4010 GOSUB 12040                                      'Mitgliedsnummer ausgeben
-4020 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+4020 GOSUB 11780             'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 4030 Q$="Mitglied endgültig löschen?":GOSUB 12580                'Ja/Nein-Frage
 4040 IF NOT ISYES THEN 4120
 4050   F=5
@@ -343,7 +343,7 @@
 4410 '
 4420 GOSUB 13690                                                   'Basis-Maske
 4430 GOSUB 12040                                      'Mitgliedsnummer ausgeben
-4440 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+4440 GOSUB 11780             'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 4450 GOSUB 16410                                         'Drucker bereit?-Frage
 4460 IF NOT ISYES THEN 4480
 4470   GOSUB 17100                        'Stammsatz drucken (Bildschirmformat)
@@ -437,7 +437,7 @@
 5350 GOSUB 13690                                                   'Basis-Maske
 5360 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken" 
 5370 GOSUB 13800                                           'F-Tasten einblenden
-5380 GOSUB 11910         'Feldnamen, Suchfeldwerte und Feldplatzhalter ausgeben
+5380 GOSUB 11910         'Feldnamen und Suchfeldwerte und Feldplatzhalter ausgeben
 5390 F=1
 5400 Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F):TYP=FIELDTYP(F):ISMUSS=FIELDISMAND(F)
 5410 FKEYMASK$="12345":CKEYMASK$="12":INTEXT$=SEARCH$(F)
@@ -466,7 +466,7 @@
 5640 IF SEARCHMODE=BYMASK THEN 5710
 5650   GOSUB 13690                                                 'Basis-Maske
 5660   GOSUB 11390                                                'Leere DAT$()
-5670   GOSUB 11780           'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+5670   GOSUB 11780           'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 5680   MTGLZAHL=NUMSUCH1                               'Init Suche nach Nummern
 5690   GOTO 5870
 5700 '
@@ -481,7 +481,7 @@
 5790   HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130103          'F1 verarbeiten
 5800   GOSUB 17930                                                  'Hilfe-Text
 5810   GOSUB 13690                                                 'Basis-Maske
-5820   GOSUB 11910       'Feldnamen, Suchfeldwerte mit Feldplatzhalter ausgeben
+5820   GOSUB 11910       'Feldnamen und Suchfeldwerte mit Feldplatzhalter ausgeben
 5830   GOTO 5750
 5840 '
 5850   GOSUB 14120:GOTO 5750              'F4 verarbeiten 'Zum Hauptmenü?-Frage
@@ -497,7 +497,7 @@
 5950 HELPID=G0110503:GOSUB 17930                                    'Hilfe-Text
 5960 GOSUB 13690                                                   'Basis-Maske
 5970 GOSUB 12040                                      'Mitgliedsnummer ausgeben
-5980 GOSUB 11780             'Feldnamen, Feldwerte mit Feldplatzhalter ausgeben
+5980 GOSUB 11780             'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 5990 GOTO 5890
 6000 '
 6010 ' *** <F2> Zurück
@@ -991,7 +991,7 @@
 11720 NEXT K
 11730 RETURN
 11740 '
-11750 ' *** Maske Feldnamen, Feldwerte mit Feldplatzhalter ausgeben ***********
+11750 ' *** Maske Feldnamen und Feldwerte mit Feldplatzhalter ausgeben ********
 11760 '
 11770 ' IN: FIELDMAX
 11780 FOR K=1 TO FIELDMAX
@@ -1004,7 +1004,7 @@
 11850 NEXT K
 11860 RETURN
 11870 '
-11880 ' *** Maske Feldnamen, Suchfeldwerte mit Feldplatzhalter ausgeben *******
+11880 ' *** Maske Feldnamen und Suchfeldwerte mit Feldplatzhalter ausgeben ****
 11890 '
 11900 ' IN: FIELDMAX
 11910 FOR K=1 TO FIELDMAX
