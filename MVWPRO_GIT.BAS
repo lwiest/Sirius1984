@@ -197,7 +197,7 @@
 2950   GOTO 3030
 2960 '                                                            
 2970 ' *** SUB Exit "Stammsatz anlegen" 2
-2980 N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+2980 N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 2990 GOSUB 12370                                           'Stammsatz speichern
 3000 GOSUB 14470                       'Erste Verwendungsnachweis-Seite anlegen
 3010 MTGLMAX=MTGLZAHL:GOSUB 11590                             'MTGLMAX speichen
@@ -229,7 +229,7 @@
 3270   ISINPUTOK=FALSE
 3280   GOTO 3170
 3290 MTGLZAHL=M
-3300 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+3300 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 3310 GOSUB 12150                                               'Stammsatz lesen
 3320 GOSUB 13620                                             'Nachricht löschen
 3330 '
@@ -266,7 +266,7 @@
 3640 IF NOT ISYES THEN RETURN
 3650 '
 3660 ' *** SUB Exit "Stammsatz ändern" 2
-3670 N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+3670 N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 3680 GOSUB 12370                                           'Stammsatz speichern
 3690 GOSUB 13620                                             'Nachricht löschen
 3700 RETURN
@@ -296,7 +296,7 @@
 3940   ISINPUTOK=FALSE
 3950   GOTO 3840
 3960 MTGLZAHL=M
-3970 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+3970 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 3980 GOSUB 12150                                               'Stammsatz lesen
 3990 '
 4000 GOSUB 13690                                                   'Basis-Maske
@@ -308,7 +308,7 @@
 4060   DAT$(F)="ausgetreten"
 4070   Z=FIELDROW(F):S=FIELDCOL(F)+COLSEP:LNG=FIELDLNG(F)
 4080   PRINT FNCUR$(Z,S);HIGHON$;DAT$(F);HIGHOFF$;STRING$(LNG-LEN(DAT$(F)),".")               
-4090   N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+4090   N$="Stammsatz wird gespeichert...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 4100   GOSUB 12370                                         'Stammsatz speichern
 4110   GOSUB 13620                                           'Nachricht löschen
 4120 GOTO 3740
@@ -337,7 +337,7 @@
 4350   ISINPUTOK=FALSE
 4360   GOTO 4250
 4370 MTGLZAHL=M
-4380 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht. F-Tasten ausblenden
+4380 N$="Stammsatz wird gelesen...":GOSUB 13560 'Nachricht anzeigen, F-Tasten ausblenden
 4390 GOSUB 12150                                               'Stammsatz lesen
 4400 GOSUB 13620                                             'Nachricht löschen
 4410 '
@@ -807,7 +807,7 @@
 9050   GOSUB 13800                                         'F-Tasten einblenden
 9060   TEXTIN$=TEXTOUT$
 9070   GOTO 8900
-9080 N$="Datenblatt drucken...":GOSUB 13560     'Nachricht. F-Tasten ausblenden
+9080 N$="Datenblatt drucken...":GOSUB 13560     'Nachricht anzeigen, F-Tasten ausblenden
 9090 GOSUB 12150                                               'Stammsatz lesen
 9100 VOLLNAME$ = DAT$(1)+" "+DAT$(2)
 9110 GOSUB 17100                          'Stammsatz drucken (Bildschirmformat)
@@ -1169,16 +1169,16 @@
 13500 PRINT                              'LW workaround quirk in display driver
 13510 RETURN
 13520 '
-13530 ' *** Nachricht anzeigen und F-Tasten ausblenden ************************ 
+13530 ' *** Nachricht anzeigen, F-Tasten ausblenden *************************** 
 13540 '
 13550 ' IN: N$ - Nachricht
-13560 GOSUB 13480                                                    'Nachricht anzeigen
+13560 GOSUB 13480                                           'Nachricht anzeigen
 13570 GOSUB 14060                                          'F-Tasten ausblenden
 13580 RETURN
 13590 '
 13600 ' *** Nachricht löschen *************************************************
 13610 '
-13620 N$="":GOSUB 13480                                              'Nachricht anzeigen
+13620 N$="":GOSUB 13480                                     'Nachricht anzeigen
 13630 RETURN
 13640 '
 13650 ' *** Bildschirmmaske - Basis *******************************************
