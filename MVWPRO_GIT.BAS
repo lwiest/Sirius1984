@@ -351,22 +351,22 @@
 4490 '
 4500 ' *** Stammsatz suchen (und drucken) von 05*************** ***************
 4510 '
-4520 ISDRUCK=FALSE
-4530 MT$="STAMMSATZ SUCHEN":IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN" 'TODO Einsprung Suchen & Drucken
-4540 MI$="G-011050":IF ISDRUCK THEN MI$="G-013010"
+4520 ISPRINT=FALSE
+4530 MT$="STAMMSATZ SUCHEN":IF ISPRINT THEN MT$="SUCHEN & DRUCKEN" 'TODO Einsprung Suchen & Drucken
+4540 MI$="G-011050":IF ISPRINT THEN MI$="G-013010"
 4550 GOSUB 13690                                                   'Basis-Maske
 4560 FKEYS$="":GOSUB 13800                                 'F-Tasten einblenden
-4570 TMP$="Suchen":IF ISDRUCK THEN TMP$="Suchen & drucken" 
-4580 TMP1=29:IF ISDRUCK THEN TMP1=24
+4570 TMP$="Suchen":IF ISPRINT THEN TMP$="Suchen & drucken" 
+4580 TMP1=29:IF ISPRINT THEN TMP1=24
 4590 PRINT FNCUR$(4,TMP1)"1 - ";TMP$;" nach Nummern"
 4600 PRINT FNCUR$(6,TMP1)"2 - ";TMP$;" nach Maske"
 4610 NKEYMAX=2:FKEYMAX=4:GOSUB 13960                              'Menü-Eingabe
 4620 IF NKEY THEN ON NKEY GOTO 4720,5320
 4630 IF FKEY<>1 THEN 4670 
-4640   HELPID=G0110501:IF ISDRUCK THEN HELPID=G0130102
+4640   HELPID=G0110501:IF ISPRINT THEN HELPID=G0130102
 4650   GOSUB 17930                                                  'Hilfe-Text
 4660   GOTO 4530
-4670 IF FKEY=2 THEN IF ISDRUCK THEN 8050 ELSE 2440    'Absprung F2 Suchen & Drucken oder Suchen
+4670 IF FKEY=2 THEN IF ISPRINT THEN 8050 ELSE 2440    'Absprung F2 Suchen & Drucken oder Suchen
 4680 IF FKEY=3 THEN 2290
 4690 IF FKEY=4 THEN GOSUB 14120:GOTO 4610                 'Zum Hauptmenü?-Frage
 4700 '
@@ -374,13 +374,13 @@
 4720 TMP$=STR$(1):NUMSEARCH$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
 4730 TMP$=STR$(MTGLMAX):NUMSEARCH$(2)=MID$(TMP$,2,99)
 4740 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
-4750 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
+4750 IF ISPRINT THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
 4760 GOSUB 13690                                                   'Basis-Maske
-4770 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken"
+4770 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken"
 4780 GOSUB 13800                                           'F-Tasten einblenden
-4790 TMP$="gesucht":IF ISDRUCK THEN TMP$="gesucht und gedruckt"
-4800 TMP1=12:IF ISDRUCK THEN TMP1=6
-4810 TMP2=66:IF ISDRUCK THEN TMP2=73
+4790 TMP$="gesucht":IF ISPRINT THEN TMP$="gesucht und gedruckt"
+4800 TMP1=12:IF ISPRINT THEN TMP1=6
+4810 TMP2=66:IF ISPRINT THEN TMP2=73
 4820 PRINT FNCUR$(4,TMP1);"Ab welcher Mitgliedsnummer soll ";TMP$;" werden?     =>..."
 4830 PRINT FNCUR$(6,TMP1);"Bis zu welcher Mitgliedsnummer soll ";TMP$;" werden? =>..."
 4840 PRINT FNCUR$(4,TMP2);HIGHON$;NUMSEARCH$(1);HIGHOFF$
@@ -390,10 +390,10 @@
 4880 ISINPUTOK=TRUE
 4890 FKEYMASK$="12345":CKEYMASK$="":TEXTIN$=NUMSEARCH$(F)
 4900 Z=NUMSEARCHROW(F):LNG=3:TYP=2:ISMAND=TRUE
-4910 S=66:IF ISDRUCK THEN S=73
+4910 S=66:IF ISPRINT THEN S=73
 4920 GOSUB 10370                                                'Feld-Eingabe+1
 4930 IF FKEY<>1 THEN 4970                                 'F-Tasten verarbeiten
-4940   HELPID=G0110510:IF ISDRUCK THEN HELPID=G0130110
+4940   HELPID=G0110510:IF ISPRINT THEN HELPID=G0130110
 4950   GOSUB 17930                                                  'Hilfe-Text
 4960   GOTO 4740                                    'TODO: Werte gehen verloren
 4970 IF FKEY=2 THEN 4530
@@ -403,7 +403,7 @@
 5010   SEARCHMODE=BYNUMS
 5020   NUMSUCH1=VAL(NUMSEARCH$(1))
 5030   NUMSUCH2=VAL(NUMSEARCH$(2))
-5040   IF ISDRUCK THEN 8360 ELSE 5640    'Absprung Suchen & Drucken oder Suchen
+5040   IF ISPRINT THEN 8360 ELSE 5640    'Absprung Suchen & Drucken oder Suchen
 5050 '
 5060 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
 5070 IF M>=1 AND M<=MTGLMAX THEN 5110
@@ -419,7 +419,7 @@
 5170   GOTO 4900
 5180 F=F+1:IF F>NUMSEARCHMAX THEN F=1
 5190 GOSUB 14060                                           'F-Tasten ausblenden
-5200 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken" 
+5200 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken" 
 5210 GOSUB 13800                                           'F-Tasten einblenden
 5220 GOTO 4890
 5230 '
@@ -433,9 +433,9 @@
 5310 ' *** Suchen nach Maske
 5320 GOSUB 11440                                                'SEARCH$() leeren
 5330 MT$="STAMMSATZ SUCHEN NACH MASKE":MI$="G-011052" 'Einsprung nach Ende Suchen & Drucken
-5340 IF ISDRUCK THEN MT$="SUCHEN & DRUCKEN NACH MASKE":MI$="G-013012"
+5340 IF ISPRINT THEN MT$="SUCHEN & DRUCKEN NACH MASKE":MI$="G-013012"
 5350 GOSUB 13690                                                   'Basis-Maske
-5360 FKEYS$="<F5>=Suchen":IF ISDRUCK THEN FKEYS$="<F5>=Suchen & Drucken" 
+5360 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken" 
 5370 GOSUB 13800                                           'F-Tasten einblenden
 5380 GOSUB 11910         'Feldnamen und Suchfeldwerte und Feldplatzhalter ausgeben
 5390 F=1
@@ -443,7 +443,7 @@
 5410 FKEYMASK$="12345":CKEYMASK$="12":TEXTIN$=SEARCH$(F)
 5420 GOSUB 10360                                                  'Feld-Eingabe
 5430 IF FKEY<>1 THEN 5470                                 'F-Tasten verarbeiten
-5440   HELPID=G0110520:IF ISDRUCK THEN HELPID=G0130120
+5440   HELPID=G0110520:IF ISPRINT THEN HELPID=G0130120
 5450   GOSUB 17930                                                  'Hilfe-Text
 5460   GOTO 5330
 5470 IF FKEY=2 THEN 4530
@@ -451,7 +451,7 @@
 5490 IF FKEY=4 THEN GOSUB 14120:GOTO 5420                 'Zum Hauptmenü?-Frage
 5500 IF FKEY<>5 THEN 5530 
 5510   SEARCHMODE=BYMASK                                                      '<F5>
-5520   IF ISDRUCK THEN 8360 ELSE 5640             'Suchen oder Suchen & Drucken
+5520   IF ISPRINT THEN 8360 ELSE 5640             'Suchen oder Suchen & Drucken
 5530 IF CKEY=0 THEN 5590                              'Cursortasten verarbeiten
 5540   PRINT FNCUR$(Z,S);HIGHON$;SEARCH$(F);HIGHOFF$;
 5550   PRINT STRING$(LNG-LEN(SEARCH$(F)),".")
@@ -478,7 +478,7 @@
 5760   FKEYS$="":GOSUB 13800                               'F-Tasten einblenden
 5770   FKEYMASK$="1234":NKEYMASK$="":GOSUB 13960                  'Menü-Eingabe
 5780   ON FKEY GOTO 5790,5330,2290,5850
-5790   HELPID=G0110502:IF ISDRUCK THEN HELPID=G0130103          'F1 verarbeiten
+5790   HELPID=G0110502:IF ISPRINT THEN HELPID=G0130103          'F1 verarbeiten
 5800   GOSUB 17930                                                  'Hilfe-Text
 5810   GOSUB 13690                                                 'Basis-Maske
 5820   GOSUB 11910       'Feldnamen und Suchfeldwerte mit Feldplatzhalter ausgeben
@@ -728,7 +728,7 @@
 8260 IF NOT ISINPUTOK THEN N$=DATUM$:GOSUB 13480:GOTO 8140           'Nachricht anzeigen
 8270 PRINT FNCUR$(7,37);HIGHON$;DATUM$;HIGHOFF$
 8280 '
-8290 ISDRUCK=TRUE 
+8290 ISPRINT=TRUE 
 8300 IF NKEY=2 THEN 8420
 8310 '
 8320 ' *** Suchen nach Nummern und Maske
