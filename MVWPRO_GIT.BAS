@@ -643,9 +643,9 @@
 7410 '
 7420 ' ** LEERZEICHEN HINTER NACHNAME ABSCHNEIDEN *****************************
 7430 '
-7440 FOR I=LEN(NNAM$) TO 1 STEP -1
-7450   IF MID$(NNAM$,I,1)<>" " THEN NNAM$=LEFT$(NNAM$,I):I=1
-7460 NEXT
+7440 FOR K=LEN(NNAM$) TO 1 STEP -1
+7450   IF MID$(NNAM$,K,1)<>" " THEN NNAM$=LEFT$(NNAM$,K):K=1
+7460 NEXT K
 7470 NACHVORNAME$=NNAM$+" "+VNAM$
 7480 GOSUB 14640                                             '1. VN-BLATT lesen
 7490 BLATT=1
@@ -659,9 +659,9 @@
 7570 PRINT FNCUR$(5,2);"Mitglieds-Nr.:"
 7580 PRINT FNCUR$(5,24);"Name:"
 7590 MSK$="Von:  .  .   Bis:  .  .   Amt:"
-7600 FOR KK=7 TO 19 
-7610   PRINT FNCUR$(KK,2);MSK$;TAB(43);MSK$
-7620 NEXT
+7600 FOR K=7 TO 19 
+7610   PRINT FNCUR$(K,2);MSK$;TAB(43);MSK$
+7620 NEXT K
 7630 GOSUB 15850                                                 'Ausgabe Daten
 7640 LNG=2-(HP=7)*6                                    'BEGIN OF THE INPUT-LOOP
 7650 TYP=2-(HP=7)
