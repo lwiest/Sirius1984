@@ -809,7 +809,7 @@
 9070   GOTO 8900
 9080 N$="Datenblatt drucken...":GOSUB 13560     'Nachricht anzeigen, F-Tasten ausblenden
 9090 GOSUB 12150                                               'Stammsatz lesen
-9100 VOLLNAME$ = DAT$(1)+" "+DAT$(2)
+9100 FULLNAME$ = DAT$(1)+" "+DAT$(2)
 9110 GOSUB 17100                          'Stammsatz drucken (Bildschirmformat)
 9120 GOSUB 14640                                     'Verwendungsnachweis lesen
 9130 GOSUB 16120                                   'Verwendungsnachweis drucken
@@ -1552,14 +1552,14 @@
 17330 '
 17340 ' *** Mitgliedsvermerke drucken
 17350 '
-17360 ' IN: VOLLNAME$
+17360 ' IN: FULLNAME$
 17370 I$=SPACE$(9)
 17380 FORM1$="___"
 17390 FORM2$="___ / ___"
 17400 FORM3$="___ / ___ / ___"
 17410 '
 17420 PRINT TAB(10);"Mitgliedsnr.: ";FORM1$;
-17430 PRINT TAB(28);"Name: ";VOLLNAME$;
+17430 PRINT TAB(28);"Name: ";FULLNAME$;
 17440 PRINT TAB(58);"Datum: ";FORM3$
 17450 PRINT
 17460 PRINT I$;"26*************************** ";FORM3$
