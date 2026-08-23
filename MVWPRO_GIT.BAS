@@ -1102,7 +1102,7 @@
 12830 ISVALID=FALSE: IF (ASCC>=48 AND ASCC<=57) OR ASCC=46 THEN ISVALID=TRUE
 12840 RETURN
 12850 '
-12860 ' *** DATUMS-TEST (bei VN und M-Liste drucken) **************************
+12860 ' *** DATUMS-TEST (bei VN und Mitgliederliste drucken) ******************
 12870 '
 12880 IF VAL(TEST$)=0 OR VAL(TEST$)>31 THEN ISYES=FALSE                     'Tag
 12890 RETURN
@@ -1141,10 +1141,10 @@
 13220 DATUM$=D1$+"."+D2$+"."+D3$
 13230 GOTO 13310
 13240 '
-13250 DATUM$="Datum muss Format TT.MM.JJ haben. Bitte korrigieren."
+13250 DATUM$="Datum muss Format TT.MM.JJ haben. Bitte Eingabe korrigieren."
 13260 GOTO 13290
 13270 '
-13280 DATUM$="Ungültiges Datum. Bitte korrigieren."
+13280 DATUM$="Ungültiges Datum. Bitte Eingabe korrigieren."
 13290 ISINPUTOK=FALSE
 13300 '
 13310 RETURN
