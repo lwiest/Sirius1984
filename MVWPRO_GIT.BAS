@@ -1253,27 +1253,27 @@
 14340 ' **** OPEN & FIELDING VERWENDUNGSNACHWEIS ******************************
 14350 '
 14360 OPEN "R",#3,"B:VN.NDX",4
-14370 FIELD #3,4 AS POINT0$
+14370 FIELD #3,4 AS XVNPOINT0$
 14380 OPEN "R",#4,"B:VN.POI",8
-14390 FIELD #4,4 AS POINT1$, 4 AS POINT2$
+14390 FIELD #4,4 AS XVNPOINT1$, 4 AS XVNPOINT2$
 14400 OPEN "R",#5,"B:VN.DAT",560
-14410 FIELD #5,240 AS DDD1$,240 AS DDD2$,80 AS DDD3$
+14410 FIELD #5,240 AS XVNDAT1$,240 AS XVNDAT2$,80 AS XVNDAT3$
 14420 RETURN
 14430 '
 14440 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
 14450 '
 14460 ' IN: MTGLZAHL
 14470 GET #3,1                               'letzte Seitennummer lesen dann +1
-14480 TMPPOINT=VAL(POINT0$)+1
-14490 LSET DDD1$=""                                    'leeren Record speichern
-14500 LSET DDD2$=""
-14510 LSET DDD3$=""
+14480 TMPPOINT=VAL(XVNPOINT0$)+1
+14490 LSET XVNDAT1$=""                                    'leeren Record speichern
+14500 LSET XVNDAT2$=""
+14510 LSET XVNDAT3$=""
 14520 PUT #5,TMPPOINT
-14530 LSET POINT0$=STR$(TMPPOINT)             'letzte Seitennummer neu speichern
+14530 LSET XVNPOINT0$=STR$(TMPPOINT)             'letzte Seitennummer neu speichern
 14540 PUT #3,1
 14550 PUT #3,MTGLZAHL+1
-14560 LSET POINT1$="0000"
-14570 LSET POINT2$="0000"
+14560 LSET XVNPOINT1$="0000"
+14570 LSET XVNPOINT2$="0000"
 14580 PUT #4,TMPPOINT
 14590 RETURN
 14600 '
@@ -1281,7 +1281,7 @@
 14620 '
 14630 ' IN: MTGLZAHL
 14640 GET #3,MTGLZAHL+1                                            'Index-Datei
-14650 CPOINT=VAL(POINT0$)
+14650 CPOINT=VAL(XVNPOINT0$)
 14660 GET #5,CPOINT:GOSUB 15690                                    'Daten lesen
 14670 BLATT=1
 14680 GET #4,CPOINT                                              'Pointer lesen
@@ -1289,7 +1289,7 @@
 14700 '
 14710 ' **** SEITE RÜCKWÄRTS **************************************************
 14720 '
-14730 TMPPOINT=VAL(POINT1$)
+14730 TMPPOINT=VAL(XVNPOINT1$)
 14740 IF TMPPOINT<>0 THEN 14770
 14750 N$="Erste Seite":GOSUB 13480                                   'Nachricht anzeigen
 14760 RETURN
@@ -1303,7 +1303,7 @@
 14840 '
 14850 ' **** SEITE VORWÄRTS  **************************************************
 14860 '
-14870 TMPPOINT=VAL(POINT2$)
+14870 TMPPOINT=VAL(XVNPOINT2$)
 14880 IF TMPPOINT=0 THEN 14950
 14890 CPOINT=TMPPOINT
 14900 BLATT=BLATT+1
@@ -1331,33 +1331,33 @@
 15120 ' **** ERSTE SEITE EINES MITGLIEDS ANLEGEN ******************************
 15130 '
 15140 GET #3,1
-15150 LSET POINT0$=STR$(VAL(POINT0$)+1)                                  'NDX+1
+15150 LSET XVNPOINT0$=STR$(VAL(XVNPOINT0$)+1)                                  'NDX+1
 15160 PUT #3,1
-15170 LSET POINT1$="0000"                                        'Page pointers
-15180 LSET POINT2$="0000"
-15190 PUT #4,VAL(POINT0$)
-15200 LSET POINT0$=POINT0$                                          'First page
+15170 LSET XVNPOINT1$="0000"                                        'Page pointers
+15180 LSET XVNPOINT2$="0000"
+15190 PUT #4,VAL(XVNPOINT0$)
+15200 LSET XVNPOINT0$=XVNPOINT0$                                          'First page
 15210 PUT #3,MTGLZAHL+1
-15220 LSET DDD1$=""                                                 'Datenblatt
-15230 LSET DDD2$=""
-15240 LSET DDD3$=""
-15250 PUT #5,VAL(POINT0$)
+15220 LSET XVNDAT1$=""                                                 'Datenblatt
+15230 LSET XVNDAT2$=""
+15240 LSET XVNDAT3$=""
+15250 PUT #5,VAL(XVNPOINT0$)
 15260 RETURN
 15270 '
 15280 ' **** ALLGEMEIN EINE NEUE SEITE ANLEGEN ********************************
 15290 '
 15300 GET #3,1                                                           'NDX+1
-15310 LSET POINT0$=STR$(VAL(POINT0$)+1)
-15320 PUT #3,1:TMPPOINT$=POINT0$    'Vektoren der bisher letzten Seite verbiegen
-15330 LSET POINT2$=POINT0$                                'Verbiege Vektoren...
+15310 LSET XVNPOINT0$=STR$(VAL(XVNPOINT0$)+1)
+15320 PUT #3,1:TMPPOINT$=XVNPOINT0$    'Vektoren der bisher letzten Seite verbiegen
+15330 LSET XVNPOINT2$=XVNPOINT0$                                'Verbiege Vektoren...
 15340 PUT #4,CPOINT                                         '...der alten Seite
-15350 LSET POINT1$=STR$(CPOINT)                             '...der neuen Seite
-15360 LSET POINT2$="0000"                                                '.. ""
+15350 LSET XVNPOINT1$=STR$(CPOINT)                             '...der neuen Seite
+15360 LSET XVNPOINT2$="0000"                                                '.. ""
 15370 CPOINT=VAL(TMPPOINT$)                                       'Nr neue Seite
 15380 PUT #4,CPOINT
-15390 LSET DDD1$=""                                           'Write empty page
-15400 LSET DDD2$=""
-15410 LSET DDD3$="" 
+15390 LSET XVNDAT1$=""                                           'Write empty page
+15400 LSET XVNDAT2$=""
+15410 LSET XVNDAT3$="" 
 15420 PUT #5,CPOINT
 15430 DATEN$=SPACE$(20)
 15440 FOR K=1 TO 26
@@ -1371,28 +1371,28 @@
 15520 FOR K=1 TO 12
 15530   DATEN$=DATEN$+DAT$(K)
 15540 NEXT K
-15550 LSET DDD1$=DATEN$:DATEN$=""
+15550 LSET XVNDAT1$=DATEN$:DATEN$=""
 15560 FOR K=13 TO 24
 15570   DATEN$=DATEN$+DAT$(K)
 15580 NEXT K
-15590 LSET DDD2$=DATEN$:DATEN$=""
+15590 LSET XVNDAT2$=DATEN$:DATEN$=""
 15600 FOR K=25 TO 26
 15610   DATEN$=DATEN$+DAT$(K)
 15620 NEXT K
-15630 LSET DDD3$=DATEN$:DATEN$=""
+15630 LSET XVNDAT3$=DATEN$:DATEN$=""
 15640 PUT #5,CPOINT
 15650 RETURN
 15660 '
 15670 ' **** HACK ! (ZERSTÜCKELN DER DATEN-STRINGS) ***************************
 15680 '
 15690 FOR K=1 TO 12
-15700   DAT$(II)=MID$(DDD1$,(II-1)*20+1,20)
+15700   DAT$(II)=MID$(XVNDAT1$,(II-1)*20+1,20)
 15710 NEXT K
 15720 FOR K=13 TO 24
-15730   DAT$(II)=MID$(DDD2$,(II-13)*20+1,20)
+15730   DAT$(II)=MID$(XVNDAT2$,(II-13)*20+1,20)
 15740 NEXT K
 15750 FOR K=25 TO 26
-15760   DAT$(II)=MID$(DDD3$,(II-25)*20+1,20)
+15760   DAT$(II)=MID$(XVNDAT3$,(II-25)*20+1,20)
 15770 NEXT K
 15780 RETURN
 15790 '
