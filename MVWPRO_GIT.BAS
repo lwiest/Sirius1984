@@ -28,7 +28,7 @@
 1280 DIM FLDLNG(FLDMAX)                                   'Länge des Feldes
 1290 DIM FLDTYP(FLDMAX)                                     'Typ des Feldes
 1300 '
-1310 DIM DAT$(FLDMAX)                                     'Stammsatzfelddaten
+1310 DIM DAT$(FLDMAX)                                    'Stammsatzfelddaten
 1320 DIM SEARCH$(FLDMAX)                                  'Stammsatzsuchdaten
 1330 '
 1340 NUMSEARCHMAX=2
@@ -1642,3 +1642,19 @@
 18240 RESET
 18250 'LW RUN "DISKMENU.EXE"
 18260 END                                                           '1622 lines
+       'Basis-Maske
+18130 PRINT HOME$
+18140 PRINT I$;"Ein Programmfehler ist aufgetreten."
+18150 PRINT   
+18160 PRINT I$;"- Bitte notieren Sie folgende Fehlerinformation:"
+18170 PRINT I$;"  ";HION$;"ERL";HIOFF$;" (Error Line)";HION$;ERL;HIOFF$
+18180 PRINT I$;"  ";HION$;"ERR";HIOFF$;" (Error Code)";HION$;ERR;HIOFF$
+18190 PRINT I$;"- Drücken Sie am Rechner den Knopf hinten rechts."
+18200 PRINT I$;"19**************************"
+18210 '
+18220 ' *** Programmende ******************************************************
+18230 '
+18240 RESET
+18250 PRINT FNCUR$(22,1);HIOFF$;CURON$;
+18260 'LW RUN "DISKMENU.EXE"
+18270 END                                                           '1622 lines
