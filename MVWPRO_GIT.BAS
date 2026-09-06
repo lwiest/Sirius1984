@@ -120,9 +120,9 @@
 2200 N$="Einen Moment bitte...":GOSUB 13480                 'Nachricht anzeigen
 2210 GOSUB 11500                                                 'MEMBMAX lesen
 2220 GOSUB 10960                              'Stammsatzfeld-Definitionen lesen
-2230 GOSUB 12090                                   'Fielden der Stammsatz-Datei
-2240 GOSUB 14360                       'Fielden der Verwendungsnachweis-Dateien
-2250 GOSUB 17770      'Fielden der Hilfe-Text-Dateien, lesen der Zeilenbereiche
+2230 GOSUB 12090                                       'Stammsatz-Datei fielden
+2240 GOSUB 14360                           'Verwendungsnachweis-Dateien fielden
+2250 GOSUB 17770              'Hilfe-Text-Dateien fielden, Zeilenbereiche lesen
 2260 GOSUB 13620                                             'Nachricht löschen
 2270 '
 2280 ' ###################### Mitgliederverwaltungs-Menü ######################
@@ -355,10 +355,12 @@
 4550 MI$="G-011050":IF ISPRINT THEN MI$="G-013010"
 4560 GOSUB 13690                                                   'Basis-Maske
 4570 FKEYS$="":GOSUB 13800                                 'F-Tasten einblenden
-4580 TMP$="Suchen":IF ISPRINT THEN TMP$="Suchen & drucken" 
-4590 TMP1=29:IF ISPRINT THEN TMP1=24
-4600 PRINT FNCUR$(4,TMP1)"1 - ";TMP$;" nach Nummern"
-4610 PRINT FNCUR$(6,TMP1)"2 - ";TMP$;" nach Maske"
+4580 IF ISPRINT THEN 4600 
+4582 PRINT FNCUR$(4,29);"1 - Suchen nach Nummern"
+4583 PRINT FNCUR$(6,29);"2 - Suchen nach Maske"
+4584 GOTO 4620
+4600 PRINT FNCUR$(4,24);"1 - Suchen & drucken nach Nummern"
+4610 PRINT FNCUR$(6,24);"2 - Suchen & drucken nach Maske"
 4620 NKEYMAX=2:FKEYMAX=4:GOSUB 13960                              'Menü-Eingabe
 4630 IF NKEY THEN ON NKEY GOTO 4730,5330
 4640 IF FKEY<>1 THEN 4680 
@@ -377,13 +379,16 @@
 4770 GOSUB 13690                                                   'Basis-Maske
 4780 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken"
 4790 GOSUB 13800                                           'F-Tasten einblenden
-4800 TMP$="gesucht":IF ISPRINT THEN TMP$="gesucht und gedruckt"
-4810 TMP1=12:IF ISPRINT THEN TMP1=6
-4820 TMP2=66:IF ISPRINT THEN TMP2=73
-4830 PRINT FNCUR$(4,TMP1);"Ab welcher Mitgliedsnummer soll ";TMP$;" werden?     =>..."
-4840 PRINT FNCUR$(6,TMP1);"Bis zu welcher Mitgliedsnummer soll ";TMP$;" werden? =>..."
-4850 PRINT FNCUR$(4,TMP2);HIGHON$;NUMSEARCH$(1);HIGHOFF$
-4860 PRINT FNCUR$(6,TMP2);HIGHON$;NUMSEARCH$(2);HIGHOFF$
+4800 IF ISPRINT THEN 4830
+4801 PRINT FNCUR$(4,12);"Ab welcher Mitgliedsnummer soll gesucht werden?     =>..."
+4802 PRINT FNCUR$(6,12);"Bis zu welcher Mitgliedsnummer soll gesucht werden? =>..."
+4803 PRINT FNCUR$(4,66);HIGHON$;NUMSEARCH$(1);HIGHOFF$
+4804 PRINT FNCUR$(6,66);HIGHON$;NUMSEARCH$(2);HIGHOFF$
+4805 GOTO 4870
+4830 PRINT FNCUR$(4,6);"Ab welcher Mitgliedsnummer soll gesucht und gedruckt werden?     =>..."
+4840 PRINT FNCUR$(6,6);"Bis zu welcher Mitgliedsnummer soll gesucht und gedruckt werden? =>..."
+4850 PRINT FNCUR$(4,73);HIGHON$;NUMSEARCH$(1);HIGHOFF$
+4860 PRINT FNCUR$(6,73);HIGHON$;NUMSEARCH$(2);HIGHOFF$
 4870 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
 4880 F=1
 4890 ISINPUTOK=TRUE
@@ -828,6 +833,7 @@
 10100 ' Map shifted logical key code KEY to ASCII code 0
 10110   PRINT ESC$;"42";CHR$(KEY);CHR$(0);
 10120 GOTO 10060
+10121 '
 10130 DATA 11,26,27,32,33,47,48:     'ESC, CLR, DEL CHR, INT, TAB, INS, DEL/EOL
 10140 DATA 53,67,68,73,94,97,-1:     'RVS,SCROL, LTRL, UNDL, RPT, CONT, Endflag
 10150 ' Map unshifted logical cursor key codes to ASCII codes
