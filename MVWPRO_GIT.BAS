@@ -971,7 +971,7 @@
 11470 ' *** MEMBMAX lesen ***************************************************** 
 11480 '
 11490 ' OUT: MEMBMAX
-11500 OPEN "I",#1,"B:MEMBNUM.DAT"
+11500 OPEN "I",#1,"B:MTGLZAHL.DAT"
 11510   INPUT #1,MEMBMAX$
 11520   MEMBMAX=VAL(MEMBMAX$)
 11530 CLOSE #1
@@ -1636,7 +1636,7 @@
 18120 PRINT HOME$
 18130 PRINT I$;"Ein Programmfehler ist aufgetreten."
 18140 PRINT   
-18150 PRINT I$;"- Notieren Sie folgende Fehlerinformation:"
+18150 PRINT I$;"- Bitte notieren Sie folgende Fehlerinformation:"
 18160 PRINT I$;"  ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
 18170 PRINT I$;"  ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
 18180 PRINT I$;"- Drücken Sie am Rechner den Knopf hinten rechts."
