@@ -2,14 +2,6 @@
 1010 '
 1020 ' LW 31-JAN-2026: Load MSBASIC.COM with /S:560 /F:6
 1030 '
-1040 '
-1050 ' Weitere Variablen
-1060 ' -----------------
-1070 ' F        - Feldindex 1..27 (FLDMAX)
-1080 ' I$       - Lokale Texteinrückung
-1090 ' MEMBMAX  - Höchste auf Disk gespeicherte Mitgliedsnummer
-1100 ' MEMBNUM - Momentane Mitgliedsnummer
-1110 '
 1120 ' TIP: Do not let the cursor slip into line 25 -> display will scroll up
 1130 ' TIP: Use semicolons with PRINT carefully -> display driver bug
 1140 '
