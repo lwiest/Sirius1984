@@ -42,8 +42,8 @@
 1490 INVOFF$ =ESC$+"q"                                              'Invers aus
 1500 CURON$  =ESC$+"y5"                                             'Cursor ein
 1510 CUROFF$ =ESC$+"x5"                                             'Cursor aus
-1520 HIGHON$ =ESC$+"("                                           'Helle Schrift
-1530 HIGHOFF$=ESC$+")"                                          'Dunkle Schrift
+1520 HION$ =ESC$+"("                                           'Helle Schrift
+1530 HIOFF$=ESC$+")"                                          'Dunkle Schrift
 1540 DELLINE$=ESC$+"K"                                           'Zeile löschen
 1550 DELHIGH$=ESC$+"+"                                'LW Helle Schrift löschen
 1560 '
@@ -166,7 +166,7 @@
 2730   F=F+1:IF F>FLDMAX THEN F=1
 2740   GOTO 2670
 2750 IF CKEY=0 THEN 2800                              'Cursortasten verarbeiten
-2760   PRINT FNCUR$(R,C);HIGHON$;FLDDAT$(F);HIGHOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")
+2760   PRINT FNCUR$(R,C);HION$;FLDDAT$(F);HIOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")
 2770   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FLDMAX
 2780   IF CKEY=CKEYDN THEN F=F+1:IF F>FLDMAX THEN F=1
 2790   GOTO 2670
@@ -238,7 +238,7 @@
 3450   F=F+1:IF F>FLDMAX THEN F=1
 3460   GOTO 3390
 3470 IF CKEY=0 THEN 3520                              'Cursortasten verarbeiten
-3480   PRINT FNCUR$(R,C);HIGHON$;FLDDAT$(F);HIGHOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")
+3480   PRINT FNCUR$(R,C);HION$;FLDDAT$(F);HIOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")
 3490   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FLDMAX
 3500   IF CKEY=CKEYDN THEN F=F+1:IF F>FLDMAX THEN F=1
 3510   GOTO 3390
@@ -298,7 +298,7 @@
 4050   F=5
 4060   FLDDAT$(F)="ausgetreten"
 4070   R=FLDROW(F):C=FLDCOL(F)+COLSEP:LNG=FLDLNG(F)
-4080   PRINT FNCUR$(R,C);HIGHON$;FLDDAT$(F);HIGHOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")               
+4080   PRINT FNCUR$(R,C);HION$;FLDDAT$(F);HIOFF$;STRING$(LNG-LEN(FLDDAT$(F)),".")               
 4090   N$="Stammsatz wird gespeichert...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 4100   GOSUB 12380                                         'Stammsatz speichern
 4110   GOSUB 13630                                           'Nachricht löschen
@@ -374,13 +374,13 @@
 4810 IF ISPRINT THEN 4870
 4820 PRINT FNCUR$(4,12);"Ab welcher Mitgliedsnummer soll gesucht werden?     =>..."
 4830 PRINT FNCUR$(6,12);"Bis zu welcher Mitgliedsnummer soll gesucht werden? =>..."
-4840 PRINT FNCUR$(4,66);HIGHON$;NUMSEARCH$(1);HIGHOFF$
-4850 PRINT FNCUR$(6,66);HIGHON$;NUMSEARCH$(2);HIGHOFF$
+4840 PRINT FNCUR$(4,66);HION$;NUMSEARCH$(1);HIOFF$
+4850 PRINT FNCUR$(6,66);HION$;NUMSEARCH$(2);HIOFF$
 4860 GOTO 4910
 4870 PRINT FNCUR$(4,6);"Ab welcher Mitgliedsnummer soll gesucht und gedruckt werden?     =>..."
 4880 PRINT FNCUR$(6,6);"Bis zu welcher Mitgliedsnummer soll gesucht und gedruckt werden? =>..."
-4890 PRINT FNCUR$(4,73);HIGHON$;NUMSEARCH$(1);HIGHOFF$
-4900 PRINT FNCUR$(6,73);HIGHON$;NUMSEARCH$(2);HIGHOFF$
+4890 PRINT FNCUR$(4,73);HION$;NUMSEARCH$(1);HIOFF$
+4900 PRINT FNCUR$(6,73);HION$;NUMSEARCH$(2);HIOFF$
 4910 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
 4920 F=1
 4930 ISINPUTOK=TRUE
@@ -449,7 +449,7 @@
 5560   SEARCHMODE=BYMASK                                                  '<F5>
 5570   IF ISPRINT THEN 8410 ELSE 5690             'Suchen oder Suchen & Drucken
 5580 IF CKEY=0 THEN 5640                              'Cursortasten verarbeiten
-5590   PRINT FNCUR$(R,C);HIGHON$;FLDSEARCH$(F);HIGHOFF$;
+5590   PRINT FNCUR$(R,C);HION$;FLDSEARCH$(F);HIOFF$;
 5600   PRINT STRING$(LNG-LEN(FLDSEARCH$(F)),".")
 5610   IF CKEY=CKEYUP THEN F=F-1:IF F<1 THEN F=FLDMAX
 5620   IF CKEY=CKEYDN THEN F=F+1:IF F>FLDMAX THEN F=1
@@ -613,7 +613,7 @@
 7200 F=4                                                                'TODO ?
 7210 FKEYS$="":GOSUB 13810                                 'F-Tasten einblenden
 7220 PRINT CURON$;
-7230 PRINT HIGHOFF$;
+7230 PRINT HIOFF$;
 7240 PRINT FNCUR$(4,23);"Bitte geben Sie die Mitgliedsnummer"
 7250 PRINT FNCUR$(5,20);"des zu ändernden Verwendungsnachweises ein"
 7260 'LW PRINT FNCUR$(6,23);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
@@ -627,7 +627,7 @@
 7340 IF FKEY>4 THEN 7290
 7350 IF CKEY<>0 THEN 7290
 7360 IF LEN(TEXTOUT$)=0 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13490:GOTO 7280 ELSE MITGLIED=VAL(TEXTOUT$):IF MITGLIED=0 THEN 7300 'Nachricht anzeigen
-7370 IF MITGLIED>MEMBMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13490:PRINT HOME$;HIGHOFF$:GOTO 7280 'Nachricht anzeigen
+7370 IF MITGLIED>MEMBMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13490:PRINT HOME$;HIOFF$:GOTO 7280 'Nachricht anzeigen
 7380 MEMBNUM=MITGLIED:MTGL$=STR$(MITGLIED)
 7390 '
 7400 ' *** Lesen des Mitgliedsnamens ******************************************
@@ -649,7 +649,7 @@
 7560 F=8
 7570 GOSUB 13700                                                   'Basis-Maske
 7580 FKEYS$="<F7>=Speichern":GOSUB 13810                   'F-Tasten einblenden
-7590 PRINT HIGHOFF$;
+7590 PRINT HIOFF$;
 7600 PRINT FNCUR$(24,1);"<F5>=Blättern rückwärts <F6>=Vorwärts";TAB(53);"<F9>=Blatt drucken";
 7610 PRINT FNCUR$(3,2);"Blatt:"
 7620 PRINT FNCUR$(5,2);"Mitglieds-Nr.:"
@@ -722,7 +722,7 @@
 8290 '
 8300 D$=TEXTOUT$:GOSUB 13030                    'Test Datum 'RETURN verarbeiten
 8310 IF NOT ISINPUTOK THEN N$=DATUM$:GOSUB 13490:GOTO 8190  'Nachricht anzeigen
-8320 PRINT FNCUR$(7,37);HIGHON$;DATUM$;HIGHOFF$
+8320 PRINT FNCUR$(7,37);HION$;DATUM$;HIOFF$
 8330 '
 8340 ISPRINT=TRUE 
 8350 IF NKEY=2 THEN 8470
@@ -852,7 +852,7 @@
 10370 ISINPUTOK=TRUE
 10380 IF NOT ISINPUTOK THEN TEXTIN$=TEXTOUT$
 10390 P=LEN(TEXTIN$)
-10400 PRINT FNCUR$(R,C);HIGHON$;TEXTIN$;HIGHOFF$;STRING$(LNG-P,".")
+10400 PRINT FNCUR$(R,C);HION$;TEXTIN$;HIOFF$;STRING$(LNG-P,".")
 10410 TEXTOUT$=TEXTIN$
 10420 PRINT CURON$;
 10430 CKEY=0:FKEY=0
@@ -865,7 +865,7 @@
 10500 ON TYP GOSUB 12680,12740,12790,12840                          'Typ prüfen
 10510 IF NOT ISVALID THEN 10570
 10520   IF P>=LNG THEN 10450                                  'Gültiges Zeichen
-10530   PRINT HIGHON$;A$;HIGHOFF$         
+10530   PRINT HION$;A$;HIOFF$         
 10540   TEXTOUT$=TEXTOUT$+A$
 10550   P=P+1
 10560   GOTO 10440
@@ -983,7 +983,7 @@
 11680 FOR I=1 TO FLDMAX
 11690   R=FLDROW(I)
 11700   C=FLDCOL(I)+COLSEP
-11710   PRINT FNCUR$(R,C);HIGHON$;FLDDAT$(I);HIGHOFF$;
+11710   PRINT FNCUR$(R,C);HION$;FLDDAT$(I);HIOFF$;
 11720   PRINT STRING$(FLDLNG(I)-LEN(FLDDAT$(I)),".")
 11730 NEXT I
 11740 RETURN
@@ -996,7 +996,7 @@
 11810   C=FLDCOL(I)
 11820   PRINT FNCUR$(R,C);FLDNAM$(I)
 11830   C=C+COLSEP
-11840   PRINT FNCUR$(R,C);HIGHON$;FLDDAT$(I);HIGHOFF$;
+11840   PRINT FNCUR$(R,C);HION$;FLDDAT$(I);HIOFF$;
 11850   PRINT STRING$(FLDLNG(I)-LEN(FLDDAT$(I)),".")               
 11860 NEXT I
 11870 RETURN
@@ -1009,7 +1009,7 @@
 11940   C=FLDCOL(I)
 11950   PRINT FNCUR$(R,C);FLDNAM$(I)
 11960   C=C+COLSEP
-11970   PRINT FNCUR$(R,C);HIGHON$;FLDSEARCH$(I);HIGHOFF$;
+11970   PRINT FNCUR$(R,C);HION$;FLDSEARCH$(I);HIOFF$;
 11980   PRINT STRING$(FLDLNG(I)-LEN(FLDSEARCH$(I)),".")               
 11990 NEXT I
 12000 RETURN
@@ -1017,7 +1017,7 @@
 12020 ' *** Mitgliedsnummer ausgeben ******************************************
 12030 '
 12040 ' IN: MEMBNUM
-12050 PRINT FNCUR$(3,31);"Mitgliedsnummer";HIGHON$;MEMBNUM;HIGHOFF$;"   "
+12050 PRINT FNCUR$(3,31);"Mitgliedsnummer";HION$;MEMBNUM;HIOFF$;"   "
 12060 RETURN
 12070 '
 12080 ' *** FIELDen der Stammsatz-Datei *************************************** 
@@ -1399,7 +1399,7 @@
 15840 ' IN: NACHVORNAME$
 15850 ' IN: BLATT
 15860 PRINT DELHIGH$;                                          'TODO Necessary?
-15870 PRINT HIGHON$
+15870 PRINT HION$
 15880 PRINT FNCUR$(5,16);MEMBNUM
 15890 PRINT FNCUR$(5,29);NACHVORNAME$
 15900 PRINT FNCUR$(3,8);BLATT
@@ -1414,7 +1414,7 @@
 15990   NEXT
 16000   PRINT FNCUR$(VER,HOR+26);MID$(FLDDAT$(I),13,8)                     'Amt
 16010 NEXT
-16020 PRINT HIGHOFF$
+16020 PRINT HIOFF$
 16030 RETURN
 16040 '
 16050 ' *** Verwendungsnachweis drucken ***************************************
@@ -1629,14 +1629,14 @@
 18140 PRINT I$;"Ein Programmfehler ist aufgetreten."
 18150 PRINT   
 18160 PRINT I$;"- Bitte notieren Sie folgende Fehlerinformation:"
-18170 PRINT I$;"  ";HIGHON$;"ERL";HIGHOFF$;" (Error Line)";HIGHON$;ERL;HIGHOFF$
-18180 PRINT I$;"  ";HIGHON$;"ERR";HIGHOFF$;" (Error Code)";HIGHON$;ERR;HIGHOFF$
+18170 PRINT I$;"  ";HION$;"ERL";HIOFF$;" (Error Line)";HION$;ERL;HIOFF$
+18180 PRINT I$;"  ";HION$;"ERR";HIOFF$;" (Error Code)";HION$;ERR;HIOFF$
 18190 PRINT I$;"- Drücken Sie am Rechner den Knopf hinten rechts."
 18200 PRINT I$;"19**************************"
 18210 '
 18220 ' *** Programmende ******************************************************
 18230 '
-18240 PRINT FNCUR$(22,1);HIGHOFF$;CURON$;
+18240 PRINT FNCUR$(22,1);HIOFF$;CURON$;
 18250 RESET
 18260 'LW RUN "DISKMENU.EXE"
 18270 END                                                           '1622 lines
