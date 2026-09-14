@@ -23,33 +23,15 @@
 1300 DIM FLDDAT$(FLDMAX)                                    'Stammsatzfelddaten
 1310 DIM FLDSEARCH$(FLDMAX)                                 'Stammsatzsuchdaten
 1320 '
-1330 NUMSEARCHMAX=2
-1340 DIM NUMSEARCH$(NUMSEARCHMAX)
-1350 DIM NUMSEARCHROW(NUMSEARCHMAX)
-1360 NUMSEARCHROW(1)=4
-1370 NUMSEARCHROW(2)=6
+1330 SEARCHNUMSMAX=2
+1340 DIM SEARCHNUMS$(SEARCHNUMSMAX)
+1350 DIM SEARCHNUMSROW(SEARCHNUMSMAX)
+1360 SEARCHNUMSROW(1)=4
+1370 SEARCHNUMSROW(2)=6
 1380 '
 1390 BYNUMS=1                                             'Werte von SEARCHMODE
 1400 BYMASK=2
 1410 '
-1420 BSP$   =CHR$(8)                                                 'Backspace
-1430 DEL$   =BSP$+"."+BSP$                                              'Delete
-1440 ESC$   =CHR$(27)                                                   'Escape
-1450 ROWSEP$=STRING$(79,"-")                                            'Strich
-1460 '
-1470 CLS$    =ESC$+"E"                                      'Bildschirm löschen
-1480 INVON$  =ESC$+"p"                                              'Invers ein
-1490 INVOFF$ =ESC$+"q"                                              'Invers aus
-1500 CURON$  =ESC$+"y5"                                             'Cursor ein
-1510 CUROFF$ =ESC$+"x5"                                             'Cursor aus
-1520 HION$ =ESC$+"("                                           'Helle Schrift
-1530 HIOFF$=ESC$+")"                                          'Dunkle Schrift
-1540 DELLINE$=ESC$+"K"                                           'Zeile löschen
-1550 DELHIGH$=ESC$+"+"                                'LW Helle Schrift löschen
-1560 '
-1570 DEF FNCUR$(R,C)=ESC$+"Y"+CHR$(31+R)+CHR$(31+C)       'Cursor positionieren
-1580 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
-1590 ' 
 1600 CKEYUP=1                                    'Werte von CKEY (Cursortasten)
 1610 CKEYDN=2
 1620 CKEYLT=3
@@ -98,8 +80,26 @@
 2050 '
 2060 COLSEP=14           'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 2070 '
-2080 ON ERROR GOTO 18110                               'Programmfehler abfangen
-2090 '
+2071 BSP$   =CHR$(8)                                                 'Backspace
+2072 DEL$   =BSP$+"."+BSP$                                              'Delete
+2073 ESC$   =CHR$(27)                                                   'Escape
+2074 ROWSEP$=STRING$(79,"-")                                            'Strich
+2075 '
+2076 CLS$    =ESC$+"E"                                      'Bildschirm löschen
+2077 INVON$  =ESC$+"p"                                              'Invers ein
+2078 INVOFF$ =ESC$+"q"                                              'Invers aus
+2079 CURON$  =ESC$+"y5"                                             'Cursor ein
+2080 CUROFF$ =ESC$+"x5"                                             'Cursor aus
+2081 HION$   =ESC$+"("                                           'Helle Schrift
+2082 HIOFF$  =ESC$+")"                                          'Dunkle Schrift
+2083 DELLINE$=ESC$+"K"                                           'Zeile löschen
+2085 DELHIGH$=ESC$+"+"                                'LW Helle Schrift löschen
+2086 '
+2087 DEF FNCUR$(R,C)=ESC$+"Y"+CHR$(31+R)+CHR$(31+C)       'Cursor positionieren
+2088 HOME$=FNCUR$(3,1)                                    'Cursor Home Position
+2089 ' 
+2090 ON ERROR GOTO 18110                               'Programmfehler abfangen
+2091 '
 2100 GOSUB 10050    'Tasten deaktivieren, ASCII-Codes für Cursortasten vergeben
 2110 PRINT CUROFF$;
 2120 '
@@ -364,8 +364,8 @@
 4710 IF FKEY=4 THEN GOSUB 14130:GOTO 4630                 'Zum Hauptmenü?-Frage
 4720 '
 4730 ' *** Suchen nach Nummern
-4740 TMP$=STR$(1):NUMSEARCH$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
-4750 TMP$=STR$(MEMBMAX):NUMSEARCH$(2)=MID$(TMP$,2,99)
+4740 TMP$=STR$(1):SEARCHNUMS$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
+4750 TMP$=STR$(MEMBMAX):SEARCHNUMS$(2)=MID$(TMP$,2,99)
 4760 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
 4770 IF ISPRINT THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
 4780 GOSUB 13700                                                   'Basis-Maske
@@ -374,18 +374,18 @@
 4810 IF ISPRINT THEN 4870
 4820 PRINT FNCUR$(4,12);"Ab welcher Mitgliedsnummer soll gesucht werden?     =>..."
 4830 PRINT FNCUR$(6,12);"Bis zu welcher Mitgliedsnummer soll gesucht werden? =>..."
-4840 PRINT FNCUR$(4,66);HION$;NUMSEARCH$(1);HIOFF$
-4850 PRINT FNCUR$(6,66);HION$;NUMSEARCH$(2);HIOFF$
+4840 PRINT FNCUR$(4,66);HION$;SEARCHNUMS$(1);HIOFF$
+4850 PRINT FNCUR$(6,66);HION$;SEARCHNUMS$(2);HIOFF$
 4860 GOTO 4910
 4870 PRINT FNCUR$(4,6);"Ab welcher Mitgliedsnummer soll gesucht und gedruckt werden?     =>..."
 4880 PRINT FNCUR$(6,6);"Bis zu welcher Mitgliedsnummer soll gesucht und gedruckt werden? =>..."
-4890 PRINT FNCUR$(4,73);HION$;NUMSEARCH$(1);HIOFF$
-4900 PRINT FNCUR$(6,73);HION$;NUMSEARCH$(2);HIOFF$
+4890 PRINT FNCUR$(4,73);HION$;SEARCHNUMS$(1);HIOFF$
+4900 PRINT FNCUR$(6,73);HION$;SEARCHNUMS$(2);HIOFF$
 4910 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
 4920 F=1
 4930 ISINPUTOK=TRUE
-4940 FKEYMASK$="12345":CKEYMASK$="":TEXTIN$=NUMSEARCH$(F)
-4950 R=NUMSEARCHROW(F):LNG=3:TYP=2:ISMAND=TRUE
+4940 FKEYMASK$="12345":CKEYMASK$="":TEXTIN$=SEARCHNUMS$(F)
+4950 R=SEARCHNUMSROW(F):LNG=3:TYP=2:ISMAND=TRUE
 4960 C=66:IF ISPRINT THEN C=73
 4970 GOSUB 10380                                                'Feld-Eingabe+1
 4980 IF FKEY<>1 THEN 5020                                 'F-Tasten verarbeiten
@@ -397,8 +397,8 @@
 5040 IF FKEY=4 THEN GOSUB 14130:GOTO 4970                 'Zum Hauptmenü?-Frage
 5050 IF FKEY<>5 THEN 5110
 5060   SEARCHMODE=BYNUMS
-5070   NUMSUCH1=VAL(NUMSEARCH$(1))
-5080   NUMSUCH2=VAL(NUMSEARCH$(2))
+5070   NUMSUCH1=VAL(SEARCHNUMS$(1))
+5080   NUMSUCH2=VAL(SEARCHNUMS$(2))
 5090   IF ISPRINT THEN 8410 ELSE 5690    'Absprung Suchen & Drucken oder Suchen
 5100 '
 5110 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
@@ -406,14 +406,14 @@
 5130   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 5140   GOSUB 5300                                     'Eingabefehler-Behandlung
 5150   GOTO 4950
-5160 NUMSEARCH$(F)=TEXTOUT$
-5170 NUMSUCH1=VAL(NUMSEARCH$(1))
-5180 NUMSUCH2=VAL(NUMSEARCH$(2))
+5160 SEARCHNUMS$(F)=TEXTOUT$
+5170 NUMSUCH1=VAL(SEARCHNUMS$(1))
+5180 NUMSUCH2=VAL(SEARCHNUMS$(2))
 5190 IF NUMSUCH1<=NUMSUCH2 THEN 5230
 5200   N$="Ungültiger Bereich":GOSUB 13490                  'Nachricht anzeigen
 5210   GOSUB 5300                                     'Eingabefehler-Behandlung
 5220   GOTO 4950
-5230 F=F+1:IF F>NUMSEARCHMAX THEN F=1
+5230 F=F+1:IF F>SEARCHNUMSMAX THEN F=1
 5240 GOSUB 14070                                           'F-Tasten ausblenden
 5250 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken" 
 5260 GOSUB 13810                                           'F-Tasten einblenden
