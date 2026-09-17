@@ -58,32 +58,32 @@
 1830 G0100000=1                                           'Mitgliederverwaltung
 1840 G0110000=2                                                'Stammsatzpflege
 1850 G0110100=3                                              'Stammsatz anlegen
-1860 G0110201=4                                           'Stammsatz ändern (I)
-1870 G0110202=5                                          'Stammsatz ändern (II)
+1860 G0110201=4                                           'Stammsatz ändern (1)
+1870 G0110202=5                                           'Stammsatz ändern (2)
 1880 G0110300=6                                              'Stammsatz löschen
 1890 G0110400=7                                              'Stammsatz drucken
-1900 G0110501=8                                           'Stammsatz suchen (I)
+1900 G0110501=8                                           'Stammsatz suchen (1)
 1910 G0110510=9                                  'Stammsatz suchen nach Nummern
 1920 G0110520=10                                   'Stammsatz suchen nach Maske
-1930 G0110502=11                           'Stammsatz suchen (II) Keine Treffer
-1940 G0110503=12                               'Stammsatz suchen (III) Blättern
-1950 G0120001=13                                       'Verwendungsnachweis (I)
-1960 G0120002=14                                      'Verwendungsnachweis (II)
+1930 G0110502=11                            'Stammsatz suchen (2) Keine Treffer
+1940 G0110503=12                                 'Stammsatz suchen (3) Blättern
+1950 G0120001=13                                       'Verwendungsnachweis (1)
+1960 G0120002=14                                       'Verwendungsnachweis (2)
 1970 G0130000=15                                        'Mitgliedsliste drucken
-1980 G0130101=16                                    'Suchen & Drucken (I) Datum
-1990 G0130102=17                                         'Suchen & Drucken (II)
+1980 G0130101=16                                    'Suchen & Drucken (1) Datum
+1990 G0130102=17                                          'Suchen & Drucken (2)
 2000 G0130110=18                                 'Suchen & Drucken nach Nummern
 2010 G0130120=19                                   'Suchen & Drucken nach Maske
-2020 G0130103=20                           'Suchen & Drucken (II) Keine Treffer
+2020 G0130103=20                            'Suchen & Drucken (2) Keine Treffer
 2030 G0130200=21                                           'Komplettdruck Datum
 2040 G0130300=22                                            'Datenblatt drucken
 2050 '
 2060 COLSEP=14           'Offset Colum Feldname to Column Wertefeld (Pünktchen)
 2070 '
-2071 BSP$   =CHR$(8)                                                 'Backspace
-2072 DEL$   =BSP$+"."+BSP$                                              'Delete
-2073 ESC$   =CHR$(27)                                                   'Escape
-2074 ROWSEP$=STRING$(79,"-")                                            'Strich
+2071 BSP$    =CHR$(8)                                                'Backspace
+2072 DEL$    =BSP$+"."+BSP$                                             'Delete
+2073 ESC$    =CHR$(27)                                                  'Escape
+2074 ROWSEP$ =STRING$(79,"-")                                           'Strich
 2075 '
 2076 CLS$    =ESC$+"E"                                      'Bildschirm löschen
 2077 INVON$  =ESC$+"p"                                              'Invers ein
@@ -101,7 +101,6 @@
 2090 ON ERROR GOTO 18110                               'Programmfehler abfangen
 2091 '
 2100 GOSUB 10050    'Tasten deaktivieren, ASCII-Codes für Cursortasten vergeben
-2110 PRINT CUROFF$;
 2120 '
 2130 ' *** Beginn des Mitgliederverwaltungsprogramms **************************
 2140 '
@@ -1182,7 +1181,7 @@
 13670 '
 13680 ' IN: MT$ - Menü-Titel
 13690 ' IN: MI$ - Menu-ID
-13700 PRINT CLS$;
+13700 PRINT CUROFF$;CLS$;
 13710 PRINT "00**********************";
 13720 PRINT FNCUR$(1,(80-LEN(MT$))/2+1);MT$;FNCUR$(1,72);MI$
 13730 PRINT ROWSEP$
