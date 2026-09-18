@@ -126,8 +126,8 @@
 2340 FKEYMAX=4:NKEYMAX=3:GOSUB 13970                              'Menü-Eingabe
 2350 IF FKEY THEN ON FKEY GOTO 2370,2380,2290,2380
 2360 ON NKEY GOTO 2440,7140,7970
-2370 HELPID=G0100000:GOSUB 17940:GOTO 2290                          'Hilfe-Text
-2380 GOSUB 14130:GOTO 2340                                'Zum Hauptmenü?-Frage
+2370 HELPID=G0100000:GOSUB 17940:GOTO 2290                     '<F1> Hilfe-Text
+2380 GOSUB 14130:GOTO 2340                      '<F2> <F4> Zum Hauptmenü?-Frage
 2390 '
 2400 ' ########################### Stammsatzpflege ############################
 2410 '
@@ -143,8 +143,8 @@
 2510 FKEYMAX=4:NKEYMAX=5:GOSUB 13970                              'Menü-Eingabe
 2520 IF FKEY THEN ON FKEY GOTO 2540,2290,2290,2550
 2530 ON NKEY GOTO 2590,3080,3740,4160,4520
-2540 HELPID=G0110000:GOSUB 17940:GOTO 2440                          'Hilfe-Text
-2550 GOSUB 14130:GOTO 2510                                'Zum Hauptmenü?-Frage
+2540 HELPID=G0110000:GOSUB 17940:GOTO 2440                     '<F1> Hilfe-Text
+2550 GOSUB 14130:GOTO 2510                           '<F4> Zum Hauptmenü?-Frage
 2560 '
 2570 ' *** Stammsatz anlegen von 02************ *******************************
 2580 '
