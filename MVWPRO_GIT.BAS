@@ -109,7 +109,7 @@
 2170 IF NOT ISYES THEN 18240                                      'Programmende
 2180 '
 2190 N$="Einen Moment bitte...":GOSUB 13490                 'Nachricht anzeigen
-2200 GOSUB 11510                                                 'MEMBMAX lesen
+2200 GOSUB 11510                                                 'MBRMAX lesen
 2210 GOSUB 10970                              'Stammsatzfeld-Definitionen lesen
 2220 GOSUB 12100                                       'Stammsatz-Datei fielden
 2230 GOSUB 14370                           'Verwendungsnachweis-Dateien fielden
@@ -148,7 +148,7 @@
 2560 '
 2570 ' *** Stammsatz anlegen von 02************ *******************************
 2580 '
-2590 MEMBNUM=MEMBMAX+1
+2590 MBRNUM=MBRMAX+1
 2600 F=1
 2610 GOSUB 11400                                              'FLDDAT$() leeren
 2620 GOSUB 13360                                     'Voreinstellungen zuweisen
@@ -183,14 +183,14 @@
 2910 GOSUB 10920                                           'Tastatur entprellen
 2920 Q$="Wollen Sie vorher den Stammsatz speichern?":GOSUB 12590 'Ja/Nein-Frage
 2930 IF ISYES THEN 2980
-2940   MEMBNUM=MEMBNUM-1
+2940   MBRNUM=MBRNUM-1
 2950   GOTO 3030
 2960 '                                                            
 2970 ' *** SUB Exit "Stammsatz anlegen" 2
 2980 N$="Stammsatz wird gespeichert...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 2990 GOSUB 12380                                           'Stammsatz speichern
 3000 GOSUB 14480                       'Erste Verwendungsnachweis-Seite anlegen
-3010 MEMBMAX=MEMBNUM:GOSUB 11600                              'MEMBMAX speichen
+3010 MBRMAX=MBRNUM:GOSUB 11600                              'MBRMAX speichen
 3020 '
 3030 GOSUB 13630                                             'Nachricht löschen
 3040 RETURN
@@ -201,7 +201,7 @@
 3090 FKEYS$="":GOSUB 13810                                 'F-Tasten einblenden
 3100 PRINT FNCUR$(4,23)"Bitte geben Sie die Mitgliedsnummer" 
 3110 PRINT FNCUR$(5,24)"des zu ändernden Stammsatzes ein."
-3120 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+3120 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 3130 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 3140 PRINT FNCUR$(9,38)"=>..."
 3150 ISINPUTOK=TRUE
@@ -214,11 +214,11 @@
 3220 IF FKEY=4 THEN GOSUB 14130:GOTO 3180                 'Zum Hauptmenü?-Frage
 3230 '
 3240 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-3250 IF M>=1 AND M<=MEMBMAX THEN 3290
+3250 IF M>=1 AND M<=MBRMAX THEN 3290
 3260   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 3270   ISINPUTOK=FALSE
 3280   GOTO 3170
-3290 MEMBNUM=M
+3290 MBRNUM=M
 3300 N$="Stammsatz wird gelesen...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 3310 GOSUB 12160                                               'Stammsatz lesen
 3320 GOSUB 13630                                             'Nachricht löschen
@@ -267,7 +267,7 @@
 3750 FKEYS$="":GOSUB 13810                                 'F-Tasten einblenden
 3760 PRINT FNCUR$(4,23);"Bitte geben Sie die Mitgliedsnummer"         'Menütext
 3770 PRINT FNCUR$(5,24);"des zu löschenden Mitglieds ein."
-3780 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+3780 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 3790 PRINT FNCUR$(7,15);"(Dabei wird nur der Status des Mitglieds verändert.)"
 3800 PRINT FNCUR$(8,23);"Beenden Sie die Eingabe mit RETURN."
 3810 PRINT FNCUR$(10,38);"=>..."
@@ -281,11 +281,11 @@
 3890 IF FKEY=4 THEN GOSUB 14130:GOTO 3850                 'Zum Hauptmenü?-Frage
 3900 '
 3910 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-3920 IF M>=1 AND M<=MEMBMAX THEN 3960
+3920 IF M>=1 AND M<=MBRMAX THEN 3960
 3930   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 3940   ISINPUTOK=FALSE
 3950   GOTO 3840
-3960 MEMBNUM=M
+3960 MBRNUM=M
 3970 N$="Stammsatz wird gelesen...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 3980 GOSUB 12160                                               'Stammsatz lesen
 3990 '
@@ -309,7 +309,7 @@
 4170 FKEYS$="":GOSUB 13810                                 'F-Tasten einblenden
 4180 PRINT FNCUR$(4,23)"Bitte geben Sie die Mitgliedsnummer"
 4190 PRINT FNCUR$(5,23)"des auszudruckenden Stammsatzes ein."
-4200 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+4200 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 4210 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 4220 PRINT FNCUR$(9,38);"=>..."
 4230 ISINPUTOK=TRUE
@@ -322,11 +322,11 @@
 4300 IF FKEY=4 THEN GOSUB 14130:GOTO 4260                 'Zum Hauptmenü?-Frage
 4310 '
 4320 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-4330   IF M>=1 AND M<=MEMBMAX THEN 4370
+4330   IF M>=1 AND M<=MBRMAX THEN 4370
 4340   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 4350   ISINPUTOK=FALSE
 4360   GOTO 4250
-4370 MEMBNUM=M
+4370 MBRNUM=M
 4380 N$="Stammsatz wird gelesen...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 4390 GOSUB 12160                                               'Stammsatz lesen
 4400 GOSUB 13630                                             'Nachricht löschen
@@ -364,7 +364,7 @@
 4720 '
 4730 ' *** Suchen nach Nummern
 4740 TMP$=STR$(1):SEARCHNUMS$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
-4750 TMP$=STR$(MEMBMAX):SEARCHNUMS$(2)=MID$(TMP$,2,99)
+4750 TMP$=STR$(MBRMAX):SEARCHNUMS$(2)=MID$(TMP$,2,99)
 4760 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
 4770 IF ISPRINT THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
 4780 GOSUB 13700                                                   'Basis-Maske
@@ -380,7 +380,7 @@
 4880 PRINT FNCUR$(6,6);"Bis zu welcher Mitgliedsnummer soll gesucht und gedruckt werden? =>..."
 4890 PRINT FNCUR$(4,73);HION$;SEARCHNUMS$(1);HIOFF$
 4900 PRINT FNCUR$(6,73);HION$;SEARCHNUMS$(2);HIOFF$
-4910 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+4910 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 4920 F=1
 4930 ISINPUTOK=TRUE
 4940 FKEYMASK$="12345":CKEYMASK$="":TEXTIN$=SEARCHNUMS$(F)
@@ -401,7 +401,7 @@
 5090   IF ISPRINT THEN 8410 ELSE 5690    'Absprung Suchen & Drucken oder Suchen
 5100 '
 5110 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-5120 IF M>=1 AND M<=MEMBMAX THEN 5160
+5120 IF M>=1 AND M<=MBRMAX THEN 5160
 5130   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 5140   GOSUB 5300                                     'Eingabefehler-Behandlung
 5150   GOTO 4950
@@ -462,13 +462,13 @@
 5700   GOSUB 13700                                                 'Basis-Maske
 5710   GOSUB 11400                                             'Leere FLDDAT$()
 5720   GOSUB 11790        'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
-5730   MEMBNUM=NUMSUCH1                                'Init Suche nach Nummern
+5730   MBRNUM=NUMSUCH1                                'Init Suche nach Nummern
 5740   GOTO 5920
 5750 '
 5760 GOSUB 14070                                           'F-Tasten ausblenden
-5770 MEMBNUM=0                                           'Init Suche nach Maske
+5770 MBRNUM=0                                           'Init Suche nach Maske
 5780 GOSUB 6780                                        'Nächsten Treffer suchen
-5790 IF MEMBNUM<>-1 THEN 5920
+5790 IF MBRNUM<>-1 THEN 5920
 5800   N$="Kein Suchtreffer. Mit <F2> neue Suche.":GOSUB 13490       'Nachricht anzeigen
 5810   FKEYS$="":GOSUB 13810                               'F-Tasten einblenden
 5820   FKEYMASK$="1234":NKEYMASK$="":GOSUB 13970                  'Menü-Eingabe
@@ -506,15 +506,15 @@
 6140 GOSUB 14070                                           'F-Tasten ausblenden
 6150 IF SEARCHMODE=BYMASK THEN 6220
 6160 '
-6170 MEMBNUM=MEMBNUM-1                            'Suchen rückwärts nach Nummer
-6180 IF MEMBNUM>=NUMSUCH1 THEN 6300 
-6190 MEMBNUM=NUMSUCH1
+6170 MBRNUM=MBRNUM-1                            'Suchen rückwärts nach Nummer
+6180 IF MBRNUM>=NUMSUCH1 THEN 6300 
+6190 MBRNUM=NUMSUCH1
 6200 GOTO 6270
 6210 '       
-6220 TMP=MEMBNUM                                   'Suchen rückwärts nach Maske
+6220 TMP=MBRNUM                                   'Suchen rückwärts nach Maske
 6230 GOSUB 6700                                      'Vorherigen Treffer suchen
-6240 IF MEMBNUM<>-1 THEN 6300
-6250 MEMBNUM=TMP                                       'Keinen Treffer gefunden
+6240 IF MBRNUM<>-1 THEN 6300
+6250 MBRNUM=TMP                                       'Keinen Treffer gefunden
 6260 '
 6270 N$="Suchbeginn erreicht":GOSUB 13490       'Suchbeginn erreicht 'Nachricht anzeigen
 6280 GOTO 5940
@@ -526,15 +526,15 @@
 6340 GOSUB 14070                                           'F-Tasten ausblenden
 6350 IF SEARCHMODE=BYMASK THEN 6420
 6360 '
-6370 MEMBNUM=MEMBNUM+1                             'Suchen vorwärts nach Nummer
-6380 IF MEMBNUM<=NUMSUCH2 THEN 6500
-6390 MEMBNUM=NUMSUCH2
+6370 MBRNUM=MBRNUM+1                             'Suchen vorwärts nach Nummer
+6380 IF MBRNUM<=NUMSUCH2 THEN 6500
+6390 MBRNUM=NUMSUCH2
 6400 GOTO 6470
 6410 '
-6420 TMP=MEMBNUM                                     'Suche vorwärts nach Maske
+6420 TMP=MBRNUM                                     'Suche vorwärts nach Maske
 6430 GOSUB 6780                                        'Nächsten Treffer suchen
-6440 IF MEMBNUM<>-1 THEN 6500
-6450 MEMBNUM=TMP                                       'Keinen Treffer gefunden
+6440 IF MBRNUM<>-1 THEN 6500
+6450 MBRNUM=TMP                                       'Keinen Treffer gefunden
 6460 '
 6470 N$="Suchende erreicht":GOSUB 13490           'Suchende erreicht 'Nachricht anzeigen
 6480 GOTO 5940
@@ -558,26 +558,26 @@
 6660 GOTO 5940                                                    'Neue Eingabe
 6670 '
 6680 ' *** SUB Vorherigen Treffer suchen
-6690 ' IN: MEMBNUM OUT: MEMBNUM oder -1 wenn kein Treffer
-6700 MEMBNUM=MEMBNUM-1
-6710 IF MEMBNUM<1 THEN 6840
+6690 ' IN: MBRNUM OUT: MBRNUM oder -1 wenn kein Treffer
+6700 MBRNUM=MBRNUM-1
+6710 IF MBRNUM<1 THEN 6840
 6720 GOSUB 6880                                                       'Treffer?
 6730 IF NOT ISMATCH THEN 6700 
 6740 RETURN
 6750 '
 6760 ' *** SUB Nächsten Treffer suchen
-6770 ' IN: MEMBNUM OUT: MEMBNUM oder -1 wenn kein Treffer
-6780 MEMBNUM=MEMBNUM+1
-6790 IF MEMBNUM>MEMBMAX THEN 6840
+6770 ' IN: MBRNUM OUT: MBRNUM oder -1 wenn kein Treffer
+6780 MBRNUM=MBRNUM+1
+6790 IF MBRNUM>MBRMAX THEN 6840
 6800 GOSUB 6880                                                       'Treffer?
 6810 IF NOT ISMATCH THEN 6780 
 6820 RETURN
 6830 '
-6840 MEMBNUM=-1
+6840 MBRNUM=-1
 6850 RETURN
 6860 '
 6870 ' *** SUB Treffer?
-6880 N$="Vergleiche Stammsatz"+STR$(MEMBNUM)+"...":GOSUB 13490      'Nachricht anzeigen
+6880 N$="Vergleiche Stammsatz"+STR$(MBRNUM)+"...":GOSUB 13490      'Nachricht anzeigen
 6890 GOSUB 12160                                               'Stammsatz lesen
 6900 FOR I=1 TO FLDMAX
 6910   S$=FLDSEARCH$(I)
@@ -603,7 +603,7 @@
 7110 '
 7120 ' ######################### Verwendungsnachweis ##########################
 7130 '
-7140 GOSUB 11510                             'Einsprung MVW-Menü 'MEMBMAX lesen
+7140 GOSUB 11510                             'Einsprung MVW-Menü 'MBRMAX lesen
 7150 VNFLAG=TRUE
 7160 '
 7170 ' Verwendungsnachweis-Menü ***********************************************
@@ -615,7 +615,7 @@
 7230 PRINT HIOFF$;
 7240 PRINT FNCUR$(4,23);"Bitte geben Sie die Mitgliedsnummer"
 7250 PRINT FNCUR$(5,20);"des zu ändernden Verwendungsnachweises ein"
-7260 'LW PRINT FNCUR$(6,23);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+7260 'LW PRINT FNCUR$(6,23);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 7270 PRINT FNCUR$(6,20);" und beenden Sie die Eingabe mit RETURN."
 7280 PRINT FNCUR$(8,38);"=>..."
 7290 R=8:C=39:LNG=3:TYP=2
@@ -626,8 +626,8 @@
 7340 IF FKEY>4 THEN 7290
 7350 IF CKEY<>0 THEN 7290
 7360 IF LEN(TEXTOUT$)=0 THEN N$="Muss-Feld: Sie müssen etwas eingeben!":GOSUB 13490:GOTO 7280 ELSE MITGLIED=VAL(TEXTOUT$):IF MITGLIED=0 THEN 7300 'Nachricht anzeigen
-7370 IF MITGLIED>MEMBMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13490:PRINT HOME$;HIOFF$:GOTO 7280 'Nachricht anzeigen
-7380 MEMBNUM=MITGLIED:MTGL$=STR$(MITGLIED)
+7370 IF MITGLIED>MBRMAX THEN N$="Diese Mitgliedsnummer existiert nicht.":GOSUB 13490:PRINT HOME$;HIOFF$:GOTO 7280 'Nachricht anzeigen
+7380 MBRNUM=MITGLIED:MTGL$=STR$(MITGLIED)
 7390 '
 7400 ' *** Lesen des Mitgliedsnamens ******************************************
 7410 '
@@ -738,7 +738,7 @@
 8460 ' *** Komplette Mitgliedsliste drucken
 8470 SEARCHMODE=BYNUMS
 8480 ISCOMPLETE=TRUE
-8490 NUMSUCH1=1:NUMSUCH2=MEMBMAX
+8490 NUMSUCH1=1:NUMSUCH2=MBRMAX
 8500 GOSUB 16420                                         'Drucker bereit?-Frage
 8510 IF NOT ISYES THEN 8200
 8520 '
@@ -748,19 +748,19 @@
 8560 IF SEARCHMODE=BYMASK THEN 8690
 8570 '
 8580 ' *** Suchen nach Nummern
-8590 FOR MEMBNUM=NUMSUCH1 TO NUMSUCH2
+8590 FOR MBRNUM=NUMSUCH1 TO NUMSUCH2
 8600   GOSUB 12160                                             'Stammsatz lesen
 8610   IF INSTR(FLDDAT$(5),"ausgetreten")>0 THEN 8630
 8620     GOSUB 16730                         'Mitgliedsliste drucken (Mitglied)
 8630   GOSUB 16490                                      'Druck abbrechen?-Frage
 8640   IF ISYES THEN 8800
-8650 NEXT MEMBNUM
+8650 NEXT MBRNUM
 8660 GOTO 8800
 8670 ' 
 8680 ' *** Suchen nach Maske
-8690 MEMBNUM=0
+8690 MBRNUM=0
 8700 GOSUB 6780                                        'Nächsten Treffer suchen
-8710 IF MEMBNUM=-1 THEN 8800
+8710 IF MBRNUM=-1 THEN 8800
 8720   GOSUB 12160                                             'Stammsatz lesen
 8730   IF INSTR(FLDDAT$(5),"ausgetreten")>0 THEN 8750
 8740     GOSUB 16730                         'Mitgliedsliste drucken (Mitglied)
@@ -779,7 +779,7 @@
 8870 FKEYS$="":GOSUB 13810                                 'F-Tasten einblenden
 8880 PRINT FNCUR$(4,23)"Bitte geben Sie die Mitgliedsnummer"
 8890 PRINT FNCUR$(5,23)"des zu druckenden Datenblattes ein."
-8900 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MEMBMAX);"."
+8900 PRINT FNCUR$(6,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 8910 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 8920 PRINT FNCUR$(10,38)"=>..."
 8930 ISINPUTOK=TRUE
@@ -792,11 +792,11 @@
 9000 IF FKEY=4 THEN GOSUB 14130:GOTO 8960                 'Zum Hauptmenü?-Frage
 9010 '
 9020 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-9030 IF M>=1 AND M<=MEMBMAX THEN 9070
+9030 IF M>=1 AND M<=MBRMAX THEN 9070
 9040   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 9050   ISINPUTOK=FALSE
 9060   GOTO 8950
-9070 MEMBNUM=M
+9070 MBRNUM=M
 9080 GOSUB 16420                                         'Drucker bereit?-Frage
 9090 IF ISYES THEN 9130
 9100   GOSUB 13810                                         'F-Tasten einblenden
@@ -959,20 +959,20 @@
 11450 FOR I=1 TO FLDMAX:FLDSEARCH$(I)="":NEXT I
 11460 RETURN
 11470 '
-11480 ' *** MEMBMAX lesen ***************************************************** 
+11480 ' *** MBRMAX lesen ***************************************************** 
 11490 '
-11500 ' OUT: MEMBMAX
+11500 ' OUT: MBRMAX
 11510 OPEN "I",#1,"B:MTGLZAHL.DAT"
-11520   INPUT #1,MEMBMAX$
-11530   MEMBMAX=VAL(MEMBMAX$)
+11520   INPUT #1,MBRMAX$
+11530   MBRMAX=VAL(MBRMAX$)
 11540 CLOSE #1
 11550 RETURN
 11560 '
-11570 ' *** MEMBMAX speichern *************************************************
+11570 ' *** MBRMAX speichern *************************************************
 11580 '
-11590 ' IN: MEMBMAX
-11600 OPEN "O",#1,"B:MEMBNUM.DAT"
-11610   PRINT #1,STR$(MEMBMAX)
+11590 ' IN: MBRMAX
+11600 OPEN "O",#1,"B:MTGLZAHL.DAT"
+11610   PRINT #1,STR$(MBRMAX)
 11620 CLOSE #1
 11630 RETURN
 11640 '
@@ -1015,8 +1015,8 @@
 12010 '
 12020 ' *** Mitgliedsnummer ausgeben ******************************************
 12030 '
-12040 ' IN: MEMBNUM
-12050 PRINT FNCUR$(3,31);"Mitgliedsnummer";HION$;MEMBNUM;HIOFF$;"   "
+12040 ' IN: MBRNUM
+12050 PRINT FNCUR$(3,31);"Mitgliedsnummer";HION$;MBRNUM;HIOFF$;"   "
 12060 RETURN
 12070 '
 12080 ' *** FIELDen der Stammsatz-Datei *************************************** 
@@ -1027,7 +1027,7 @@
 12130 '
 12140 ' *** Stammsatz von Disk lesen ******************************************
 12150 '
-12160 GET #2,MEMBNUM                                              'LW Compress?
+12160 GET #2,MBRNUM                                              'LW Compress?
 12170 P=1
 12180 FOR I=1 TO 14
 12190   LNG=FLDLNG(I)+1
@@ -1048,7 +1048,7 @@
 12340 '
 12350 ' *** Stammsatz auf Disk speichern **************************************
 12360 '
-12370 ' IN: MEMBNUM
+12370 ' IN: MBRNUM
 12380 TMP$=""                                                     'LW Compress?
 12390 FOR I=1 TO 14
 12400   LNG=FLDLNG(I)
@@ -1063,7 +1063,7 @@
 12490   TMP$=TMP$+CHR$(L)+FLDDAT$(I)+SPACE$(LNG-LEN(FLDDAT$(I)))
 12500 NEXT I
 12510 LSET XSTAMMSATZDAT2$=TMP$
-12520 PUT #2,MEMBNUM
+12520 PUT #2,MBRNUM
 12530 RETURN
 12540 '
 12550 ' *** Ja/Nein-Frage und F-Tasten ausblenden *****************************
@@ -1258,7 +1258,7 @@
 14440 '
 14450 ' *** VERWENDUNGSNACHWEIS FÜR NEUES MITGLIED ANLEGEN ********************
 14460 '
-14470 ' IN: MEMBNUM
+14470 ' IN: MBRNUM
 14480 GET #3,1                               'letzte Seitennummer lesen dann +1
 14490 TMPPOINT=VAL(XVNPOINT0$)+1
 14500 LSET XVNDAT1$=""                                 'leeren Record speichern
@@ -1267,7 +1267,7 @@
 14530 PUT #5,TMPPOINT
 14540 LSET XVNPOINT0$=STR$(TMPPOINT)         'letzte Seitennummer neu speichern
 14550 PUT #3,1
-14560 PUT #3,MEMBNUM+1
+14560 PUT #3,MBRNUM+1
 14570 LSET XVNPOINT1$="0000"
 14580 LSET XVNPOINT2$="0000"
 14590 PUT #4,TMPPOINT
@@ -1275,8 +1275,8 @@
 14610 '
 14620 ' **** ERSTE SEITE FINDEN & LESEN ***************************************
 14630 '
-14640 ' IN: MEMBNUM
-14650 GET #3,MEMBNUM+1                                             'Index-Datei
+14640 ' IN: MBRNUM
+14650 GET #3,MBRNUM+1                                             'Index-Datei
 14660 CPOINT=VAL(XVNPOINT0$)
 14670 GET #5,CPOINT:GOSUB 15700                                    'Daten lesen
 14680 BLATT=1
@@ -1333,7 +1333,7 @@
 15190 LSET XVNPOINT2$="0000"
 15200 PUT #4,VAL(XVNPOINT0$)
 15210 LSET XVNPOINT0$=XVNPOINT0$                                    'First page
-15220 PUT #3,MEMBNUM+1
+15220 PUT #3,MBRNUM+1
 15230 LSET XVNDAT1$=""                                              'Datenblatt
 15240 LSET XVNDAT2$=""
 15250 LSET XVNDAT3$=""
@@ -1394,12 +1394,12 @@
 15800 '
 15810 ' **** UPRO DATENAUSGABE VN  ********************************************
 15820 '
-15830 ' IN: MEMBNUM
+15830 ' IN: MBRNUM
 15840 ' IN: NACHVORNAME$
 15850 ' IN: BLATT
 15860 PRINT DELHIGH$;                                          'TODO Necessary?
 15870 PRINT HION$
-15880 PRINT FNCUR$(5,16);MEMBNUM
+15880 PRINT FNCUR$(5,16);MBRNUM
 15890 PRINT FNCUR$(5,29);NACHVORNAME$
 15900 PRINT FNCUR$(3,8);BLATT
 15910 FOR I=1 TO 26
@@ -1431,7 +1431,7 @@
 16170 PRINT
 16180 PRINT I$;"Blatt:";BLATT
 16190 PRINT
-16200 PRINT I$;"Mitglieds-Nr.:";MEMBNUM;TAB(24);"Name:";NACHVORNAME$
+16200 PRINT I$;"Mitglieds-Nr.:";MBRNUM;TAB(24);"Name:";NACHVORNAME$
 16210 PRINT
 16220 FOR I=1 TO 13
 16230   KK=I:GOSUB 16320
@@ -1483,14 +1483,14 @@
 16690 '
 16700 ' *** Mitgliedsliste drucken (Mitglied) *********************************
 16710 '
-16720 ' IN:  MEMBNUM
+16720 ' IN:  MBRNUM
 16730 AMT$=""
 16740 IN=INSTR(FLDDAT$(6),"22**"):IF IN>0 THEN AMT$=MID$(FLDDAT$(6),IN,6):GOTO 16780
 16750 IN=INSTR(FLDDAT$(6),"23**"):IF IN>0 THEN AMT$=MID$(FLDDAT$(6),IN,5):GOTO 16780
 16760 IN=INSTR(FLDDAT$(6),"24**"):IF IN>0 THEN AMT$=MID$(FLDDAT$(6),IN,3)
 16770 '
 16780 PRINT
-16790 PRINT TAB(5);MEMBNUM;
+16790 PRINT TAB(5);MBRNUM;
 16800 PRINT TAB(10);FLDDAT$(1);                                       'Nachname
 16810 PRINT TAB(36);FLDDAT$(2);                                        'Vorname
 16820 PRINT TAB(65);"(";LEFT$(FLDDAT$(5),1);")";                        'Status
@@ -1527,7 +1527,7 @@
 17130 '
 17140 PRINT ROWSEP$
 17150 PRINT
-17160 PRINT TAB(31);"Mitgliedsnummer";MEMBNUM
+17160 PRINT TAB(31);"Mitgliedsnummer";MBRNUM
 17170 PRINT
 17180 RESTORE 17240
 17190 FOR I=1 TO 7:READ A,B
