@@ -150,7 +150,7 @@
 2580 '
 2590 MBRNUM=MBRMAX+1
 2600 F=1
-2610 GOSUB 11400                                              'FLDDAT$() leeren
+2610 GOSUB 11400                                              'Feldwerte leeren
 2620 GOSUB 13360                                     'Voreinstellungen zuweisen
 2630 MT$="STAMMSATZ ANLEGEN":MI$="G-011010":GOSUB 13700            'Basis-Maske
 2640 FKEYS$="<F7>=Speichern":GOSUB 13810                   'F-Tasten einblenden
@@ -621,7 +621,7 @@
 7290 R=8:C=39:LNG=3:TYP=2
 7300 GOSUB 10370                                                  'Feld-Eingabe
 7310 IF FKEY=1 THEN HELPID=G0120001:GOSUB 17940:GOTO 7190           'Hilfe-Text
-7320 IF FKEY=2 OR FKEY=3 THEN GOSUB 11400:VNFLAG=FALSE:GOTO 2290 'FLDDAT$() leeren
+7320 IF FKEY=2 OR FKEY=3 THEN GOSUB 11400:VNFLAG=FALSE:GOTO 2290 'Feldwerte leeren
 7330 IF FKEY=4 THEN GOSUB 14130                           'Zum Hauptmenü?-Frage
 7340 IF FKEY>4 THEN 7290
 7350 IF CKEY<>0 THEN 7290
@@ -677,7 +677,7 @@
 7850 IF CKEY=CKEYLT THEN HP=HP+(HP>1)+(HP=1)*(-6)   :GOTO 7690
 7860 IF FKEY=1 THEN HELPID=G0120002:GOSUB 17940:GOTO 7550           'Hilfe-Text
 7870 IF FKEY=2 THEN 7190                                       'ZU MTGL-EINGABE
-7880 IF FKEY=3 THEN VNFLAG=FALSE:GOSUB 11400:GOTO 2290        'FLDDAT$() leeren
+7880 IF FKEY=3 THEN VNFLAG=FALSE:GOSUB 11400:GOTO 2290        'Feldwerte leeren
 7890 IF FKEY=4 THEN GOSUB 14130:GOSUB 13870:GOTO 7740     'Zum Hauptmenü?-Frage
 7900 IF FKEY=5 THEN GOSUB 14740:GOTO 7690
 7910 IF FKEY=6 THEN GOSUB 14880:GOTO 7690
@@ -949,17 +949,17 @@
 11350 DATA "Feld 26:      ",43,18,17,1
 11360 DATA "Feld 27:      ",43,19,21,1
 11370 '
-11380 ' *** FLDDAT$() leeren *****************************************************
+11380 ' *** Feldwerte leeren **************************************************
 11390 '
 11400 FOR I=1 TO FLDMAX:FLDDAT$(I)="":NEXT I
 11410 RETURN
 11420 '
-11430 ' *** FLDSEARCH$() leeren ****************************************************
+11430 ' *** FLDSEARCH$() leeren ***********************************************
 11440 '
 11450 FOR I=1 TO FLDMAX:FLDSEARCH$(I)="":NEXT I
 11460 RETURN
 11470 '
-11480 ' *** MBRMAX lesen ***************************************************** 
+11480 ' *** MBRMAX lesen ****************************************************** 
 11490 '
 11500 ' OUT: MBRMAX
 11510 OPEN "I",#1,"B:MTGLZAHL.DAT"
@@ -968,7 +968,7 @@
 11540 CLOSE #1
 11550 RETURN
 11560 '
-11570 ' *** MBRMAX speichern *************************************************
+11570 ' *** MBRMAX speichern **************************************************
 11580 '
 11590 ' IN: MBRMAX
 11600 OPEN "O",#1,"B:MTGLZAHL.DAT"
