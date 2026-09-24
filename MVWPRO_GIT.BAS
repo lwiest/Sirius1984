@@ -182,16 +182,13 @@
 2900 ' *** SUB Exit "Stammsatz anlegen"
 2910 GOSUB 10920                                           'Tastatur entprellen
 2920 Q$="Wollen Sie vorher den Stammsatz speichern?":GOSUB 12590 'Ja/Nein-Frage
-2930 IF ISYES THEN 2980
-2940   MBRNUM=MBRNUM-1
-2950   GOTO 3030
+2930 IF NOT ISYES THEN MBRNUM=MBRNUM-1:RETURN
 2960 '                                                            
 2970 ' *** SUB Exit "Stammsatz anlegen" 2
 2980 N$="Stammsatz wird gespeichert...":GOSUB 13570 'Nachricht anzeigen, F-Tasten ausblenden
 2990 GOSUB 12380                                           'Stammsatz speichern
 3000 GOSUB 14480                       'Erste Verwendungsnachweis-Seite anlegen
-3010 MBRMAX=MBRNUM:GOSUB 11600                              'MBRMAX speichen
-3020 '
+3010 MBRMAX=MBRNUM:GOSUB 11600                                 'MBRMAX speichen
 3030 GOSUB 13630                                             'Nachricht löschen
 3040 RETURN
 3050 ' 
