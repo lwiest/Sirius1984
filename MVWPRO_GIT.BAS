@@ -55,6 +55,10 @@
 1800 DIM HELPFIRSTROW(HELPIDMAX)
 1810 DIM HELPLASTROW(HELPIDMAX)
 1820 '
+1821 SAVMBRNUMEDIT$=""
+1822 SAVMBRNUMDELETE$=""
+1823 SAVMBRNUMPRINT$=""
+1829 ' 
 1830 G0100000=1                                           'Mitgliederverwaltung
 1840 G0110000=2                                                'Stammsatzpflege
 1850 G0110100=3                                              'Stammsatz anlegen
@@ -202,9 +206,11 @@
 3130 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 3140 PRINT FNCUR$(9,38)"=>..."
 3150 ISINPUTOK=TRUE
-3160 FKEYMASK$="1234":CKEYMASK$="":TEXTIN$=""
+3160 FKEYMASK$="1234":CKEYMASK$=""
 3170 R=9:C=40:LNG=3:TYP=2:ISMAND=TRUE
-3180 GOSUB 10380                                                'Feld-Eingabe+1
+3180 TEXTIN$=SAVMBRNUMEDIT$
+3181 GOSUB 10380                                                'Feld-Eingabe+1
+3182 SAVMBRNUMEDIT$=TEXTOUT$
 3190 IF FKEY=1 THEN HELPID=G0110201:GOSUB 17940:GOTO 3080 'Hilfe-Text 'TODO: Wert geht verloren
 3200 IF FKEY=2 THEN 2440
 3210 IF FKEY=3 THEN 2290
@@ -269,9 +275,11 @@
 3800 PRINT FNCUR$(8,23);"Beenden Sie die Eingabe mit RETURN."
 3810 PRINT FNCUR$(10,38);"=>..."
 3820 ISINPUTOK=TRUE
-3830 FKEYMASK$="1234":CKEYMASK$="":TEXTIN$=""
+3830 FKEYMASK$="1234":CKEYMASK$=""
 3840 R=10:C=40:LNG=3:TYP=2:ISMAND=TRUE
-3850 GOSUB 10380                                                'Feld-Eingabe+1
+3850 TEXTIN$=SAVMBRNUMDELETE$
+3851 GOSUB 10380                                                'Feld-Eingabe+1
+3852 SAVMBRNUMDELETE$=TEXTOUT$
 3860 IF FKEY=1 THEN HELPID=G0110300:GOSUB 17940:GOTO 3740 'Hilfe-Text 'TODO: Wert geht verloren
 3870 IF FKEY=2 THEN 2440
 3880 IF FKEY=3 THEN 2290
@@ -310,16 +318,18 @@
 4210 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 4220 PRINT FNCUR$(9,38);"=>..."
 4230 ISINPUTOK=TRUE
-4240 FKEYMASK$="1234":CKEYMASK$="":TEXTIN$=""
+4240 FKEYMASK$="1234":CKEYMASK$=""
 4250 R=9:C=40:LNG=3:TYP=2:ISMAND=TRUE
-4260 GOSUB 10380                                                'Feld-Eingabe+1
+4260 TEXTIN$=SAVMBRNUMPRINT$
+4261 GOSUB 10380                                                'Feld-Eingabe+1
+4262 SAVMBRNUMPRINT$=TEXTOUT$
 4270 IF FKEY=1 THEN HELPID=G0110400:GOSUB 17940:GOTO 4160 'Hilfe-Text 'TODO: Wert geht verloren
 4280 IF FKEY=2 THEN 2440
 4290 IF FKEY=3 THEN 2290
 4300 IF FKEY=4 THEN GOSUB 14130:GOTO 4260                 'Zum Hauptmenü?-Frage
 4310 '
 4320 M=VAL(TEXTOUT$)                                        'RETURN verarbeiten
-4330   IF M>=1 AND M<=MBRMAX THEN 4370
+4330 IF M>=1 AND M<=MBRMAX THEN 4370
 4340   N$="Diese Mitgliedsnummer gibt es nicht.":GOSUB 13490         'Nachricht anzeigen
 4350   ISINPUTOK=FALSE
 4360   GOTO 4250
@@ -332,8 +342,7 @@
 4430 GOSUB 12050                                      'Mitgliedsnummer ausgeben
 4440 GOSUB 11790          'Feldnamen und Feldwerte mit Feldplatzhalter ausgeben
 4450 GOSUB 16420                                         'Drucker bereit?-Frage
-4460 IF NOT ISYES THEN 4480
-4470   GOSUB 17110                        'Stammsatz drucken (Bildschirmformat)
+4460 IF ISYES THEN GOSUB 17110            'Stammsatz drucken (Bildschirmformat)
 4480 GOTO 4160
 4490 '
 4500 ' *** Stammsatz suchen (und drucken) von 05*************** ***************
