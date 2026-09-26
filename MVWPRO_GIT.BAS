@@ -23,12 +23,6 @@
 1300 DIM FLDDAT$(FLDMAX)                                    'Stammsatzfelddaten
 1310 DIM FLDSEARCH$(FLDMAX)                                 'Stammsatzsuchdaten
 1320 '
-1330 SEARCHNUMSMAX=2
-1340 DIM SEARCHNUMS$(SEARCHNUMSMAX)
-1350 DIM SEARCHNUMSROW(SEARCHNUMSMAX)
-1360 SEARCHNUMSROW(1)=4
-1370 SEARCHNUMSROW(2)=6
-1380 '
 1390 BYNUMS=1                                             'Werte von SEARCHMODE
 1400 BYMASK=2
 1410 '
@@ -58,6 +52,9 @@
 1821 SAVMBRNUMEDIT$=""
 1822 SAVMBRNUMDELETE$=""
 1823 SAVMBRNUMPRINT$=""
+1824 SAVVNNUMEDIT$=""
+1825 SAVPRINTDAT$=""
+1826 SAVPRINTSHEET$=""
 1829 ' 
 1830 G0100000=1                                           'Mitgliederverwaltung
 1840 G0110000=2                                                'Stammsatzpflege
@@ -119,6 +116,14 @@
 2230 GOSUB 14370                           'Verwendungsnachweis-Dateien fielden
 2240 GOSUB 17780              'Hilfe-Text-Dateien fielden, Zeilenbereiche lesen
 2250 GOSUB 13630                                             'Nachricht löschen
+2251 '
+2252 SEARCHNUMSMAX=2
+2253 DIM SEARCHNUMS$(SEARCHNUMSMAX)
+2254 TMP$=STR$(1):SEARCHNUMS$(1)=MID$(TMP$,2,99)
+2255 TMP$=STR$(MBRMAX):SEARCHNUMS$(2)=MID$(TMP$,2,99)
+2256 DIM SEARCHNUMSROW(SEARCHNUMSMAX)
+2257 SEARCHNUMSROW(1)=4
+2258 SEARCHNUMSROW(2)=6
 2260 '
 2270 ' ###################### Mitgliederverwaltungs-Menü ######################
 2280 '
@@ -369,9 +374,7 @@
 4710 IF FKEY=4 THEN GOSUB 14130:GOTO 4630                 'Zum Hauptmenü?-Frage
 4720 '
 4730 ' *** Suchen nach Nummern
-4740 TMP$=STR$(1):SEARCHNUMS$(1)=MID$(TMP$,2,99) 'Einsprung nach Ende Suchen & Drucken
-4750 TMP$=STR$(MBRMAX):SEARCHNUMS$(2)=MID$(TMP$,2,99)
-4760 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
+4740 MT$="STAMMSATZ SUCHEN NACH NUMMERN":MI$="G-011051"
 4770 IF ISPRINT THEN MT$="SUCHEN & DRUCKEN NACH NUMMERN":MI$="G-013011"
 4780 GOSUB 13700                                                   'Basis-Maske
 4790 FKEYS$="<F5>=Suchen":IF ISPRINT THEN FKEYS$="<F5>=Suchen & Drucken"
@@ -389,10 +392,12 @@
 4910 PRINT FNCUR$(8,22);"Gültige Mitgliedsnummern sind 1 -";STR$(MBRMAX);"."
 4920 F=1
 4930 ISINPUTOK=TRUE
-4940 FKEYMASK$="12345":CKEYMASK$="":TEXTIN$=SEARCHNUMS$(F)
+4940 FKEYMASK$="12345":CKEYMASK$=""
 4950 R=SEARCHNUMSROW(F):LNG=3:TYP=2:ISMAND=TRUE
 4960 C=66:IF ISPRINT THEN C=73
-4970 GOSUB 10380                                                'Feld-Eingabe+1
+4970 TEXTIN$=SEARCHNUMS$(F)
+4971 GOSUB 10380                                                'Feld-Eingabe+1
+4972 SEARCHNUMS$(F)=TEXTOUT$
 4980 IF FKEY<>1 THEN 5020                                 'F-Tasten verarbeiten
 4990   HELPID=G0110510:IF ISPRINT THEN HELPID=G0130110
 5000   GOSUB 17940                                                  'Hilfe-Text
@@ -625,7 +630,9 @@
 7270 PRINT FNCUR$(6,20);" und beenden Sie die Eingabe mit RETURN."
 7280 PRINT FNCUR$(8,38);"=>..."
 7290 R=8:C=39:LNG=3:TYP=2
-7300 GOSUB 10370                                                  'Feld-Eingabe
+7300 TEXTIN$=SAVVNNUMEDIT$
+7301 GOSUB 10370                                                  'Feld-Eingabe
+7302 SAVVNNUMEDIT$=TEXTOUT$
 7310 IF FKEY=1 THEN HELPID=G0120001:GOSUB 17940:GOTO 7190           'Hilfe-Text
 7320 IF FKEY=2 OR FKEY=3 THEN GOSUB 11400:VNFLAG=FALSE:GOTO 2290 'Feldwerte leeren
 7330 IF FKEY=4 THEN GOSUB 14130                           'Zum Hauptmenü?-Frage
@@ -713,9 +720,11 @@
 8150 PRINT FNCUR$(5,23);"Beenden Sie die Eingabe mit RETURN."
 8160 PRINT FNCUR$(7,36);"=>........"
 8170 ISINPUTOK=TRUE
-8180 FKEYMASK$="1234":CKEYMASK$="":TEXTIN$=""
+8180 FKEYMASK$="1234":CKEYMASK$=""
 8190 R=7:C=38:LNG=8:TYP=4:ISMAND=TRUE
-8200 GOSUB 10380                                                'Feld-Eingabe+1
+8200 TEXTIN$=SAVPRINTDAT$
+8201 GOSUB 10380                                                'Feld-Eingabe+1
+8202 SAVPRINTDAT$=TEXTOUT$
 8210 IF FKEY<>1 THEN 8260       'F-Tasten verarbeiten 'TODO: Wert geht verloren
 8220   IF NKEY=1 THEN HELPID=G0130101
 8230   IF NKEY=2 THEN HELPID=G0130200
@@ -789,9 +798,11 @@
 8910 PRINT FNCUR$(7,23)"Beenden Sie die Eingabe mit RETURN."
 8920 PRINT FNCUR$(10,38)"=>..."
 8930 ISINPUTOK=TRUE
-8940 FKEYMASK$="1234":CKEYMASK$="":TEXTIN$=""
+8940 FKEYMASK$="1234":CKEYMASK$=""
 8950 R=10:C=40:LNG=3:TYP=2:ISMAND=TRUE
-8960 GOSUB 10380                                                'Feld-Eingabe+1
+8960 TEXTIN$=SAVPRINTSHEET$
+8961 GOSUB 10380                                                'Feld-Eingabe+1
+8962 SAVPRINTSHEET$=TEXTOUT$
 8970 IF FKEY=1 THEN HELPID=G0130300:GOSUB 17940:GOTO 8860 'Hilfe-Text 'TODO: Wert geht verloren
 8980 IF FKEY=2 THEN 7970
 8990 IF FKEY=3 THEN 2290
